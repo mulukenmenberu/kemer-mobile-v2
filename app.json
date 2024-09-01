@@ -1,4 +1,7 @@
 {
   "name": "FidelMobileApp",
-  "displayName": "FidelMobileApp"
+  "displayName": "FidelMobileApp",
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-7128439967849555~9164333404"
+  }
 }
