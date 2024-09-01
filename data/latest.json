@@ -1,0 +1,52 @@
+[
+    {
+        "id":1001,
+        "title":"Exam Reminder",
+        "content":" የ ሶስትኛ ዓመት Accounting & Finance ተማሪዎች ፈተና የሚጀምርው በሚቀጥልው ሰኞ ስለሆነ ዝግጅት ዕንድታደርጉ ዕናሳስባለን::",
+        "posted_date":"2023-02-27",
+        "posted_by":"Registrar Offices",
+        "comments":100,
+        "likes":127,
+        "seen":416
+},
+{
+    "id":1001,
+    "title":"Test notice 001",
+    "content":"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,",
+    "posted_date":"2023-02-27",
+    "posted_by":"Registrar Offices",
+    "comments":100,
+    "likes":127,
+    "seen":416
+},
+{
+    "id":1001,
+    "title":"Test notice 001",
+    "content":"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,",
+    "posted_date":"2023-02-27",
+    "posted_by":"Registrar Offices",
+    "comments":100,
+    "likes":127,
+    "seen":416
+},
+{
+    "id":1001,
+    "title":"Test notice 001",
+    "content":"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,",
+    "posted_date":"2023-02-27",
+    "posted_by":"Registrar Offices",
+    "comments":100,
+    "likes":127,
+    "seen":416
+},
+{
+    "id":1001,
+    "title":"Test notice 001",
+    "content":"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,",
+    "posted_date":"2023-02-27",
+    "posted_by":"Registrar Offices",
+    "comments":100,
+    "likes":127,
+    "seen":416
+}
+]
