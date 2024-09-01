@@ -15,6 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import SkeletonLoader from '../utils/SkeletonLoader';
 import NoInternetScreen from '../utils/NoInternetScreen';
 import { readData } from '../data/DB';
+import { Test } from '../Test';
 
 export default function Dashboard({ navigation }) {
     const { width, height } = Dimensions.get('screen')
@@ -118,8 +119,8 @@ export default function Dashboard({ navigation }) {
                 }
             >
 
-                <Text style={{ marginLeft: 10, marginTop: 10, fontSize: 20 }}>
-                    Welcome, Muluken</Text>
+                {/* <Text style={{ marginLeft: 10, marginTop: 10, fontSize: 20 }}> Welcome, Muluken</Text> */}
+                    <Test/>
 
                 <View>
                     <View style={{ marginTop: 10, flexDirection: 'row', justifyContent: 'space-evenly' }}>

@@ -14,6 +14,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import latest from '../data/latest.json'
+import { Test } from '../Test';
 const hheight = Dimensions.get('screen').height
 
 export default function Jobs({ navigation }) {
@@ -65,7 +66,8 @@ export default function Jobs({ navigation }) {
             <ScrollView
             >
                 <Text style={{ marginLeft: 10, marginTop: 10, fontSize: 20, alignSelf:'center' }}>
-                    Active Jobs</Text>
+                    Academic News</Text>
+                    <Test/>
 
 
 

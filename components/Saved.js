@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchQuestionPackagesSaved } from '../redux/reducers/questionPackagesSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Test } from '../Test';
 
 export default function Saved({ navigation }) {
     const { width, height } = Dimensions.get('screen')
@@ -74,6 +75,7 @@ if(isLoading) return <Text>Loading....</Text>
             >
                 <Text style={{ marginLeft: 10, marginTop: 10, fontSize: 20, alignSelf:'center' }}>
                     Saved Items</Text>
+                    <Test/>
                 <View>
                     {
                         packagesSaved.map((item) => {

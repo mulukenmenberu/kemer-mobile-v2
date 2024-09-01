@@ -21,6 +21,7 @@ import { fetchDepartments } from '../redux/reducers/departmentsSlice';
 
 import { readData, storeData } from '../data/DB';
 import SkeletonLoader from '../utils/SkeletonLoader';
+import { Test } from '../Test';
 
 export default function Settings({ navigation }) {
   const { width } = Dimensions.get('screen');
@@ -131,6 +132,7 @@ export default function Settings({ navigation }) {
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <Text style={styles.mainTitle}>Questions to appear on Dashboard</Text>
+        <Test/>
 
         {/* Custom Swiper for Interests */}
         <ScrollView
@@ -185,7 +187,8 @@ export default function Settings({ navigation }) {
         </View>
 
         <View style={styles.inputsContainer}>
-          {options.map((option, index) => (
+          <Test/>
+          {/* {options.map((option, index) => (
             <View key={index} style={styles.inputWrapper}>
               <TextInput
                 style={styles.textInput}
@@ -203,14 +206,14 @@ export default function Settings({ navigation }) {
                 />
               )}
             </View>
-          ))}
+          ))} */}
 
           <Text style={styles.loyaltyTitle}>Loyalty Points</Text>
-          <Text style={styles.loyaltyPoints}>27</Text>
+          <Text style={styles.loyaltyPoints}>Comming Soon</Text>
           <Text style={styles.loyaltyDescription}>
             Loyalty points are activity points that you can earn by interacting with the app, taking quizzes, and later can be redeemed for various benefits
           </Text>
-          <TouchableOpacity style={styles.continueButton}>
+          <TouchableOpacity style={styles.continueButton} disabled>
             <Text style={styles.buttonText}>Claim Daily Point</Text>
           </TouchableOpacity>
         </View>
@@ -352,11 +355,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginTop: 20,
+    alignSelf:'center'
   },
   loyaltyPoints: {
     fontSize: 24,
     color: '#5E5CE6',
     marginVertical: 10,
+    alignSelf:'center'
   },
   loyaltyDescription: {
     fontSize: 14,
@@ -367,6 +372,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#5E5CE6',
     paddingVertical: 12,
     borderRadius: 8,
+    opacity:0.5,
     alignItems: 'center',
   },
   buttonText: {
