@@ -21,7 +21,7 @@ import { fetchDepartments } from '../redux/reducers/departmentsSlice';
 
 import { readData, storeData } from '../data/DB';
 import SkeletonLoader from '../utils/SkeletonLoader';
-import { Test } from '../Test';
+import { TestAd } from '../TestAd';
 
 export default function Settings({ navigation }) {
   const { width } = Dimensions.get('screen');
@@ -131,8 +131,9 @@ export default function Settings({ navigation }) {
       {/* </ImageBackground> */}
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <TestAd/>
         <Text style={styles.mainTitle}>Questions to appear on Dashboard</Text>
-        <Test/>
+       
 
         {/* Custom Swiper for Interests */}
         <ScrollView
@@ -187,7 +188,7 @@ export default function Settings({ navigation }) {
         </View>
 
         <View style={styles.inputsContainer}>
-          <Test/>
+          <TestAd/>
           {/* {options.map((option, index) => (
             <View key={index} style={styles.inputWrapper}>
               <TextInput
