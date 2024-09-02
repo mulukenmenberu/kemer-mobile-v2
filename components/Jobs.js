@@ -119,8 +119,6 @@ export default function Jobs({ navigation }) {
                         </Section>
                     </View>
                 </ScrollView>
-
-
             </ScrollView>
             <StatusBar backgroundColor="#f2f2f2" barStyle="dark-content" />
         </SafeAreaView>
