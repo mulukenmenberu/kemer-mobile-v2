@@ -192,26 +192,8 @@ export default function Settings({ navigation }) {
         </View>
 
         <View style={styles.inputsContainer}>
-          <TestAd/>
-          {/* {options.map((option, index) => (
-            <View key={index} style={styles.inputWrapper}>
-              <TextInput
-                style={styles.textInput}
-                placeholder={option}
-                placeholderTextColor="#888"
-                value={inputs[option]}
-                onChangeText={(text) => handleInputChange(option, text)}
-              />
-              {inputs[option] !== '' && (
-                <MaterialCommunityIcons
-                  name="check-circle"
-                  color="#5E5CE6"
-                  size={24}
-                  style={styles.inputIcon}
-                />
-              )}
-            </View>
-          ))} */}
+          {/* <TestAd/> */}
+      
 
           <Text style={styles.loyaltyTitle}>Loyalty Points</Text>
           <Text style={styles.loyaltyPoints}>Comming Soon</Text>
