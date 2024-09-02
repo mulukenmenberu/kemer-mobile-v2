@@ -16,6 +16,7 @@ const QuizeDescription = ({ route, navigation }) => {
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [wrongAnswers, setWrongAnswers] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [refresh, setRefresh] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // To track the current question
 
   const { package_id, package_name, tags } = route.params;
@@ -89,15 +90,21 @@ const QuizeDescription = ({ route, navigation }) => {
   const goToNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setRefresh(refresh+1)
     }
+
   };
 
   const goToPreviousQuestion = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
+      setRefresh(refresh-1)
+
     }
   };
+useEffect(()=>{
 
+},[refresh])
   if (loading) return <SkeletonLoader />;
   if (error) return <NoInternetScreen />;
 

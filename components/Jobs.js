@@ -14,6 +14,7 @@ import {
     LearnMoreLinks,
     ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import { readData } from '../data/DB';
 
 function Section({ children, title }) {
     const isDarkMode = useColorScheme() === 'dark';
