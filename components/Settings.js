@@ -75,7 +75,8 @@ export default function Settings({ navigation }) {
 
   useEffect(() => {
     readData('interestList').then((data) => {
-      const interestsArray = Object.keys(data).filter((key) => data[key] === 'selected');
+      const interestsArray = Object.keys(data).filter((key) => data[key] === 'selected')
+      // .join(' - ');
       setSelectedInterests(interestsArray);
       setAllInterests(Object.keys(data));
       setRefresh(false);
@@ -124,7 +125,7 @@ export default function Settings({ navigation }) {
                 <Text style={styles.cardTitle}>Welcome </Text>
                 <AntDesign name="edit" size={24} color="white" />
               </View>
-              <Text style={styles.cardSubTitle}>Information Technology - 3rd year</Text>
+              <Text style={styles.cardSubTitle}>{selectedInterests}</Text>
             </View>
           </View>
         </Card>

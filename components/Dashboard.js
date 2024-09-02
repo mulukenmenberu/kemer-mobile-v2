@@ -23,6 +23,8 @@ export default function Dashboard({ navigation }) {
     const [isLoading, setIsLoading] = useState(false);
     const [isFavorite, setIsFavorite] = useState([]);
     const [refreshing, setRefreshing] = useState(false); // State to manage refreshing
+    const [selectedInterests, setSelectedInterests] = useState([]);
+    const [refresh, setRefresh] = useState(true);
 
     const dispatch = useDispatch();
     const { courses, loading, error } = useSelector((state) => state.courses);
@@ -32,7 +34,8 @@ export default function Dashboard({ navigation }) {
         readData('interestList').then((data) => {
 
             const interestsArray = Object.keys(data)
-            .filter((key) => data[key] === "selected");
+            .filter((key) => data[key] === "selected")
+            // .join(' - ');
             dispatch(fetchCourses(interestsArray)).then((response) => {
                 setActive(response.payload[0].course_id)
                 setRefreshing(false)
@@ -53,6 +56,13 @@ export default function Dashboard({ navigation }) {
     }, [active, dispatch]);
 
 
+    useEffect(() => {
+        readData('interestList').then((data) => {
+          const interestsArray = Object.keys(data).filter((key) => data[key] === 'selected');
+          setSelectedInterests(interestsArray);
+          setRefresh(false);
+        });
+      }, [refresh]);
 
 
       useEffect(() => {
@@ -87,14 +97,8 @@ export default function Dashboard({ navigation }) {
     return (
 
         <SafeAreaView style={styles.container}>
-            {/* <ImageBackground
-                source={require('../assets/image2.png')} // Replace with your background image path
-                style={styles.backgroundImage}
-            > */}
-                <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
-                    {/* <Image source={require('../assets/logo.png')} style={{ width: 30, height: 30 }} /> */}
-                    {/* <Text style={{ fontWeight: 'bold', color: '#fff' }}>Dashboard</Text> */}
 
+                <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
                     <MaterialCommunityIcons name="menu-open" size={24} color="#222" />
                 </View>
                 <Card style={{ marginTop: 8, marginBottom: 20, alignSelf: 'center', height: 80, width: width - 20, backgroundColor: '#5E5CE6', justifyContent: 'center' }} >
@@ -108,7 +112,7 @@ export default function Dashboard({ navigation }) {
                                 <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 19 }}>Welcome </Text>
                                 <AntDesign name="edit" size={24} color="#fff" />
                             </View>
-                            <Text style={{ color: '#fff' }}>Information Technology - 3rd year</Text>
+                            <Text style={{ color: '#fff' }}>{selectedInterests}</Text>
                         </View>
                     </View>
                 </Card>
@@ -212,7 +216,7 @@ export default function Dashboard({ navigation }) {
                                     {item.package_name}
                                 </Text>
 
-                                <Text style={{ paddingLeft: 10, paddingRight: 10, color: '#222', fontSize: 13, alignSelf: 'flex-start' }}>
+                                <Text style={{ textAlign: 'justify', padding:5, color: '#dfdfdf', fontSize: 13, alignSelf: 'flex-start' }}>
                                     {item.description}
                                 </Text>
 

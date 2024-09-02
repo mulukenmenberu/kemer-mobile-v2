@@ -8,12 +8,14 @@ import { fetchQuestionPackagesSaved } from '../redux/reducers/questionPackagesSl
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { TestAd } from '../TestAd';
+import { readData } from '../data/DB';
 
 export default function Saved({ navigation }) {
     const { width, height } = Dimensions.get('screen')
     const [isLoading, setIsLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false); // State to manage refreshing
-
+    const [selectedInterests, setSelectedInterests] = useState([]);
+    const [refresh, setRefresh] = useState(true);
     const dispatch = useDispatch();
     const { packagesSaved, loading: packagesLoading, error: packagesError } = useSelector((state) => state.question_packages);
     const fetchData = async () => {
@@ -30,6 +32,15 @@ export default function Saved({ navigation }) {
             setRefreshing(false)
         }
     };
+    
+    useEffect(() => {
+        readData('interestList').then((data) => {
+          const interestsArray = Object.keys(data).filter((key) => data[key] === 'selected')
+        //   .join(' - ');
+          setSelectedInterests(interestsArray);
+          setRefresh(false);
+        });
+      }, [refresh]);
     useEffect(() => {
         fetchData();
     }, [dispatch, refreshing]);
@@ -63,7 +74,7 @@ if(isLoading) return <Text>Loading....</Text>
                                 <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 19 }}>Welcome </Text>
                                 <AntDesign name="edit" size={24} color="white" />
                             </View>
-                            <Text style={{ color: '#fff' }}>Information Technology - 3rd year</Text>
+                            <Text style={{ color: '#fff' }}>{selectedInterests}</Text>
                         </View>
                     </View>
                 </Card>

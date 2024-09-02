@@ -46,9 +46,20 @@ function Section({ children, title }) {
 export default function Jobs({ navigation }) {
     const { width, height } = Dimensions.get('screen')
     const isDarkMode = useColorScheme() === 'dark';
+    const [selectedInterests, setSelectedInterests] = useState([]);
+    const [refresh, setRefresh] = useState(true);
     const backgroundStyle = {
         backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     };
+    useEffect(() => {
+        readData('interestList').then((data) => {
+          const interestsArray = Object.keys(data).filter((key) => data[key] === 'selected')
+        //   .join(' - ');
+          setSelectedInterests(interestsArray);
+          setRefresh(false);
+        });
+      }, [refresh]);
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -66,7 +77,7 @@ export default function Jobs({ navigation }) {
                             <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 19 }}>Welcome </Text>
                             <AntDesign name="edit" size={24} color="white" />
                         </View>
-                        <Text style={{ color: '#fff' }}>Information Technology - 3rd year</Text>
+                        <Text style={{ color: '#fff' }}>{selectedInterests}</Text>
                     </View>
                 </View>
             </Card>
