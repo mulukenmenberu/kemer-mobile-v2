@@ -54,12 +54,12 @@ export default function Jobs({ navigation }) {
     };
     useEffect(() => {
         readData('interestList').then((data) => {
-          const interestsArray = Object.keys(data).filter((key) => data[key] === 'selected')
-        //   .join(' - ');
-          setSelectedInterests(interestsArray);
-          setRefresh(false);
+            const interestsArray = Object.keys(data).filter((key) => data[key] === 'selected')
+            //   .join(' - ');
+            setSelectedInterests(interestsArray);
+            setRefresh(false);
         });
-      }, [refresh]);
+    }, [refresh]);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -83,17 +83,18 @@ export default function Jobs({ navigation }) {
                 </View>
             </Card>
             <ScrollView >
-                <Text style={{ marginLeft: 10, marginTop: 10, fontSize: 20, alignSelf: 'center', color:'#222' }}>
+                <Text style={{ marginLeft: 10, marginTop: 10, fontSize: 20, alignSelf: 'center', color: '#222' }}>
                     Academic News</Text>
                 <TestAd />
 
                 <ScrollView
                     contentInsetAdjustmentBehavior="automatic"
-                    style={backgroundStyle}>
+                    style={backgroundStyle}
+                    >
                     <Header />
                     <View
                         style={{
-                            backgroundColor: isDarkMode ? Colors.black : Colors.white,
+                            backgroundColor: Colors.white,
                         }}>
                         <Section title="Step One">
                             Edit <Text style={styles.highlight}>App.js</Text> to change this
@@ -102,13 +103,20 @@ export default function Jobs({ navigation }) {
                         <Section title="See Your Changes">
                             <ReloadInstructions />
                         </Section>
-                        <Section title="Debug">
-                            <DebugInstructions />
+
+
+                        <Section title="See Your Changes">
+                            <ReloadInstructions />
                         </Section>
-                        <Section title="Learn More">
-                            Read the docs to discover what to do next:
+                        <Section title="See Your Changes">
+                            <ReloadInstructions />
                         </Section>
-                        <LearnMoreLinks />
+                        <Section title="See Your Changes">
+                            <ReloadInstructions />
+                        </Section>
+                        <Section title="">
+                            {/* <ReloadInstructions /> */}
+                        </Section>
                     </View>
                 </ScrollView>
 
