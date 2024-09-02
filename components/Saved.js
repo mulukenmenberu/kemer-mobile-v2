@@ -60,7 +60,7 @@ if(isLoading) return <Text>Loading....</Text>
                         </View>
                         <View style={{ marginLeft: 20 }}>
                             <View style={{ flexDirection: 'row' }}>
-                                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 19 }}>Muluken M </Text>
+                                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 19 }}>Welcome </Text>
                                 <AntDesign name="edit" size={24} color="white" />
                             </View>
                             <Text style={{ color: '#fff' }}>Information Technology - 3rd year</Text>

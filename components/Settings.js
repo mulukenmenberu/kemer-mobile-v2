@@ -121,7 +121,7 @@ export default function Settings({ navigation }) {
             <Image source={require('../assets/avatar.png')} style={styles.avatar} />
             <View style={styles.cardText}>
               <View style={styles.cardHeader}>
-                <Text style={styles.cardTitle}>Muluken M </Text>
+                <Text style={styles.cardTitle}>Welcome </Text>
                 <AntDesign name="edit" size={24} color="white" />
               </View>
               <Text style={styles.cardSubTitle}>Information Technology - 3rd year</Text>

@@ -105,7 +105,7 @@ export default function Dashboard({ navigation }) {
                         </View>
                         <View style={{ marginLeft: 20 }}>
                             <View style={{ flexDirection: 'row' }}>
-                                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 19 }}>Muluken M </Text>
+                                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 19 }}>Welcome </Text>
                                 <AntDesign name="edit" size={24} color="#fff" />
                             </View>
                             <Text style={{ color: '#fff' }}>Information Technology - 3rd year</Text>
@@ -207,9 +207,15 @@ export default function Dashboard({ navigation }) {
 
                                     <AntDesign name={checkFavoriteStatus(item.package_id)?"heart":'hearto'} style={{ padding: 10 }} size={16} color="#5E5CE6">  </AntDesign>
                                 </View>
+          
                                 <Text style={{ paddingLeft: 10, paddingRight: 10, color: '#222', fontSize: 17, alignSelf: 'flex-start' }}>
                                     {item.package_name}
                                 </Text>
+
+                                <Text style={{ paddingLeft: 10, paddingRight: 10, color: '#222', fontSize: 13, alignSelf: 'flex-start' }}>
+                                    {item.description}
+                                </Text>
+
                                 <View style={{ flex: 1, justifyContent: 'flex-end', flexDirection: 'column' }}>
                                     <View style={{ padding: 20, paddingBotom: 30, flexDirection: 'row', justifyContent: 'space-evenly' }}>
                                     </View>
