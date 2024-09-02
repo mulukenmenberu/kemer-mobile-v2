@@ -53,14 +53,7 @@ export default function Saved({ navigation }) {
 if(isLoading) return <Text>Loading....</Text>
     return (
         <SafeAreaView style={styles.container}>
-            {/* <ImageBackground
-                source={require('../assets/image2.png')} // Replace with your background image path
-                style={styles.backgroundImage}
-            > */}
                 <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
-                    {/* <Image source={require('../assets/logo.png')} style={{ width: 30, height: 30 }} /> */}
-                    {/* <Text style={{ fontWeight: 'bold', color: '#fff' }}>Dashboard</Text> */}
-                    {/* <AntDesign name="search1" size={24} color="white" /> */}
                     <MaterialCommunityIcons name="menu-open" size={24} color="#222" />
 
                 </View>
@@ -78,7 +71,6 @@ if(isLoading) return <Text>Loading....</Text>
                         </View>
                     </View>
                 </Card>
-            {/* </ImageBackground> */}
             <ScrollView
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -102,7 +94,7 @@ if(isLoading) return <Text>Loading....</Text>
                                     shadowOpacity: 0.2,
                                     shadowRadius: 4,
                                 }}
-                                onPress={() => navigation.navigate('Quiz', {
+                                onPress={() => navigation.navigate(item.has_description==0?'Quiz':'QuizeDescription',{
                                     package_id: item.package_id,
                                     package_name: item.package_name,
                                     tags: item.tags,

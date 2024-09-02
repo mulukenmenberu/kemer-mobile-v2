@@ -175,8 +175,8 @@ const QuizeDescription = ({ route, navigation }) => {
           </View>
         )}
         <View style={{ justifyContent: 'center', alignItems: 'center', padding: 10, backgroundColor: '#f5f5f5', borderRadius: 5 }}>
-          <Text style={{ alignSelf: 'left', fontWeight:'bold' }}>Description</Text>
-          <Text style={{ fontFamily: 'monospace', padding: 10, borderRadius: 5 }}>{currentQuestion?.answer_description}</Text>
+          <Text style={{ alignSelf: 'left', fontWeight:'bold', color:'#222' }}>Description</Text>
+          <Text style={{ fontFamily: 'monospace', padding: 10, borderRadius: 5, color:'#222'  }}>{currentQuestion?.answer_description}</Text>
         </View>
       </ScrollView>
 
