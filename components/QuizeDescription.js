@@ -90,7 +90,7 @@ const QuizeDescription = ({ route, navigation }) => {
   const goToNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setRefresh(refresh+1)
+      setRefresh(refresh + 1)
     }
 
   };
@@ -98,13 +98,13 @@ const QuizeDescription = ({ route, navigation }) => {
   const goToPreviousQuestion = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
-      setRefresh(refresh-1)
+      setRefresh(refresh - 1)
 
     }
   };
-useEffect(()=>{
+  useEffect(() => {
 
-},[refresh])
+  }, [refresh])
   if (loading) return <SkeletonLoader />;
   if (error) return <NoInternetScreen />;
 
@@ -128,17 +128,17 @@ useEffect(()=>{
         </View>
         <View>
           <Text style={styles.statsText}>Correct: {correctAnswers}</Text>
-          <Text style={styles.statsTextWrong}>Wrong: {' '+wrongAnswers}</Text>
+          <Text style={styles.statsTextWrong}>Wrong: {' ' + wrongAnswers}</Text>
           <Text style={styles.statsTextTotal}>Total Q: {questions.length}</Text>
         </View>
       </View>
 
-      <TestAd/>
+      <TestAd />
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {currentQuestion && (
           <View key={currentQuestion.question_id} style={styles.questionContainer}>
-            <Text style={styles.questionText}>{currentQuestionIndex + 1} {' '+currentQuestion.question_text}</Text>
+            <Text style={styles.questionText}>{currentQuestionIndex + 1} {' ' + currentQuestion.question_text}</Text>
             {[currentQuestion.question_ans1, currentQuestion.question_ans2, currentQuestion.question_ans3, currentQuestion.question_ans4].map((optionText, optionIndex) => {
               if (!optionText) return null; // Skip empty options
               const isCorrect = optionText.endsWith('**');
@@ -174,16 +174,17 @@ useEffect(()=>{
             })}
           </View>
         )}
+        <View style={{ justifyContent: 'center', alignItems: 'center', padding: 10, backgroundColor: '#f5f5f5', borderRadius: 5 }}>
+          <Text style={{ alignSelf: 'left', fontWeight:'bold' }}>Description</Text>
+          <Text style={{ fontFamily: 'monospace', padding: 10, borderRadius: 5 }}>{currentQuestion?.answer_description}</Text>
+        </View>
       </ScrollView>
-<View>
 
-  <Text>{currentQuestion.answer_description}</Text>
-</View>
       <View style={styles.navigationButtonsContainer}>
         <TouchableOpacity
           style={[styles.navigationButton, currentQuestionIndex === 0 && styles.disabledButton]}
           onPress={goToPreviousQuestion}
-          // disabled={currentQuestionIndex === 0}
+        // disabled={currentQuestionIndex === 0}
         >
           <Text style={styles.navigationButtonText}>Previous</Text>
         </TouchableOpacity>
@@ -191,7 +192,7 @@ useEffect(()=>{
         <TouchableOpacity
           style={[styles.navigationButton, currentQuestionIndex === questions.length - 1 && styles.disabledButton]}
           onPress={goToNextQuestion}
-          // disabled={currentQuestionIndex === questions.length - 1}
+        // disabled={currentQuestionIndex === questions.length - 1}
         >
           <Text style={styles.navigationButtonText}>Next</Text>
         </TouchableOpacity>
@@ -218,8 +219,8 @@ const styles = StyleSheet.create({
     padding: 20,
     borderBottomWidth: 0.5,
     flexDirection: 'row',
-    borderBottomLeftRadius:10,
-    borderBottomRightRadius:10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
     justifyContent: 'space-between',
   },
   tag: {
