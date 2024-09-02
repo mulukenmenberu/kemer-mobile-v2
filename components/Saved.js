@@ -84,7 +84,7 @@ if(isLoading) return <Text>Loading....</Text>
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
             >
-                <Text style={{ marginLeft: 10, marginTop: 10, fontSize: 20, alignSelf:'center' }}>
+                <Text style={{ marginLeft: 10, marginTop: 10, fontSize: 20, alignSelf:'center', color:'#222'}}>
                     Saved Items</Text>
                     <TestAd/>
                 <View>

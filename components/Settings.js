@@ -136,7 +136,7 @@ export default function Settings({ navigation }) {
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
       <TestAd/>
-        <Text style={styles.mainTitle}>Questions to appear on Dashboard</Text>
+        <Text style={styles.mainTitle}>Time to customize your level</Text>
        
 
         {/* Custom Swiper for Interests */}
@@ -290,6 +290,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     fontSize: 20,
+    color:'#222',
     alignSelf: 'center',
   },
   swiper: {
@@ -360,7 +361,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginTop: 20,
-    alignSelf:'center'
+    alignSelf:'center',
+    color:'#222'
   },
   loyaltyPoints: {
     fontSize: 24,
