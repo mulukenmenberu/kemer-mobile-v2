@@ -39,11 +39,14 @@ export default function Settings({ navigation }) {
         : [...prevSelectedInterests, interest]
     );
 
-    for (let key in updatedInterests) {
-      if (selectedInterests.includes(key)) {
-        updatedInterests[key] = 'selected';
+    console.log(selectedInterests)
+    // for (let key in updatedInterests) {
+      for (let value of Object.values(updatedInterests)) {
+
+      if (selectedInterests.includes(value)) {
+        updatedInterests[value] = 'selected';
       } else {
-        updatedInterests[key] = 'notselected';
+        updatedInterests[value] = 'notselected';
       }
     }
 
