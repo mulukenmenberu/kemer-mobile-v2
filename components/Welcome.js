@@ -13,6 +13,7 @@ const Welcome = ({ navigation, setPage, page }) => {
   const [selectedInterests, setSelectedInterests] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const { width } = Dimensions.get('screen');
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     dispatch(fetchDepartments());
@@ -60,7 +61,7 @@ const Welcome = ({ navigation, setPage, page }) => {
   }
 
   if (error) {
-    return <NoInternetScreen />
+    return <NoInternetScreen  isLoading={isLoading} setIsLoading={setIsLoading}/>
   }
 
   return (

@@ -92,7 +92,7 @@ export default function Dashboard({ navigation }) {
       }
     
       if (error) {
-        return <NoInternetScreen/>
+        return <NoInternetScreen isLoading={isLoading} setIsLoading={setIsLoading}/>
       }
     return (
 

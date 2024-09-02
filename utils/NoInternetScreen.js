@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, StatusBar } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const NoInternetScreen = ({navigation}) => {
+const NoInternetScreen = ({navigation, isLoading, setIsLoading}) => {
   return (
     <View style={styles.container}>
       <View style={styles.iconContainer}>
@@ -15,10 +15,10 @@ const NoInternetScreen = ({navigation}) => {
       <Text style={styles.message}>
         Something went wrong. Try refreshing the page or checking your internet connection. We’ll see you in a moment!
       </Text>
-      <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('Tabs')}>
+      <TouchableOpacity style={styles.button} onPress={()=>setIsLoading(!isLoading)}>
         <Text style={styles.buttonText}>Try again</Text>
       </TouchableOpacity>
-      <StatusBar backgroundColor="#fff" barStyle="dark-content" />
+      <StatusBar backgroundColor="#F2F2F2" barStyle="dark-content" />
 
     </View>
   );
@@ -27,7 +27,7 @@ const NoInternetScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f2f6ff',
+    // backgroundColor: '#f2f6ff',
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 20,
