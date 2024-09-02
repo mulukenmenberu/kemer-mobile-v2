@@ -8,6 +8,7 @@ import Dashboard from './components/Dashboard'
 import Tabs from './components/Tabs'
 import Quiz from './components/Quiz'
 import NoInternetScreen from './utils/NoInternetScreen'
+import QuizeDescription from './components/QuizeDescription'
 const Navigation = () => {
     const stack = createNativeStackNavigator()
   return (
@@ -18,7 +19,8 @@ const Navigation = () => {
     <stack.Screen name="Dashboard" component={Dashboard}/>
     <stack.Screen name="Tabs" component={Tabs}/>
     <stack.Screen name="Quiz" component={Quiz}/>
-    <stack.Screen name="NoInternetScreen" component={NoInternetScreen}/>
+    {/* <stack.Screen name="Quiz" component={Quiz}/> */}
+    <stack.Screen name="QuizeDescription" component={QuizeDescription}/>
 </stack.Navigator>
   )
 }

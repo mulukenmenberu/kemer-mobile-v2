@@ -185,7 +185,7 @@ export default function Dashboard({ navigation }) {
                                     shadowOpacity: 0.2,
                                     shadowRadius: 4,
                                 }}
-                                onPress={() => navigation.navigate('Quiz', {
+                                onPress={() => navigation.navigate(item.has_description==0?'Quiz':'QuizeDescription', {
                                     package_id: item.package_id,
                                     package_name: item.package_name,
                                     tags: item.tags,
@@ -208,8 +208,10 @@ export default function Dashboard({ navigation }) {
                                     }}>
                                         {item.tags}
                                     </Text>
-
+                                    <View style={{display:'flex', flexDirection:'row',justifyContent:'space-evenly'}}>
+                                    {item.is_locked==1?<Entypo name="lock" style={{ padding: 10 }} size={16} color="#5E5CE6">  </Entypo>:''}
                                     <AntDesign name={checkFavoriteStatus(item.package_id)?"heart":'hearto'} style={{ padding: 10 }} size={16} color="#5E5CE6">  </AntDesign>
+                                    </View>
                                 </View>
           
                                 <Text style={{ paddingLeft: 10, paddingRight: 10, color: '#222', fontSize: 17, alignSelf: 'flex-start' }}>
