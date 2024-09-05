@@ -31,6 +31,30 @@ export default function Settings({ navigation }) {
   const [currentPage, setCurrentPage] = useState(0);
 
   const toggleInterest = (interest) => {
+    // Step 1: Update the selected interests state
+    setSelectedInterests((prevSelectedInterests) => {
+      const updatedSelectedInterests = prevSelectedInterests.includes(interest)
+        ? prevSelectedInterests.filter((item) => item !== interest)
+        : [...prevSelectedInterests, interest];
+  
+      // Step 2: Update the interests based on the latest selected interests
+      const updatedInterests = { ...allInterests };
+  
+      for (let value of Object.values(updatedInterests)) {
+        updatedInterests[value] = updatedSelectedInterests.includes(value)
+          ? 'selected'
+          : 'notselected';
+      }
+  
+      // Step 3: Store the updated interests in local storage
+      storeData('interestList', updatedInterests);
+  
+      return updatedSelectedInterests; // Return the updated interests to be set
+    });
+  };
+
+  
+  const toggleInterestt = (interest) => {
     let updatedInterests = { ...allInterests };
 
     setSelectedInterests((prevSelectedInterests) =>
