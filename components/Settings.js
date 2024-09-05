@@ -128,7 +128,7 @@ export default function Settings({ navigation }) {
                 <Text style={styles.cardTitle}>Welcome </Text>
                 <AntDesign name="edit" size={24} color="white" />
               </View>
-              <Text style={styles.cardSubTitle}>{selectedInterests}</Text>
+              <Text style={styles.cardSubTitle}>{selectedInterests.join(' - ')}</Text>
             </View>
           </View>
         </Card>

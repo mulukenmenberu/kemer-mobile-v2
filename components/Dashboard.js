@@ -36,6 +36,7 @@ export default function Dashboard({ navigation }) {
             const interestsArray = Object.keys(data)
             .filter((key) => data[key] === "selected")
             // .join(' - '); 
+            
             dispatch(fetchCourses(interestsArray)).then((response) => {
                 setActive(response.payload[0].course_id)
                 setRefreshing(false)
@@ -60,6 +61,7 @@ export default function Dashboard({ navigation }) {
     useEffect(() => {
         readData('interestList').then((data) => {
           const interestsArray = Object.keys(data).filter((key) => data[key] === 'selected');
+        //   console.log(interestsArray)
           setSelectedInterests(interestsArray);
           setRefresh(false);
         });
@@ -113,7 +115,7 @@ export default function Dashboard({ navigation }) {
                                 <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 19 }}>Welcome </Text>
                                 <AntDesign name="edit" size={24} color="#fff" />
                             </View>
-                            <Text style={{ color: '#fff' }}>{selectedInterests}</Text>
+                            <Text style={{ color: '#fff' }}>{selectedInterests.join(' - ')}</Text>
                         </View>
                     </View>
                 </Card>

@@ -24,7 +24,7 @@ function Section({ children, title }) {
                 style={[
                     styles.sectionTitle,
                     {
-                        color: isDarkMode ? Colors.white : Colors.black,
+                        color:  Colors.black,
                     },
                 ]}>
                 {title}
@@ -33,7 +33,7 @@ function Section({ children, title }) {
                 style={[
                     styles.sectionDescription,
                     {
-                        color: isDarkMode ? Colors.light : Colors.dark,
+                        color:  Colors.dark,
                     },
                 ]}>
                 {children}
@@ -78,7 +78,7 @@ export default function Jobs({ navigation }) {
                             <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 19 }}>Welcome </Text>
                             <AntDesign name="edit" size={24} color="white" />
                         </View>
-                        <Text style={{ color: '#fff' }}>{selectedInterests}</Text>
+                        <Text style={{ color: '#fff' }}>{selectedInterests.join(' - ')}</Text>
                     </View>
                 </View>
             </Card>
@@ -91,7 +91,7 @@ export default function Jobs({ navigation }) {
                     contentInsetAdjustmentBehavior="automatic"
                     style={backgroundStyle}
                     >
-                    <Header />
+
                     <View
                         style={{
                             backgroundColor: Colors.white,

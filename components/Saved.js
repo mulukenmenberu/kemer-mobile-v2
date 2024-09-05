@@ -67,7 +67,7 @@ if(isLoading) return <Text>Loading....</Text>
                                 <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 19 }}>Welcome </Text>
                                 <AntDesign name="edit" size={24} color="white" />
                             </View>
-                            <Text style={{ color: '#fff' }}>{selectedInterests}</Text>
+                            <Text style={{ color: '#fff' }}>{selectedInterests.join(' - ')}</Text>
                         </View>
                     </View>
                 </Card>
