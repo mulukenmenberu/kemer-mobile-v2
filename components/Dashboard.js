@@ -1,6 +1,6 @@
 // import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { Image, StatusBar, TextInput, StyleSheet, Text, View, Platform, StatusBar as stbar, Dimensions, SafeAreaView, ImageBackground, TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
+import { Image, StatusBar, TextInput, StyleSheet, Text, View, Platform, StatusBar as stbar, Dimensions, SafeAreaView, ImageBackground, TouchableOpacity, ScrollView, RefreshControl, Alert } from 'react-native';
 import { Card } from 'react-native-paper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -35,7 +35,7 @@ export default function Dashboard({ navigation }) {
 
             const interestsArray = Object.keys(data)
             .filter((key) => data[key] === "selected")
-            // .join(' - ');
+            // .join(' - '); 
             dispatch(fetchCourses(interestsArray)).then((response) => {
                 setActive(response.payload[0].course_id)
                 setRefreshing(false)
@@ -46,14 +46,15 @@ export default function Dashboard({ navigation }) {
     useEffect(() => {
         if (active !== 0) {
             setIsLoading(true);
+     
             dispatch(fetchQuestionPackages(active)).then((response) => {
-
+                // console.log(packages)
                 setIsLoading(false);
             }).catch(() => {
                 setIsLoading(false);
             });
         }
-    }, [active, dispatch]);
+    }, [active, dispatch,]);
 
 
     useEffect(() => {
@@ -159,7 +160,7 @@ export default function Dashboard({ navigation }) {
                         horizontal
                         showsHorizontalScrollIndicator={false}>
                         {courses.map((course) => (
-                            <Text onPress={() => setActive(course.course_id)} style={{ margin: 20, fontWeight: active == course.course_id ? 'bold' : '', color: active == course.course_id ? '#5E5CE6' : '#CBD1DF' }}>{course.course_name}</Text>
+                            <Text key={course.course_id} onPress={() => setActive(course.course_id)} style={{ margin: 20, fontWeight: active == course.course_id ? 'bold' : '', color: active == course.course_id ? '#5E5CE6' : '#CBD1DF' }}>{course.course_name}</Text>
                         ))}
 
 
