@@ -15,6 +15,7 @@ import {
     ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import { readData } from '../data/DB';
+import { horizontalScale, moderateScale, verticalScale } from '../utils/Device';
 
 function Section({ children, title }) {
     const isDarkMode = useColorScheme() === 'dark';
@@ -63,25 +64,25 @@ export default function Jobs({ navigation }) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
-                <MaterialCommunityIcons name="menu-open" size={24} color="#222" />
-            </View>
+             <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <MaterialCommunityIcons name="menu-open" size={24} color="#222" />
 
-            <Card style={{ marginTop: 8, marginBottom: 20, alignSelf: 'center', height: 80, width: width - 20, backgroundColor: '#5E5CE6', justifyContent: 'center' }} onPress={() => navigation.navigate('Quiz')}>
-                <View style={{ marginLeft: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-
-                    <View>
-                        <Image source={require('../assets/avatar.png')} style={{ width: 50, height: 50, borderRadius: 50 / 2 }} />
-                    </View>
-                    <View style={{ marginLeft: 20 }}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 19 }}>Welcome </Text>
-                            <AntDesign name="edit" size={24} color="white" />
-                        </View>
-                        <Text style={{ color: '#fff' }}>{selectedInterests.join(' - ')}</Text>
-                    </View>
                 </View>
-            </Card>
+                <Card style={{ marginTop: verticalScale(8), marginBottom: verticalScale(20), alignSelf: 'center', height: verticalScale(80), width: width - 20, backgroundColor: '#5E5CE6', justifyContent: 'center' }} onPress={() => navigation.navigate('Quiz')}>
+                    <View style={{ marginLeft: horizontalScale(10), marginRight: verticalScale(10), flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+                        <View>
+                            <Image source={require('../assets/avatar.png')} style={{ width: horizontalScale(50), height: verticalScale(50), borderRadius: moderateScale(50 / 2) }} />
+                        </View>
+                        <View style={{ marginLeft: horizontalScale(20) }}>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: moderateScale(19) }}>Welcome </Text>
+                                <AntDesign name="edit" size={moderateScale(24)} color="white" />
+                            </View>
+                            <Text style={{ color: '#fff', paddingRight:horizontalScale(10) }}>{selectedInterests.join(' - ')}</Text>
+                        </View>
+                    </View>
+                </Card>
+
             <ScrollView >
                 <Text style={{ marginLeft: 10, marginTop: 10, fontSize: 20, alignSelf: 'center', color: '#222' }}>
                     Academic News</Text>
@@ -129,20 +130,18 @@ const styles = StyleSheet.create({
     container: {
 
     },
-    backgroundImage: {
-        borderBottomLeftRadius: 40,
-    },
+ 
     sectionContainer: {
-        marginTop: 32,
-        paddingHorizontal: 24,
+        marginTop: verticalScale(32),
+        paddingHorizontal: horizontalScale(24),
     },
     sectionTitle: {
-        fontSize: 24,
+        fontSize: moderateScale(24),
         fontWeight: '600',
     },
     sectionDescription: {
-        marginTop: 8,
-        fontSize: 18,
+        marginTop: verticalScale(8),
+        fontSize: moderateScale(18),
         fontWeight: '400',
     },
     highlight: {

@@ -16,6 +16,7 @@ import SkeletonLoader from '../utils/SkeletonLoader';
 import NoInternetScreen from '../utils/NoInternetScreen';
 import { readData } from '../data/DB';
 import { TestAd } from '../TestAd';
+import { horizontalScale, moderateScale, verticalScale } from '../utils/Device';
 
 export default function Dashboard({ navigation }) {
     const { width, height } = Dimensions.get('screen')
@@ -101,21 +102,24 @@ export default function Dashboard({ navigation }) {
 
         <SafeAreaView style={styles.container}>
 
-                <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <MaterialCommunityIcons name="menu-open" size={24} color="#222" />
+                <View style={{ marginLeft: horizontalScale(10), marginTop: verticalScale(10), marginRight: horizontalScale(10), 
+                    flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <MaterialCommunityIcons name="menu-open" size={moderateScale(24)} color="#222" />
                 </View>
-                <Card style={{ marginTop: 8, marginBottom: 20, alignSelf: 'center', height: 80, width: width - 20, backgroundColor: '#5E5CE6', justifyContent: 'center' }} >
-                    <View style={{ marginLeft: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+                <Card style={{ marginTop: verticalScale(8), marginBottom: horizontalScale(20), alignSelf: 'center',
+                     height: verticalScale(80), width: width - 20, backgroundColor: '#5E5CE6', justifyContent: 'center' }} >
+                    <View style={{ marginLeft: horizontalScale(10), marginRight: horizontalScale(10), flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
 
                         <View>
-                            <Image source={require('../assets/avatar.png')} style={{ width: 50, height: 50, borderRadius: 50 / 2 }} />
+                            <Image source={require('../assets/avatar.png')} style={{ width: horizontalScale(50),
+                                 height: verticalScale(50), borderRadius: moderateScale(50 / 2) }} />
                         </View>
-                        <View style={{ marginLeft: 20 }}>
+                        <View style={{ marginLeft: horizontalScale(20) }}>
                             <View style={{ flexDirection: 'row' }}>
-                                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 19 }}>Welcome </Text>
-                                <AntDesign name="edit" size={24} color="#fff" />
+                                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: moderateScale(19) }}>Welcome </Text>
+                                <AntDesign name="edit" size={moderateScale(24)} color="#fff" />
                             </View>
-                            <Text style={{ color: '#fff' }}>{selectedInterests.join(' - ')}</Text>
+                            <Text style={{ color: '#fff', paddingRight:10 }}>{selectedInterests.join(' - ')}</Text>
                         </View>
                     </View>
                 </Card>
@@ -130,28 +134,29 @@ export default function Dashboard({ navigation }) {
                     <TestAd/>
 
                 <View>
-                    <View style={{ marginTop: 10, flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                        <View style={{ padding: 10, borderRadius: 20, backgroundColor: '#FF8A80', height: 130, width: 180 }}>
-                            <Entypo name="newsletter" size={24} style={{ alignSelf: 'flex-end' }} color="#fff" />
-                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: 35 }}>3</Text>
-                            <Text style={{ color: '#fff', fontSize: 13 }}>Recently Posted Items</Text>
+                    <View style={{ marginTop: verticalScale(10), flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                        <View style={{ padding: moderateScale(10), borderRadius: moderateScale(16), backgroundColor: '#FF8A80', height: verticalScale(130), width: horizontalScale(180) }}>
+                            <Entypo name="newsletter" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
+                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: moderateScale(35) }}>3</Text>
+                            <Text style={{ color: '#fff', fontSize: moderateScale(13) }}>Recently Posted Items</Text>
                         </View>
-                        <View style={{ padding: 10, borderRadius: 20, backgroundColor: '#FDD835', height: 130, width: 180 }}>
-                            <Ionicons name="alarm" size={24} style={{ alignSelf: 'flex-end' }} color="#fff" />
+                        <View style={{ padding: 10, borderRadius: moderateScale(16), backgroundColor: '#FDD835', height: verticalScale(130), width: horizontalScale(180) }}>
+                            <Ionicons name="alarm" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
                             <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: 35 }}>120</Text>
-                            <Text style={{ color: '#fff', fontSize: 13 }}>Most Visited Items</Text>
+                            <Text style={{ color: '#fff', fontSize: moderateScale(13) }}>Most Visited Items</Text>
                         </View>
                     </View>
-                    <View style={{ marginTop: 10, flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                        <View style={{ padding: 10, borderRadius: 20, backgroundColor: '#5C6BC0', height: 130, width: 180 }}>
-                            <MaterialIcons name="category" size={24} style={{ alignSelf: 'flex-end' }} color="#fff" />
-                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: 35 }}>7</Text>
-                            <Text style={{ color: '#fff', fontSize: 13 }}>Your Saved Items</Text>
+                    <View style={{ marginTop: verticalScale(10), flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                        <View style={{ padding: moderateScale(10), borderRadius: moderateScale(16), backgroundColor: '#5C6BC0', height: verticalScale(130), width: horizontalScale(180) }}>
+                            <MaterialIcons name="category" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
+                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: moderateScale(35) }}>7</Text>
+                            <Text style={{ color: '#fff', fontSize: moderateScale(13) }}>Your Saved Items</Text>
                         </View>
-                        <View style={{ padding: 10, borderRadius: 20, backgroundColor: '#424242', height: 130, width: 180 }} >
-                            <FontAwesome name="sticky-note" size={24} style={{ alignSelf: 'flex-end' }} color="#fff" />
-                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: 35 }}>13</Text>
-                            <Text style={{ color: '#fff', fontSize: 13 }}>Active Items</Text>
+                        <View style={{ padding: moderateScale(10), borderRadius: moderateScale(16), backgroundColor: '#424242', height: verticalScale(130),
+                             width: horizontalScale(180) }} >
+                            <FontAwesome name="sticky-note" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
+                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: moderateScale(35) }}>13</Text>
+                            <Text style={{ color: '#fff', fontSize: moderateScale(13) }}>Active Items</Text>
                         </View>
                     </View>
 
@@ -162,7 +167,7 @@ export default function Dashboard({ navigation }) {
                         horizontal
                         showsHorizontalScrollIndicator={false}>
                         {courses.map((course) => (
-                            <Text key={course.course_id} onPress={() => setActive(course.course_id)} style={{ margin: 20, fontWeight: active == course.course_id ? 'bold' : '', color: active == course.course_id ? '#5E5CE6' : '#CBD1DF' }}>{course.course_name}</Text>
+                            <Text key={course.course_id} onPress={() => setActive(course.course_id)} style={{ margin: moderateScale(20), fontWeight: active == course.course_id ? 'bold' : '', color: active == course.course_id ? '#5E5CE6' : '#CBD1DF' }}>{course.course_name}</Text>
                         ))}
 
 
@@ -171,7 +176,7 @@ export default function Dashboard({ navigation }) {
               
                 <View>
                     {isLoading ? (
-                        <View style={{ alignItems: 'center', marginTop: 20 }}>
+                        <View style={{ alignItems: 'center', marginTop: verticalScale(20) }}>
                             <Text>Loading...</Text>
                         </View>
                     ) : (
@@ -179,14 +184,14 @@ export default function Dashboard({ navigation }) {
                             <TouchableOpacity
                                 key={item.package_id}
                                 style={{
-                                    marginTop: 15,
+                                    marginTop: verticalScale(15),
                                     alignSelf: 'center',
-                                    borderRadius: 12,
+                                    borderRadius: moderateScale(12),
                                     backgroundColor: '#FFFFFF',
                                     width: width - 40,
                                     shadowOffset: { width: 0, height: 2 },
                                     shadowOpacity: 0.2,
-                                    shadowRadius: 4,
+                                    shadowRadius: moderateScale(4),
                                 }}
                                 onPress={() => navigation.navigate(item.has_description==0?'Quiz':'QuizeDescription', {
                                     package_id: item.package_id,
@@ -197,44 +202,44 @@ export default function Dashboard({ navigation }) {
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <Text style={{
                                         fontWeight: 'bold',
-                                        marginLeft: 15,
-                                        marginTop: 5,
+                                        marginLeft: horizontalScale(15),
+                                        marginTop: verticalScale(5),
                                         color: '#fff', 
-                                        fontSize: 13,
+                                        fontSize: moderateScale(13),
                                         alignSelf: 'flex-start',
                                         backgroundColor: '#FF6347', 
-                                        paddingVertical: 5,
-                                        paddingHorizontal: 10,
-                                        borderRadius: 8, 
+                                        paddingVertical: verticalScale(5),
+                                        paddingHorizontal: horizontalScale(10),
+                                        borderRadius: moderateScale(8), 
                                         textAlign: 'center',
                                         overflow: 'hidden'
                                     }}>
                                         {item.tags}
                                     </Text>
                                     <View style={{display:'flex', flexDirection:'row',justifyContent:'space-evenly'}}>
-                                    {item.is_locked==1?<Entypo name="lock" style={{ padding: 10 }} size={16} color="#5E5CE6">  </Entypo>:''}
-                                    <AntDesign name={checkFavoriteStatus(item.package_id)?"heart":'hearto'} style={{ padding: 10 }} size={16} color="#5E5CE6">  </AntDesign>
+                                    {item.is_locked==1?<Entypo name="lock" style={{ padding: moderateScale(10) }} size={moderateScale(16)} color="#5E5CE6">  </Entypo>:''}
+                                    <AntDesign name={checkFavoriteStatus(item.package_id)?"heart":'hearto'} style={{ padding: 10 }} size={moderateScale(16)} color="#5E5CE6">  </AntDesign>
                                     </View>
                                 </View>
           
-                                <Text style={{ paddingLeft: 10, paddingRight: 10, color: '#222', fontSize: 17, alignSelf: 'flex-start' }}>
+                                <Text style={{ paddingLeft: horizontalScale(10), paddingRight: horizontalScale(10), color: '#222', fontSize: moderateScale(17), alignSelf: 'flex-start' }}>
                                     {item.package_name}
                                 </Text>
 
-                                <Text style={{ textAlign: 'justify', padding:5, color: '#dfdfdf', fontSize: 13, alignSelf: 'flex-start' }}>
+                                <Text style={{ textAlign: 'justify', padding:moderateScale(5), color: '#dfdfdf', fontSize: moderateScale(13), alignSelf: 'flex-start' }}>
                                     {item.description}
                                 </Text>
 
                                 <View style={{ flex: 1, justifyContent: 'flex-end', flexDirection: 'column' }}>
-                                    <View style={{ padding: 20, paddingBotom: 30, flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                                    <View style={{ padding: moderateScale(20), paddingBotom: verticalScale(30), flexDirection: 'row', justifyContent: 'space-evenly' }}>
                                     </View>
                                 </View>
                             </TouchableOpacity>
                         ))
                     )}
-                    <View style={{ height: 100 , marginBottom:20}} />
+                    <View style={{ height: verticalScale(100) , marginBottom:verticalScale(20)}} />
                 </View>
-                <View style={{ height: 100 , marginBottom:20}} />
+                <View style={{ height: verticalScale(100) , marginBottom:verticalScale(20)}} />
 
             </ScrollView>
             <StatusBar backgroundColor="#F2F2F2" barStyle="dark-content" />
@@ -245,7 +250,5 @@ export default function Dashboard({ navigation }) {
 const styles = StyleSheet.create({
     container: {
     },
-    backgroundImage: {
-        borderBottomLeftRadius: 40,
-    }
+
 });

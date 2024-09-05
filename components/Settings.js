@@ -22,6 +22,8 @@ import { fetchDepartments } from '../redux/reducers/departmentsSlice';
 import { readData, storeData } from '../data/DB';
 import SkeletonLoader from '../utils/SkeletonLoader';
 import { TestAd } from '../TestAd';
+import { horizontalScale, moderateScale, verticalScale } from '../utils/Device';
+import Welcome from './Welcome';
 
 export default function Settings({ navigation }) {
   const { width } = Dimensions.get('screen');
@@ -117,29 +119,27 @@ export default function Settings({ navigation }) {
     return <SkeletonLoader />;
   }
 
+
   return (
     <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
+         <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <MaterialCommunityIcons name="menu-open" size={24} color="#222" />
 
-          <MaterialCommunityIcons name="menu-open" size={24} color="#222" />
-
-        </View>
-
-        <Card
-          style={styles.card}
-          onPress={() => navigation.navigate('Quiz')}
-        >
-          <View style={styles.cardContent}>
-            <Image source={require('../assets/avatar.png')} style={styles.avatar} />
-            <View style={styles.cardText}>
-              <View style={styles.cardHeader}>
-                <Text style={styles.cardTitle}>Welcome </Text>
-                <AntDesign name="edit" size={24} color="white" />
-              </View>
-              <Text style={styles.cardSubTitle}>{selectedInterests.join(' - ')}</Text>
-            </View>
-          </View>
-        </Card>
+                </View>
+                <Card style={{ marginTop: verticalScale(8), marginBottom: verticalScale(20), alignSelf: 'center', height: verticalScale(80), width: width - 20, backgroundColor: '#5E5CE6', justifyContent: 'center' }} onPress={() => navigation.navigate('Quiz')}>
+                    <View style={{ marginLeft: horizontalScale(10), marginRight: verticalScale(10), flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+                        <View>
+                            <Image source={require('../assets/avatar.png')} style={{ width: horizontalScale(50), height: verticalScale(50), borderRadius: moderateScale(50 / 2) }} />
+                        </View>
+                        <View style={{ marginLeft: horizontalScale(20) }}>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: moderateScale(19) }}>Welcome </Text>
+                                <AntDesign name="edit" size={moderateScale(24)} color="white" />
+                            </View>
+                            <Text style={{ color: '#fff', paddingRight:horizontalScale(10) }}>{selectedInterests.join(' - ')}</Text>
+                        </View>
+                    </View>
+                </Card>
       {/* </ImageBackground> */}
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -225,41 +225,41 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginLeft: 10,
-    marginTop: 10,
-    marginRight: 10,
+    marginLeft: horizontalScale(10),
+    marginTop: verticalScale(10),
+    marginRight: horizontalScale(10),
   },
   logo: {
-    width: 30,
-    height: 30,
+    width: horizontalScale(30),
+    height: verticalScale(30),
   },
   headerText: {
     fontWeight: 'bold',
     color: '#fff',
   },
   card: {
-    marginTop: 8,
-    marginBottom: 20,
+    marginTop: verticalScale(8),
+    marginBottom: verticalScale(20),
     alignSelf: 'center',
-    height: 80,
+    height: verticalScale(80),
     width: Dimensions.get('screen').width - 20,
     backgroundColor: '#5E5CE6',
     justifyContent: 'center',
   },
   cardContent: {
-    marginLeft: 10,
-    marginRight: 10,
+    marginLeft: horizontalScale(10),
+    marginRight: horizontalScale(10),
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
   avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: horizontalScale(50),
+    height: verticalScale(50),
+    borderRadius: moderateScale(25),
   },
   cardText: {
-    marginLeft: 20,
+    marginLeft: horizontalScale(20),
   },
   cardHeader: {
     flexDirection: 'row',
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
   cardTitle: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 19,
+    fontSize: moderateScale(19),
   },
   cardSubTitle: {
     color: '#fff',
@@ -276,15 +276,15 @@ const styles = StyleSheet.create({
     // padding: 20,
   },
   mainTitle: {
-    marginLeft: 10,
-    marginTop: 10,
-    marginBottom: 10,
-    fontSize: 20,
+    marginLeft: horizontalScale(10),
+    marginTop: verticalScale(10),
+    marginBottom: verticalScale(10),
+    fontSize: moderateScale(20),
     color:'#222',
     alignSelf: 'center',
   },
   swiper: {
-    marginTop: 10,
+    marginTop: verticalScale(10),
   },
   interestsContainer: {
     width: Dimensions.get('screen').width, 
@@ -295,9 +295,9 @@ const styles = StyleSheet.create({
   },
   interestButton: {
     width: '30%',
-    marginVertical: 10,
-    padding: 10,
-    borderRadius: 10,
+    marginVertical: verticalScale(10),
+    padding: moderateScale(10),
+    borderRadius: moderateScale(10),
     backgroundColor: '#f0f0f0',
     alignItems: 'center',
   },
@@ -305,8 +305,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#5E5CE6',
   },
   interestText: {
-    fontSize: 16,
-    marginTop: 10,
+    fontSize: moderateScale(16),
+    marginTop: verticalScale(10),
     color: '#555',
   },
   selectedInterestText: {
@@ -315,45 +315,45 @@ const styles = StyleSheet.create({
   dotContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginVertical: 10,
+    marginVertical: verticalScale(10),
   },
   dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: horizontalScale(8),
+    height: verticalScale(8),
+    borderRadius: moderateScale(4),
     backgroundColor: '#ccc',
-    marginHorizontal: 4,
+    marginHorizontal: horizontalScale(4),
   },
   activeDot: {
     backgroundColor: '#5E5CE6',
   },
   inputsContainer: {
-    marginHorizontal: 20,
-    marginBottom: 20,
+    marginHorizontal: horizontalScale(20),
+    marginBottom: verticalScale(20),
   },
 
   loyaltyTitle: {
-    fontSize: 18,
+    fontSize: moderateScale(18),
     fontWeight: 'bold',
-    marginTop: 20,
+    marginTop: verticalScale(20),
     alignSelf:'center',
     color:'#222'
   },
   loyaltyPoints: {
-    fontSize: 24,
+    fontSize: moderateScale(18),
     color: '#5E5CE6',
-    marginVertical: 10,
+    marginVertical: verticalScale(10),
     alignSelf:'center'
   },
   loyaltyDescription: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: '#666',
-    marginBottom: 20,
+    marginBottom: verticalScale(20),
   },
   continueButton: {
     backgroundColor: '#5E5CE6',
-    paddingVertical: 12,
-    borderRadius: 8,
+    paddingVertical: verticalScale(12),
+    borderRadius: moderateScale(8),
     opacity:0.5,
     alignItems: 'center',
   },

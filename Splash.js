@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, StatusBar } from 'reac
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Welcome from './components/Welcome';
 import { readData } from './data/DB';
+import { horizontalScale, moderateScale, verticalScale } from './utils/Device';
 
 const Splash = ({ navigation }) => {
   const [page, setPage] = useState(0)
@@ -30,7 +31,7 @@ const Splash = ({ navigation }) => {
     <View style={styles.container}>
       {/* Icon at the top */}
       <View style={styles.iconContainer}>
-        <Image source={require('./assets/logo.png')} style={{ width: 200, height: 200 }} />
+        <Image source={require('./assets/logo.png')} style={{ width: horizontalScale(200), height: verticalScale(200) }} />
 
       </View>
 
@@ -66,17 +67,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
+    padding: moderateScale(20),
   },
   iconContainer: {
     // marginTop: 30,
   },
   icon: {
-    width: 50,
-    height: 50,
+    width: horizontalScale(50),
+    height: verticalScale(50),
   },
   welcomeText: {
-    fontSize: 18,
+    fontSize: moderateScale(18),
     color: '#333',
     // marginTop: 20,
   },
@@ -86,11 +87,11 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   subtitleText: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     color: '#777',
     textAlign: 'center',
     marginHorizontal: 20,
-    marginTop: 10,
+    marginTop: verticalScale(10),
   },
   imageContainer: {
     flexDirection: 'row',
@@ -100,23 +101,23 @@ const styles = StyleSheet.create({
   },
   characterImage: {
     width: "100%",
-    height: 300,
-    marginHorizontal: 10,
+    height: verticalScale(300),
+    marginHorizontal: horizontalScale(10),
   },
   getStartedButton: {
     backgroundColor: '#5E5CE6',
-    paddingVertical: 15,
-    paddingHorizontal: 100,
-    borderRadius: 20,
+    paddingVertical: verticalScale(15),
+    paddingHorizontal: horizontalScale(100),
+    borderRadius: moderateScale(20),
     // marginTop: 30,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: verticalScale(16),
     fontWeight: 'bold',
   },
   signInText: {
-    marginTop: 20,
+    marginTop: moderateScale(20),
     color: '#777',
   },
   signInLink: {
