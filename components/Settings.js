@@ -53,21 +53,7 @@ export default function Settings({ navigation }) {
     storeData('interestList', updatedInterests);
   };
 
-  const [inputs, setInputs] = useState({
-    'Weight loss': '',
-    'Better sleeping habit': '',
-    'Track my nutrition': '',
-    'Improve overall fitness': '',
-  });
 
-  const handleInputChange = (option, value) => {
-    setInputs((prevInputs) => ({
-      ...prevInputs,
-      [option]: value,
-    }));
-  };
-
-  const options = ['Full Name', 'Email', 'Phone number'];
 
   const dispatch = useDispatch();
   const { departments = [], loading, error } = useSelector((state) => state.departments);
@@ -110,9 +96,7 @@ export default function Settings({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
         <View style={styles.header}>
-          {/* <Image source={require('../assets/logo.png')} style={styles.logo} /> */}
-          {/* <Text style={styles.headerText}>Dashboard</Text> */}
-          {/* <AntDesign name="search1" size={24} color="white" /> */}
+
           <MaterialCommunityIcons name="menu-open" size={24} color="#222" />
 
         </View>
@@ -323,22 +307,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginBottom: 20,
   },
-  inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 8,
-  },
-  textInput: {
-    flex: 1,
-    borderBottomWidth: 1,
-    borderBottomColor: '#888',
-    padding: 8,
-    marginRight: 10,
-    color: '#333',
-  },
-  inputIcon: {
-    marginRight: 10,
-  },
+
   loyaltyTitle: {
     fontSize: 18,
     fontWeight: 'bold',
