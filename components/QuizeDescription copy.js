@@ -21,8 +21,6 @@ const QuizeDescription = ({ route, navigation }) => {
 
   const { package_id, package_name, tags } = route.params;
 
-
-
   useEffect(() => {
     dispatch(fetchQuestions(package_id)); // Fetch questions for the received package_id
   }, [dispatch, package_id]);
@@ -65,28 +63,28 @@ const QuizeDescription = ({ route, navigation }) => {
     }
   };
 
-  const selectOption = (questionIndex, optionIndex) => {
+  const selectOption = (questionIndex, option) => {
     const updatedSelections = [...selectedOptions];
-
-    // Initialize the selected options array for the current question if not already done
-    if (!updatedSelections[questionIndex]) {
-      updatedSelections[questionIndex] = [];
-    }
-
-    // Check if the option is already selected
-    const isAlreadySelected = updatedSelections[questionIndex].includes(optionIndex);
-
-    if (isAlreadySelected) {
-      // If the option is already selected, remove it
-      updatedSelections[questionIndex] = updatedSelections[questionIndex].filter(
-        (selectedOptionIndex) => selectedOptionIndex !== optionIndex
-      );
-    } else {
-      // Otherwise, add the option
-      updatedSelections[questionIndex].push(optionIndex);
-    }
-
+    const previousSelection = updatedSelections[questionIndex];
+    updatedSelections[questionIndex] = option;
     setSelectedOptions(updatedSelections);
+
+    // Update correct and wrong counters
+    if (previousSelection) {
+      // If changing the answer, revert the previous count
+      if (previousSelection.correct) {
+        setCorrectAnswers((prev) => prev - 1);
+      } else {
+        setWrongAnswers((prev) => prev - 1);
+      }
+    }
+
+    // Increment the count based on the current selection
+    if (option.correct) {
+      setCorrectAnswers((prev) => prev + 1);
+    } else {
+      setWrongAnswers((prev) => prev + 1);
+    }
   };
 
   const goToNextQuestion = () => {
@@ -136,38 +134,37 @@ const QuizeDescription = ({ route, navigation }) => {
       </View>
 
       <TestAd />
+
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {currentQuestion && (
           <View key={currentQuestion.question_id} style={styles.questionContainer}>
-            <Text style={styles.questionText}>{currentQuestionIndex + 1} {'. ' + currentQuestion.question_text}</Text>
+            <Text style={styles.questionText}>{currentQuestionIndex + 1} {' ' + currentQuestion.question_text}</Text>
             {[currentQuestion.question_ans1, currentQuestion.question_ans2, currentQuestion.question_ans3, currentQuestion.question_ans4].map((optionText, optionIndex) => {
               if (!optionText) return null; // Skip empty options
-
               const isCorrect = optionText.endsWith('**');
               const option = { text: optionText.replace('**', ''), correct: isCorrect };
-              const isSelected = selectedOptions[currentQuestionIndex]?.includes(optionIndex); // Check if this option is selected
-
+              const isSelected = selectedOptions[currentQuestionIndex]?.text === option.text;
               return (
                 <TouchableOpacity
                   key={optionIndex}
                   style={[
                     styles.optionButton,
-                    isSelected && (isCorrect ? styles.correctOption : styles.wrongOption),
+                    isSelected && (option.correct ? styles.correctOption : styles.wrongOption),
                   ]}
-                  onPress={() => selectOption(currentQuestionIndex, optionIndex)}
+                  onPress={() => selectOption(currentQuestionIndex, option)}
                 >
                   <Text
                     style={[
                       styles.optionText,
-                      isSelected && (isCorrect ? styles.correctOptionText : styles.wrongOptionText),
+                      isSelected && (option.correct ? styles.correctOptionText : styles.wrongOptionText),
                     ]}
                   >
                     {option.text}
                   </Text>
                   {isSelected && (
                     <MaterialCommunityIcons
-                      name={isCorrect ? "check-circle" : "close-circle"}
-                      color={isCorrect ? "#5E5CE6" : "#FF4D4D"}
+                      name={option.correct ? "check-circle" : "close-circle"}
+                      color={option.correct ? "#5E5CE6" : "#FF4D4D"}
                       size={24}
                       style={styles.resultIcon}
                     />
@@ -178,11 +175,10 @@ const QuizeDescription = ({ route, navigation }) => {
           </View>
         )}
         <View style={{ justifyContent: 'center', alignItems: 'center', padding: 10, backgroundColor: '#f5f5f5', borderRadius: 5 }}>
-          <Text style={{ alignSelf: 'left', fontWeight: 'bold', color: '#222' }}>Description</Text>
-          <Text style={{ fontFamily: 'monospace', padding: 10, borderRadius: 5, color: '#222' }}>{currentQuestion?.answer_description}</Text>
+          <Text style={{ alignSelf: 'left', fontWeight:'bold', color:'#222' }}>Description</Text>
+          <Text style={{ fontFamily: 'monospace', padding: 10, borderRadius: 5, color:'#222'  }}>{currentQuestion?.answer_description}</Text>
         </View>
       </ScrollView>
-
 
       <View style={styles.navigationButtonsContainer}>
         <TouchableOpacity
