@@ -144,7 +144,7 @@ if(isLoading) return <Text>Loading....</Text>
                                         {item.tags}
                                     </Text>
                                     <View style={{display:'flex', flexDirection:'row',justifyContent:'space-evenly'}}>
-                                    {item.is_locked==1?<Entypo name="lock" style={{ padding: moderateScale(10) }} size={moderateScale(16)} color="#5E5CE6">  </Entypo>:''}
+                                    {/* {item.is_locked==1?<Entypo name="lock" style={{ padding: moderateScale(10) }} size={moderateScale(16)} color="#5E5CE6">  </Entypo>:''} */}
                                     <AntDesign name={checkFavoriteStatus(item.package_id)?"heart":'hearto'} style={{ padding: 10 }} size={moderateScale(16)} color="#5E5CE6">  </AntDesign>
                                     </View>
                                 </View>
