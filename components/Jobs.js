@@ -1,31 +1,30 @@
 // import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState, } from 'react';
-import { useColorScheme, Image, StatusBar, TextInput, StyleSheet, Text, View, Platform, StatusBar as stbar, Dimensions, SafeAreaView, ImageBackground, TouchableOpacity, ScrollView } from 'react-native';
+import { useColorScheme, Image, StatusBar, StyleSheet, Text, View, StatusBar as stbar, Dimensions, SafeAreaView, ScrollView, RefreshControl } from 'react-native';
 import { Card } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { TestAd } from '../TestAd';
-const hheight = Dimensions.get('screen').height
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
     Colors,
-    Header,
-    DebugInstructions,
-    LearnMoreLinks,
     ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import { readData } from '../data/DB';
 import { horizontalScale, moderateScale, verticalScale } from '../utils/Device';
+import { fetchNews } from '../redux/reducers/newsSlice';
+import SkeletonLoader from '../utils/SkeletonLoader';
+import NoInternetScreen from '../utils/NoInternetScreen';
 
 function Section({ children, title }) {
-    const isDarkMode = useColorScheme() === 'dark';
     return (
         <View style={styles.sectionContainer}>
             <Text
                 style={[
                     styles.sectionTitle,
                     {
-                        color:  Colors.black,
+                        color: Colors.black,
                     },
                 ]}>
                 {title}
@@ -34,7 +33,7 @@ function Section({ children, title }) {
                 style={[
                     styles.sectionDescription,
                     {
-                        color:  Colors.dark,
+                        color: Colors.dark,
                     },
                 ]}>
                 {children}
@@ -50,40 +49,88 @@ export default function Jobs({ navigation }) {
     const isDarkMode = useColorScheme() === 'dark';
     const [selectedInterests, setSelectedInterests] = useState([]);
     const [refresh, setRefresh] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const [refreshing, setRefreshing] = useState(false); // State to manage refreshing
+
     const backgroundStyle = {
         backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     };
+
+    const dispatch = useDispatch();
+    const { news, loading, error } = useSelector((state) => state.news);
+
     useEffect(() => {
         readData('interestList').then((data) => {
             const interestsArray = Object.keys(data).filter((key) => data[key] === 'selected')
-            //   .join(' - ');
             setSelectedInterests(interestsArray);
             setRefresh(false);
         });
     }, [refresh]);
 
+    useEffect(() => {
+
+        setIsLoading(true);
+        dispatch(fetchNews()).then((response) => {
+            setIsLoading(false);
+        }).catch(() => {
+            setIsLoading(false);
+        });
+
+    }, [dispatch]);
+
+    
+    const onRefresh = () => {
+        setRefreshing(true);
+
+    };
+
+    useEffect(() => {
+        setIsLoading(true);
+        dispatch(fetchNews()).then((response) => {
+            setIsLoading(false);
+            setRefreshing(false)
+
+        }).catch(() => {
+            setIsLoading(false);
+            setRefreshing(false)
+
+        });
+
+
+    }, [refreshing]);
+
+    if (loading || isLoading) {
+        return <SkeletonLoader />
+    }
+
+    if (error) {
+        return <NoInternetScreen isLoading={isLoading} setIsLoading={setIsLoading} />
+    }
+
     return (
         <SafeAreaView style={styles.container}>
-             <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <MaterialCommunityIcons name="menu-open" size={24} color="#222" />
+            <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
+                <MaterialCommunityIcons name="menu-open" size={24} color="#222" />
 
-                </View>
-                <Card style={{ marginTop: verticalScale(8), marginBottom: verticalScale(20), alignSelf: 'center', height: verticalScale(80), width: width - 20, backgroundColor: '#5E5CE6', justifyContent: 'center' }} onPress={() => navigation.navigate('Quiz')}>
-                    <View style={{ marginLeft: horizontalScale(10), marginRight: verticalScale(10), flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-                        <View>
-                            <Image source={require('../assets/avatar.png')} style={{ width: horizontalScale(50), height: verticalScale(50), borderRadius: moderateScale(50 / 2) }} />
-                        </View>
-                        <View style={{ marginLeft: horizontalScale(20) }}>
-                            <View style={{ flexDirection: 'row' }}>
-                                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: moderateScale(19) }}>Welcome </Text>
-                                <AntDesign name="edit" size={moderateScale(24)} color="white" />
-                            </View>
-                            <Text style={{ color: '#fff', paddingRight:horizontalScale(10) }}>{selectedInterests.join(' - ')}</Text>
-                        </View>
+            </View>
+            <Card style={{ marginTop: verticalScale(8), marginBottom: verticalScale(20), alignSelf: 'center', height: verticalScale(80), width: width - 20, backgroundColor: '#5E5CE6', justifyContent: 'center' }} onPress={() => navigation.navigate('Quiz')}>
+                <View style={{ marginLeft: horizontalScale(10), marginRight: verticalScale(10), flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+                    <View>
+                        <Image source={require('../assets/avatar.png')} style={{ width: horizontalScale(50), height: verticalScale(50), borderRadius: moderateScale(50 / 2) }} />
                     </View>
-                </Card>
+                    <View style={{ marginLeft: horizontalScale(20) }}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: moderateScale(19) }}>Welcome </Text>
+                            <AntDesign name="edit" size={moderateScale(24)} color="white" />
+                        </View>
+                        <Text style={{ color: '#fff', paddingRight: horizontalScale(10) }}>{selectedInterests.join(' - ')}</Text>
+                    </View>
+                </View>
+            </Card>
 
-            <ScrollView >
+            <ScrollView   refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }>
                 <Text style={{ marginLeft: 10, marginTop: 10, fontSize: 20, alignSelf: 'center', color: '#222' }}>
                     Academic News</Text>
                 <TestAd />
@@ -91,34 +138,13 @@ export default function Jobs({ navigation }) {
                 <ScrollView
                     contentInsetAdjustmentBehavior="automatic"
                     style={backgroundStyle}
-                    >
+                >
 
-                    <View
-                        style={{
-                            backgroundColor: Colors.white,
-                        }}>
-                        <Section title="Step One">
-                            Edit <Text style={styles.highlight}>App.js</Text> to change this
-                            screen and then come back to see your edits.
+                    {news.map((n) => (
+                        <Section title={n.title} key={n.id}>
+                          <Text style={{color:'black'}}>{n.content}</Text>
                         </Section>
-                        <Section title="See Your Changes">
-                            <ReloadInstructions />
-                        </Section>
-
-
-                        <Section title="See Your Changes">
-                            <ReloadInstructions />
-                        </Section>
-                        <Section title="See Your Changes">
-                            <ReloadInstructions />
-                        </Section>
-                        <Section title="See Your Changes">
-                            <ReloadInstructions />
-                        </Section>
-                        <Section title="">
-                            {/* <ReloadInstructions /> */}
-                        </Section>
-                    </View>
+                    ))}
                 </ScrollView>
             </ScrollView>
             <StatusBar backgroundColor="#f2f2f2" barStyle="dark-content" />
@@ -130,10 +156,11 @@ const styles = StyleSheet.create({
     container: {
 
     },
- 
+
     sectionContainer: {
         marginTop: verticalScale(32),
         paddingHorizontal: horizontalScale(24),
+
     },
     sectionTitle: {
         fontSize: moderateScale(24),
