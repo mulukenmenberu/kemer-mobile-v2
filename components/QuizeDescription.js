@@ -13,6 +13,7 @@ const QuizeDescription = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const { questions, loading, error } = useSelector((state) => state.questions);
   const [selectedOptions, setSelectedOptions] = useState([]);
+  // const [descriptionManagers, setDescriptionManagers] = useState([]);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [wrongAnswers, setWrongAnswers] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -21,7 +22,7 @@ const QuizeDescription = ({ route, navigation }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // To track the current question
 
   const { package_id, package_name, tags } = route.params;
-
+let descriptionManagers = []
   const storeAnsweredToAsyncStorage = async (question_id, optionIndex) => {
     try {
       const storedData = JSON.parse(await AsyncStorage.getItem(`${package_id}_${package_name}`)) || {};
@@ -37,14 +38,14 @@ const QuizeDescription = ({ route, navigation }) => {
     try {
       const storedData = JSON.parse(await AsyncStorage.getItem(`${package_id}_${package_name}`));
       setProgressObj(storedData)
-     /* if (storedData) {
-        console.log(storedData, 'sss')
-        const updatedSelections = Array(questions.length).fill(null);
-        for (let [questionIndex, optionIndex] of Object.entries(storedData)) {
-          updatedSelections[questionIndex] = [parseInt(optionIndex)];
-        }
-        setSelectedOptions(updatedSelections);
-      }*/
+      /* if (storedData) {
+         console.log(storedData, 'sss')
+         const updatedSelections = Array(questions.length).fill(null);
+         for (let [questionIndex, optionIndex] of Object.entries(storedData)) {
+           updatedSelections[questionIndex] = [parseInt(optionIndex)];
+         }
+         setSelectedOptions(updatedSelections);
+       }*/
     } catch (error) {
       console.error("Error loading stored quiz progress", error);
     }
@@ -176,21 +177,24 @@ const QuizeDescription = ({ route, navigation }) => {
 
               const isCorrect = optionText.endsWith('**');
               const option = { text: optionText.replace('**', ''), correct: isCorrect };
-              const isSelected = selectedOptions[currentQuestionIndex]?.includes(optionIndex); 
+              const isSelected = selectedOptions[currentQuestionIndex]?.includes(optionIndex);
               // const isStored = currentQuestionIndex //d = {"0": 3, "1": 3}
               // const isStored = progressObj.hasOwnProperty(currentQuestion.question_id);
               const isStored = progressObj?.hasOwnProperty(currentQuestion.question_id) || false;
+              if (isStored || (isCorrect && isSelected)) {
+                descriptionManagers.push(currentQuestion.question_id)
+                // setDescriptionManagers((prevDescriptionManagers) => [...prevDescriptionManagers, currentQuestion.question_id]);
 
-
+              }
               return (
                 <TouchableOpacity
                   key={optionIndex}
                   style={[
                     styles.optionButton,
                     // isSelected && (isCorrect ? styles.correctOption : styles.wrongOption),
-                    (isSelected || isStored) 
-                    ? (isCorrect ? styles.correctOption : styles.wrongOption) 
-                    : null
+                    (isSelected || isStored)
+                      ? (isCorrect ? styles.correctOption : styles.wrongOption)
+                      : null
                   ]}
                   onPress={() => selectOption(currentQuestionIndex, optionIndex, currentQuestion.question_id)}
                 >
@@ -198,9 +202,9 @@ const QuizeDescription = ({ route, navigation }) => {
                     style={[
                       styles.optionText,
                       // isSelected && (isCorrect ? styles.correctOptionText : styles.wrongOptionText),
-                      (isSelected || isStored) 
-                      ? (isCorrect ? styles.correctOption : styles.wrongOption) 
-                      : null
+                      (isSelected || isStored)
+                        ? (isCorrect ? styles.correctOption : styles.wrongOption)
+                        : null
                     ]}
                   >
                     {option.text}
@@ -218,10 +222,11 @@ const QuizeDescription = ({ route, navigation }) => {
             })}
           </View>
         )}
-        <View style={{ justifyContent: 'center', alignItems: 'center', padding: 10, backgroundColor: '#f5f5f5', borderRadius: 5 }}>
-          <Text style={{ alignSelf: 'left', fontWeight: 'bold', color: '#222' }}>Description</Text>
-          <Text style={{ fontFamily: 'monospace', padding: 10, borderRadius: 5, color: '#222' }}>{currentQuestion?.answer_description}</Text>
-        </View>
+        {descriptionManagers?.includes(`${currentQuestion?.question_id}`) ? (
+          <View style={{ justifyContent: 'center', alignItems: 'center', padding: 10, backgroundColor: '#f5f5f5', borderRadius: 5 }}>
+            <Text style={{ alignSelf: 'left', fontWeight: 'bold', color: '#222' }}>Description</Text>
+            <Text style={{ fontFamily: 'monospace', padding: 10, borderRadius: 5, color: '#222' }}>{currentQuestion?.answer_description}</Text>
+          </View>) : ''}
       </ScrollView>
 
 
