@@ -17,11 +17,38 @@ const QuizeDescription = ({ route, navigation }) => {
   const [wrongAnswers, setWrongAnswers] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
   const [refresh, setRefresh] = useState(0);
+  const [progressObj, setProgressObj] = useState({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // To track the current question
 
   const { package_id, package_name, tags } = route.params;
 
+  const storeAnsweredToAsyncStorage = async (question_id, optionIndex) => {
+    try {
+      const storedData = JSON.parse(await AsyncStorage.getItem(`${package_id}_${package_name}`)) || {};
+      storedData[question_id] = optionIndex;  // Store selected option
+      await AsyncStorage.setItem(`${package_id}_${package_name}`, JSON.stringify(storedData));
+    } catch (error) {
+      console.error("Error storing the quiz progress", error);
+    }
+  };
 
+  // Load stored progress from AsyncStorage and mark the options
+  const loadStoredProgress = async () => {
+    try {
+      const storedData = JSON.parse(await AsyncStorage.getItem(`${package_id}_${package_name}`));
+      setProgressObj(storedData)
+     /* if (storedData) {
+        console.log(storedData, 'sss')
+        const updatedSelections = Array(questions.length).fill(null);
+        for (let [questionIndex, optionIndex] of Object.entries(storedData)) {
+          updatedSelections[questionIndex] = [parseInt(optionIndex)];
+        }
+        setSelectedOptions(updatedSelections);
+      }*/
+    } catch (error) {
+      console.error("Error loading stored quiz progress", error);
+    }
+  };
 
   useEffect(() => {
     dispatch(fetchQuestions(package_id)); // Fetch questions for the received package_id
@@ -30,6 +57,8 @@ const QuizeDescription = ({ route, navigation }) => {
   useEffect(() => {
     if (questions && questions.length > 0) {
       setSelectedOptions(Array(questions.length).fill(null));
+      loadStoredProgress(); // Load progress when questions are loaded
+
     }
   }, [questions]);
 
@@ -65,7 +94,7 @@ const QuizeDescription = ({ route, navigation }) => {
     }
   };
 
-  const selectOption = (questionIndex, optionIndex) => {
+  const selectOption = (questionIndex, optionIndex, question_id) => {
     const updatedSelections = [...selectedOptions];
 
     // Initialize the selected options array for the current question if not already done
@@ -87,6 +116,8 @@ const QuizeDescription = ({ route, navigation }) => {
     }
 
     setSelectedOptions(updatedSelections);
+    storeAnsweredToAsyncStorage(question_id, optionIndex); // Store the progress
+
   };
 
   const goToNextQuestion = () => {
@@ -145,26 +176,36 @@ const QuizeDescription = ({ route, navigation }) => {
 
               const isCorrect = optionText.endsWith('**');
               const option = { text: optionText.replace('**', ''), correct: isCorrect };
-              const isSelected = selectedOptions[currentQuestionIndex]?.includes(optionIndex); // Check if this option is selected
+              const isSelected = selectedOptions[currentQuestionIndex]?.includes(optionIndex); 
+              // const isStored = currentQuestionIndex //d = {"0": 3, "1": 3}
+              // const isStored = progressObj.hasOwnProperty(currentQuestion.question_id);
+              const isStored = progressObj?.hasOwnProperty(currentQuestion.question_id) || false;
+
 
               return (
                 <TouchableOpacity
                   key={optionIndex}
                   style={[
                     styles.optionButton,
-                    isSelected && (isCorrect ? styles.correctOption : styles.wrongOption),
+                    // isSelected && (isCorrect ? styles.correctOption : styles.wrongOption),
+                    (isSelected || isStored) 
+                    ? (isCorrect ? styles.correctOption : styles.wrongOption) 
+                    : null
                   ]}
-                  onPress={() => selectOption(currentQuestionIndex, optionIndex)}
+                  onPress={() => selectOption(currentQuestionIndex, optionIndex, currentQuestion.question_id)}
                 >
                   <Text
                     style={[
                       styles.optionText,
-                      isSelected && (isCorrect ? styles.correctOptionText : styles.wrongOptionText),
+                      // isSelected && (isCorrect ? styles.correctOptionText : styles.wrongOptionText),
+                      (isSelected || isStored) 
+                      ? (isCorrect ? styles.correctOption : styles.wrongOption) 
+                      : null
                     ]}
                   >
                     {option.text}
                   </Text>
-                  {isSelected && (
+                  {(isSelected || isStored) && (
                     <MaterialCommunityIcons
                       name={isCorrect ? "check-circle" : "close-circle"}
                       color={isCorrect ? "#5E5CE6" : "#FF4D4D"}

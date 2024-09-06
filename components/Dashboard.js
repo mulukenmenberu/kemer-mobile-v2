@@ -193,7 +193,7 @@ export default function Dashboard({ navigation }) {
                                     shadowOpacity: 0.2,
                                     shadowRadius: moderateScale(4),
                                 }}
-                                onPress={() => navigation.navigate(item.has_description==0?'Quiz':'QuizeDescription', {
+                                onPress={() => navigation.navigate(item.has_description==0?'QuizeDescription':'QuizeDescription', {
                                     package_id: item.package_id,
                                     package_name: item.package_name,
                                     tags: item.tags,
