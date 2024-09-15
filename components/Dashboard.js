@@ -124,6 +124,7 @@ export default function Dashboard({ navigation }) {
                     </View>
                 </Card>
             {/* </ImageBackground> */}
+            <TestAd/>
             <ScrollView
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -131,7 +132,7 @@ export default function Dashboard({ navigation }) {
             >
 
                 {/* <Text style={{ marginLeft: 10, marginTop: 10, fontSize: 20 }}> Welcome, Muluken</Text> */}
-                    <TestAd/>
+                    
 
                 <View>
                     <View style={{ marginTop: verticalScale(10), flexDirection: 'row', justifyContent: 'space-evenly' }}>

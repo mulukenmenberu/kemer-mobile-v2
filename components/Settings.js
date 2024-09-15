@@ -203,7 +203,7 @@ export default function Settings({ navigation }) {
           {/* <TestAd/> */}
       
 
-          <Text style={styles.loyaltyTitle}>Loyalty Points</Text>
+          <Text style={styles.loyaltyTitle}>Loyality Points</Text>
           <Text style={styles.loyaltyPoints}>Comming Soon</Text>
           <Text style={styles.loyaltyDescription}>
             Loyalty points are activity points that you can earn by interacting with the app, taking quizzes, and later can be redeemed for various benefits

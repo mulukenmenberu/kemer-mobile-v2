@@ -1,6 +1,6 @@
 // import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState, } from 'react';
-import { useColorScheme, Image, StatusBar, StyleSheet, Text, View, StatusBar as stbar, Dimensions, SafeAreaView, ScrollView, RefreshControl } from 'react-native';
+import { Image, StatusBar, StyleSheet, Text, View, StatusBar as stbar, Dimensions, SafeAreaView, ScrollView, RefreshControl } from 'react-native';
 import { Card } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -44,20 +44,26 @@ function Section({ children, title }) {
 
 
 
-export default function Jobs({ navigation }) {
+export default function News({ navigation }) {
     const { width, height } = Dimensions.get('screen')
-    const isDarkMode = useColorScheme() === 'dark';
     const [selectedInterests, setSelectedInterests] = useState([]);
     const [refresh, setRefresh] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false); // State to manage refreshing
+    const [expandedNews, setExpandedNews] = useState({});
 
     const backgroundStyle = {
-        backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+        backgroundColor: Colors.lighter,
     };
 
     const dispatch = useDispatch();
     const { news, loading, error } = useSelector((state) => state.news);
+
+    const getFirstTwoSentences = (text) => {
+        const sentences = text.split('. ').filter(sentence => sentence.trim() !== '');
+        return sentences.slice(0, 2).join('. ') + (sentences.length > 2 ? '...' : '');
+    };
+
 
     useEffect(() => {
         readData('interestList').then((data) => {
@@ -78,7 +84,7 @@ export default function Jobs({ navigation }) {
 
     }, [dispatch]);
 
-    
+
     const onRefresh = () => {
         setRefreshing(true);
 
@@ -128,9 +134,9 @@ export default function Jobs({ navigation }) {
                 </View>
             </Card>
 
-            <ScrollView   refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                }>
+            <ScrollView refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }>
                 <Text style={{ marginLeft: 10, marginTop: 10, fontSize: 20, alignSelf: 'center', color: '#222' }}>
                     Academic News</Text>
                 <TestAd />
@@ -140,11 +146,27 @@ export default function Jobs({ navigation }) {
                     style={backgroundStyle}
                 >
 
-                    {news.map((n) => (
+                    {/* {news.map((n) => (
                         <Section title={n.title} key={n.id}>
                           <Text style={{color:'black'}}>{n.content}</Text>
                         </Section>
+                    ))} */}
+                    {news.map((n) => (
+                        <Section title={n.title} key={n.id}>
+                            <Text style={{ color: 'black' }}>
+                                {expandedNews[n.id] ? n.content : getFirstTwoSentences(n.content)}
+                            </Text>
+                            {n.content.split('. ').length > 2 && (
+                                <Text
+                                    style={{ color: 'blue', marginTop: 10 }}
+                                    onPress={() => setExpandedNews(prev => ({ ...prev, [n.id]: !prev[n.id] }))}
+                                >
+                                    {expandedNews[n.id] ? 'Read Less' : 'Read More'}
+                                </Text>
+                            )}
+                        </Section>
                     ))}
+
                 </ScrollView>
             </ScrollView>
             <StatusBar backgroundColor="#f2f2f2" barStyle="dark-content" />
