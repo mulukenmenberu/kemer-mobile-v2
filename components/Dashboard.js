@@ -35,9 +35,9 @@ export default function Dashboard({ navigation }) {
         readData('interestList').then((data) => {
 
             const interestsArray = Object.keys(data)
-            .filter((key) => data[key] === "selected")
+                .filter((key) => data[key] === "selected")
             // .join(' - '); 
-            
+
             dispatch(fetchCourses(interestsArray)).then((response) => {
                 setActive(response.payload[0].course_id)
                 setRefreshing(false)
@@ -48,7 +48,7 @@ export default function Dashboard({ navigation }) {
     useEffect(() => {
         if (active !== 0) {
             setIsLoading(true);
-     
+
             dispatch(fetchQuestionPackages(active)).then((response) => {
                 // console.log(packages)
                 setIsLoading(false);
@@ -61,78 +61,80 @@ export default function Dashboard({ navigation }) {
 
     useEffect(() => {
         readData('interestList').then((data) => {
-          const interestsArray = Object.keys(data).filter((key) => data[key] === 'selected');
-        //   console.log(interestsArray)
-          setSelectedInterests(interestsArray);
-          setRefresh(false);
+            const interestsArray = Object.keys(data).filter((key) => data[key] === 'selected');
+            //   console.log(interestsArray)
+            setSelectedInterests(interestsArray);
+            setRefresh(false);
         });
-      }, [refresh]);
+    }, [refresh]);
 
 
-      useEffect(() => {
+    useEffect(() => {
         const checkFavoriteStatus = async () => {
-          try {
-            const savedPackages = JSON.parse(await AsyncStorage.getItem('savedPackages')) || [];
-            setIsFavorite(savedPackages);
-          } catch (error) {
-            console.error('Failed to fetch favorite status', error);
-          }
+            try {
+                const savedPackages = JSON.parse(await AsyncStorage.getItem('savedPackages')) || [];
+                setIsFavorite(savedPackages);
+            } catch (error) {
+                console.error('Failed to fetch favorite status', error);
+            }
         };
-    
+
         checkFavoriteStatus();
-      }, []);
+    }, []);
 
-      const checkFavoriteStatus =  (package_id) => {
-          return isFavorite.includes(package_id)
+    const checkFavoriteStatus = (package_id) => {
+        return isFavorite.includes(package_id)
 
-      };
+    };
 
-      const onRefresh = () => {
+    const onRefresh = () => {
         setRefreshing(true);
 
     };
-      if (loading || isLoading) {
-        return <SkeletonLoader/>
-      }
-    
-      if (error) {
-        return <NoInternetScreen isLoading={isLoading} setIsLoading={setIsLoading}/>
-      }
+    if (loading || isLoading) {
+        return <SkeletonLoader />
+    }
+
+    if (error) {
+        return <NoInternetScreen isLoading={isLoading} setIsLoading={setIsLoading} />
+    }
     return (
 
         <SafeAreaView style={styles.container}>
 
-                <View style={{ marginLeft: horizontalScale(10), marginTop: verticalScale(10), marginRight: horizontalScale(10), 
-                    flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <MaterialCommunityIcons name="menu-open" size={moderateScale(24)} color="#222" />
-                </View>
-                <Card style={{ marginTop: verticalScale(8), marginBottom: horizontalScale(20), alignSelf: 'center',
-                     height: verticalScale(80), width: width - 20, backgroundColor: '#5E5CE6', justifyContent: 'center' }} >
-                    <View style={{ marginLeft: horizontalScale(10), marginRight: horizontalScale(10), flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+            <View style={{
+                marginLeft: horizontalScale(10), marginTop: verticalScale(10), marginRight: horizontalScale(10),
+                flexDirection: 'row', justifyContent: 'space-between'
+            }}>
+                <MaterialCommunityIcons name="menu-open" size={moderateScale(24)} color="#222" />
+            </View>
+            <Card style={{
+                marginTop: verticalScale(8), marginBottom: horizontalScale(20), alignSelf: 'center',
+                height: verticalScale(80), width: width - 20, backgroundColor: '#5E5CE6', justifyContent: 'center'
+            }} >
+                <View style={{ marginLeft: horizontalScale(10), marginRight: horizontalScale(10), flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
 
-                        <View>
-                            <Image source={require('../assets/avatar.png')} style={{ width: horizontalScale(50),
-                                 height: verticalScale(50), borderRadius: moderateScale(50 / 2) }} />
-                        </View>
-                        <View style={{ marginLeft: horizontalScale(20) }}>
-                            <View style={{ flexDirection: 'row' }}>
-                                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: moderateScale(19) }}>Welcome </Text>
-                                <AntDesign name="edit" size={moderateScale(24)} color="#fff" />
-                            </View>
-                            <Text style={{ color: '#fff', paddingRight:10 }}>{selectedInterests.join(' - ')}</Text>
-                        </View>
+                    <View>
+                        <Image source={require('../assets/avatar.png')} style={{
+                            width: horizontalScale(50),
+                            height: verticalScale(50), borderRadius: moderateScale(50 / 2)
+                        }} />
                     </View>
-                </Card>
-            {/* </ImageBackground> */}
-            <TestAd/>
+                    <View style={{ marginLeft: horizontalScale(20) }}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: moderateScale(19) }}>Welcome </Text>
+                            <AntDesign name="edit" size={moderateScale(24)} color="#fff" />
+                        </View>
+                        <Text style={{ color: '#fff', paddingRight: 10 }}>{selectedInterests.join(' - ')}</Text>
+                    </View>
+                </View>
+            </Card>
+            <TestAd />
             <ScrollView
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                 }
             >
-
-                {/* <Text style={{ marginLeft: 10, marginTop: 10, fontSize: 20 }}> Welcome, Muluken</Text> */}
-                    
 
                 <View>
                     <View style={{ marginTop: verticalScale(10), flexDirection: 'row', justifyContent: 'space-evenly' }}>
@@ -153,8 +155,10 @@ export default function Dashboard({ navigation }) {
                             <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: moderateScale(35) }}>7</Text>
                             <Text style={{ color: '#fff', fontSize: moderateScale(13) }}>Your Saved Items</Text>
                         </View>
-                        <View style={{ padding: moderateScale(10), borderRadius: moderateScale(16), backgroundColor: '#424242', height: verticalScale(130),
-                             width: horizontalScale(180) }} >
+                        <View style={{
+                            padding: moderateScale(10), borderRadius: moderateScale(16), backgroundColor: '#424242', height: verticalScale(130),
+                            width: horizontalScale(180)
+                        }} >
                             <FontAwesome name="sticky-note" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
                             <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: moderateScale(35) }}>13</Text>
                             <Text style={{ color: '#fff', fontSize: moderateScale(13) }}>Active Items</Text>
@@ -174,7 +178,7 @@ export default function Dashboard({ navigation }) {
 
                     </ScrollView>
                 </View>
-              
+
                 <View>
                     {isLoading ? (
                         <View style={{ alignItems: 'center', marginTop: verticalScale(20) }}>
@@ -194,7 +198,7 @@ export default function Dashboard({ navigation }) {
                                     shadowOpacity: 0.2,
                                     shadowRadius: moderateScale(4),
                                 }}
-                                onPress={() => navigation.navigate(item.has_description==0?'QuizeDescription':'QuizeDescription', {
+                                onPress={() => navigation.navigate(item.has_description == 0 ? 'QuizeDescription' : 'QuizeDescription', {
                                     package_id: item.package_id,
                                     package_name: item.package_name,
                                     tags: item.tags,
@@ -205,29 +209,29 @@ export default function Dashboard({ navigation }) {
                                         fontWeight: 'bold',
                                         marginLeft: horizontalScale(15),
                                         marginTop: verticalScale(5),
-                                        color: '#fff', 
+                                        color: '#fff',
                                         fontSize: moderateScale(13),
                                         alignSelf: 'flex-start',
-                                        backgroundColor: '#FF6347', 
+                                        backgroundColor: '#FF6347',
                                         paddingVertical: verticalScale(5),
                                         paddingHorizontal: horizontalScale(10),
-                                        borderRadius: moderateScale(8), 
+                                        borderRadius: moderateScale(8),
                                         textAlign: 'center',
                                         overflow: 'hidden'
                                     }}>
                                         {item.tags}
                                     </Text>
-                                    <View style={{display:'flex', flexDirection:'row',justifyContent:'space-evenly'}}>
-                                    {/* {item.is_locked==1?<Entypo name="lock" style={{ padding: moderateScale(10) }} size={moderateScale(16)} color="#5E5CE6">  </Entypo>:''} */}
-                                    <AntDesign name={checkFavoriteStatus(item.package_id)?"heart":'hearto'} style={{ padding: 10 }} size={moderateScale(16)} color="#5E5CE6">  </AntDesign>
+                                    <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                                        {/* {item.is_locked==1?<Entypo name="lock" style={{ padding: moderateScale(10) }} size={moderateScale(16)} color="#5E5CE6">  </Entypo>:''} */}
+                                        <AntDesign name={checkFavoriteStatus(item.package_id) ? "heart" : 'hearto'} style={{ padding: 10 }} size={moderateScale(16)} color="#5E5CE6">  </AntDesign>
                                     </View>
                                 </View>
-          
+
                                 <Text style={{ paddingLeft: horizontalScale(10), paddingRight: horizontalScale(10), color: '#222', fontSize: moderateScale(17), alignSelf: 'flex-start' }}>
                                     {item.package_name}
                                 </Text>
 
-                                <Text style={{ textAlign: 'justify', padding:moderateScale(5), color: '#dfdfdf', fontSize: moderateScale(13), alignSelf: 'flex-start' }}>
+                                <Text style={{ textAlign: 'justify', padding: moderateScale(5), color: '#dfdfdf', fontSize: moderateScale(13), alignSelf: 'flex-start' }}>
                                     {item.description}
                                 </Text>
 
@@ -238,9 +242,9 @@ export default function Dashboard({ navigation }) {
                             </TouchableOpacity>
                         ))
                     )}
-                    <View style={{ height: verticalScale(100) , marginBottom:verticalScale(20)}} />
+                    <View style={{ height: verticalScale(100), marginBottom: verticalScale(20) }} />
                 </View>
-                <View style={{ height: verticalScale(100) , marginBottom:verticalScale(20)}} />
+                <View style={{ height: verticalScale(100), marginBottom: verticalScale(20) }} />
 
             </ScrollView>
             <StatusBar backgroundColor="#F2F2F2" barStyle="dark-content" />
