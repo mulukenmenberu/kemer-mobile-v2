@@ -17,7 +17,8 @@ import NoInternetScreen from '../utils/NoInternetScreen';
 import { readData } from '../data/DB';
 import { TestAd } from '../TestAd';
 import { horizontalScale, moderateScale, verticalScale } from '../utils/Device';
-
+import { Modal, Portal, Button, Provider } from 'react-native-paper';
+import { fetchExamMode } from '../redux/reducers/examModeSlice';
 export default function Dashboard({ navigation }) {
     const { width, height } = Dimensions.get('screen')
     const [active, setActive] = useState(0)
@@ -27,8 +28,20 @@ export default function Dashboard({ navigation }) {
     const [selectedInterests, setSelectedInterests] = useState([]);
     const [refresh, setRefresh] = useState(true);
 
+    const [visible, setVisible] = useState(false);
+    const showModal = () => setVisible(true);
+    const hideModal = () => setVisible(false);
+    const generateExamMode = () => {
+        setVisible(false);
+    }
+    
+    const containerStyle = { backgroundColor: 'white', padding: 20, marginTop: verticalScale(-70), width: '80%', alignSelf: 'center' };
+
+
+
     const dispatch = useDispatch();
     const { courses, loading, error } = useSelector((state) => state.courses);
+    const { examMode, loadingg, errorr } = useSelector((state) => state.examMode);
     const { packages, loading: packagesLoading, error: packagesError } = useSelector((state) => state.question_packages);
 
     useEffect(() => {
@@ -86,7 +99,6 @@ export default function Dashboard({ navigation }) {
         return isFavorite.includes(package_id)
 
     };
-
     const onRefresh = () => {
         setRefreshing(true);
 
@@ -106,7 +118,7 @@ export default function Dashboard({ navigation }) {
                 marginLeft: horizontalScale(10), marginTop: verticalScale(10), marginRight: horizontalScale(10),
                 flexDirection: 'row', justifyContent: 'space-between'
             }}>
-                <MaterialCommunityIcons name="menu-open" size={moderateScale(24)} color="#222" />
+                <MaterialCommunityIcons name="menu-open" size={moderateScale(24)} color="#222" onPress={showModal} />
             </View>
             <Card style={{
                 marginTop: verticalScale(8), marginBottom: horizontalScale(20), alignSelf: 'center',
@@ -135,7 +147,6 @@ export default function Dashboard({ navigation }) {
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                 }
             >
-
                 <View>
                     <View style={{ marginTop: verticalScale(10), flexDirection: 'row', justifyContent: 'space-evenly' }}>
                         <View style={{ padding: moderateScale(10), borderRadius: moderateScale(16), backgroundColor: '#FF8A80', height: verticalScale(130), width: horizontalScale(180) }}>
@@ -174,8 +185,6 @@ export default function Dashboard({ navigation }) {
                         {courses.map((course) => (
                             <Text key={course.course_id} onPress={() => setActive(course.course_id)} style={{ margin: moderateScale(20), fontWeight: active == course.course_id ? 'bold' : '', color: active == course.course_id ? '#5E5CE6' : '#CBD1DF' }}>{course.course_name}</Text>
                         ))}
-
-
                     </ScrollView>
                 </View>
 
@@ -245,8 +254,13 @@ export default function Dashboard({ navigation }) {
                     <View style={{ height: verticalScale(100), marginBottom: verticalScale(20) }} />
                 </View>
                 <View style={{ height: verticalScale(100), marginBottom: verticalScale(20) }} />
-
             </ScrollView>
+            <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
+                <TouchableOpacity style={styles.getStartedButton} onPress={() => generateExamMode()}>
+                    <Text style={styles.buttonText}>Generate Model Exam</Text>
+                </TouchableOpacity>
+            </Modal>
+
             <StatusBar backgroundColor="#F2F2F2" barStyle="dark-content" />
         </SafeAreaView>
     );
@@ -254,6 +268,21 @@ export default function Dashboard({ navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-    },
 
+    },
+    getStartedButton: {
+        backgroundColor: '#5E5CE6',
+        height:50,
+        justifyContent:'center',
+        borderRadius: moderateScale(10),
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: verticalScale(16),
+        fontWeight: 'bold',
+        alignSelf:'center',
+        justifyContent:'center',
+        alignItems:'center',
+        textAlign:'center'
+      },
 });

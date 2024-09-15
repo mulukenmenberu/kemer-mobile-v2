@@ -29,23 +29,23 @@ const examModeSlice = createSlice({
   name: "examMode",
   initialState: {
     examMode: [],
-    loading: false,
-    error: null,
+    loadingg: false,
+    errorr: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchExamMode.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.loadingg = true;
+        state.errorr = null;
       })
       .addCase(fetchExamMode.fulfilled, (state, action) => {
-        state.loading = false;
+        state.loadingg = false;
         state.examMode = action.payload;
       })
       .addCase(fetchExamMode.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
+        state.loadingg = false;
+        state.errorr = action.error.message;
       });
   },
 });
