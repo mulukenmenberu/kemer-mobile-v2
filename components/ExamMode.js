@@ -17,6 +17,7 @@ const ExamMode = ({ route, navigation }) => {
 
 
 
+  
   const selectOption = (questionIndex, optionIndex, question_id) => {
     const updatedSelections = [...selectedOptions];
 
@@ -123,14 +124,7 @@ const ExamMode = ({ route, navigation }) => {
                   >
                     {option.text}
                   </Text>
-                  {(isSelected || isStored) && (
-                    <MaterialCommunityIcons
-                      name={isCorrect ? "check-circle" : "close-circle"}
-                      color={isCorrect ? "#5E5CE6" : "#FF4D4D"}
-                      size={24}
-                      style={styles.resultIcon}
-                    />
-                  )}
+                
                 </TouchableOpacity>
               );
             })}
