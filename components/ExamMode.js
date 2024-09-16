@@ -8,61 +8,43 @@ const ExamMode = ({ route, navigation }) => {
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [wrongAnswers, setWrongAnswers] = useState(0);
   const [refresh, setRefresh] = useState(0);
-  const [progressObj, setProgressObj] = useState({});
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // To track the current question
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   const { package_id, package_name, tags, question_data } = route.params;
-  const questions = question_data
-  let descriptionManagers = []
+  const questions = question_data;
+  let descriptionManagers = [];
 
-
-
-  
-  const selectOption = (questionIndex, optionIndex, question_id) => {
+  // Single choice selection and correct/wrong count update
+  const selectOption = (questionIndex, optionIndex, isCorrect) => {
     const updatedSelections = [...selectedOptions];
-
-    // Initialize the selected options array for the current question if not already done
-    if (!updatedSelections[questionIndex]) {
-      updatedSelections[questionIndex] = [];
-    }
-
-    // Check if the option is already selected
-    const isAlreadySelected = updatedSelections[questionIndex].includes(optionIndex);
-
-    if (isAlreadySelected) {
-      // If the option is already selected, remove it
-      updatedSelections[questionIndex] = updatedSelections[questionIndex].filter(
-        (selectedOptionIndex) => selectedOptionIndex !== optionIndex
-      );
-    } else {
-      // Otherwise, add the option
-      updatedSelections[questionIndex].push(optionIndex);
-    }
+    // Replace any previous selection for this question
+    updatedSelections[questionIndex] = optionIndex;
 
     setSelectedOptions(updatedSelections);
 
+    // Check if the selected option is correct and update the count
+    if (isCorrect) {
+      setCorrectAnswers((prev) => prev + 1);
+    } else {
+      setWrongAnswers((prev) => prev + 1);
+    }
   };
 
   const goToNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setRefresh(refresh + 1)
+      setRefresh(refresh + 1);
     }
-
   };
 
   const goToPreviousQuestion = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
-      setRefresh(refresh - 1)
-
+      setRefresh(refresh - 1);
     }
   };
-  useEffect(() => {
 
-  }, [refresh])
-  // if (loading) return <SkeletonLoader />;
-  // if (error) return <NoInternetScreen />;
+  useEffect(() => {}, [refresh]);
 
   const currentQuestion = questions[currentQuestionIndex];
 
@@ -76,7 +58,6 @@ const ExamMode = ({ route, navigation }) => {
         <View>
           <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
             <Text style={styles.tag}>{tags}</Text>
-
           </View>
           <Text style={styles.subtitle}>{package_name}</Text>
         </View>
@@ -97,42 +78,31 @@ const ExamMode = ({ route, navigation }) => {
 
               const isCorrect = optionText.endsWith('**');
               const option = { text: optionText.replace('**', ''), correct: isCorrect };
-              const isSelected = selectedOptions[currentQuestionIndex]?.includes(optionIndex);
-              const isStored = progressObj?.hasOwnProperty(currentQuestion.question_id) || false;
-              if (isStored || (isCorrect && isSelected)) {
-                descriptionManagers.push(currentQuestion.question_id)
+              const isSelected = selectedOptions[currentQuestionIndex] === optionIndex;
 
-              }
               return (
                 <TouchableOpacity
                   key={optionIndex}
                   style={[
                     styles.optionButton,
-                    (isSelected || isStored)
-                      ? (isCorrect ? styles.correctOption : styles.wrongOption)
-                      : null
+                    isSelected ? (isCorrect ? styles.correctOption : styles.wrongOption) : null
                   ]}
-                  onPress={() => selectOption(currentQuestionIndex, optionIndex, currentQuestion.question_id)}
+                  onPress={() => selectOption(currentQuestionIndex, optionIndex, isCorrect)}
                 >
                   <Text
                     style={[
                       styles.optionText,
-                      (isSelected || isStored)
-                        ? (isCorrect ? styles.correctOption : styles.wrongOption)
-                        : null
+                      isSelected ? (isCorrect ? styles.correctOption : styles.wrongOption) : null
                     ]}
                   >
                     {option.text}
                   </Text>
-                
                 </TouchableOpacity>
               );
             })}
           </View>
         )}
-
       </ScrollView>
-
 
       <View style={styles.navigationButtonsContainer}>
         <TouchableOpacity
@@ -184,9 +154,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     textAlign: 'center',
     overflow: 'hidden'
-  },
-  heartIcon: {
-    padding: 10,
   },
   subtitle: {
     fontSize: 14,
@@ -240,15 +207,6 @@ const styles = StyleSheet.create({
   wrongOption: {
     backgroundColor: '#E8F0FE',
     borderColor: '#AE5CE6',
-  },
-  correctOptionText: {
-    color: '#AE5CE6',
-  },
-  wrongOptionText: {
-    color: '#AE5CE6',
-  },
-  resultIcon: {
-    marginLeft: 10,
   },
   navigationButtonsContainer: {
     flexDirection: 'row',
