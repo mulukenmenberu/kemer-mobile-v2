@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, StatusBar, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, StatusBar } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { TestAd } from '../TestAd';
 
@@ -7,44 +7,58 @@ const ExamMode = ({ route, navigation }) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [wrongAnswers, setWrongAnswers] = useState(0);
-  const [refresh, setRefresh] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   const { package_id, package_name, tags, question_data } = route.params;
   const questions = question_data;
-  let descriptionManagers = [];
 
-  // Single choice selection and correct/wrong count update
+  // Track if the correct or wrong answer has been counted for each question
+  const [countedAnswers, setCountedAnswers] = useState({});
+
   const selectOption = (questionIndex, optionIndex, isCorrect) => {
     const updatedSelections = [...selectedOptions];
-    // Replace any previous selection for this question
     updatedSelections[questionIndex] = optionIndex;
+
+    // Check if we've already counted an answer for this question
+    const previouslySelectedOption = selectedOptions[questionIndex];
+    const isPreviouslyCorrect = questions[questionIndex][`question_ans${previouslySelectedOption + 1}`]?.endsWith('**');
+
+    if (countedAnswers[questionIndex]) {
+      // If the previous option was correct or wrong, update the counters
+      if (isPreviouslyCorrect) {
+        setCorrectAnswers((prev) => prev - 1);
+      } else {
+        setWrongAnswers((prev) => prev - 1);
+      }
+    }
 
     setSelectedOptions(updatedSelections);
 
-    // Check if the selected option is correct and update the count
+    // Update the counters based on the new selection
     if (isCorrect) {
       setCorrectAnswers((prev) => prev + 1);
     } else {
       setWrongAnswers((prev) => prev + 1);
     }
+
+    // Mark that this question's answer has been counted
+    setCountedAnswers((prev) => ({
+      ...prev,
+      [questionIndex]: true,
+    }));
   };
 
   const goToNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setRefresh(refresh + 1);
     }
   };
 
   const goToPreviousQuestion = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
-      setRefresh(refresh - 1);
     }
   };
-
-  useEffect(() => {}, [refresh]);
 
   const currentQuestion = questions[currentQuestionIndex];
 
@@ -57,9 +71,9 @@ const ExamMode = ({ route, navigation }) => {
       <View style={styles.fixedHeader}>
         <View>
           <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-            <Text style={styles.tag}>{tags}</Text>
+            <Text style={styles.tag}>{package_name}</Text>
           </View>
-          <Text style={styles.subtitle}>{package_name}</Text>
+          <Text style={styles.subtitle}>{"No time limit"}</Text>
         </View>
         <View>
           <Text style={styles.statsText}>Correct: {correctAnswers}</Text>
@@ -202,11 +216,11 @@ const styles = StyleSheet.create({
   },
   correctOption: {
     backgroundColor: '#E8F0FE',
-    borderColor: '#AE5CE6',
+    borderColor: '#E8F0FE',
   },
   wrongOption: {
     backgroundColor: '#E8F0FE',
-    borderColor: '#AE5CE6',
+    borderColor: '#E8F0FE',
   },
   navigationButtonsContainer: {
     flexDirection: 'row',
