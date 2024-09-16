@@ -235,17 +235,17 @@ const styles = StyleSheet.create({
   },
   correctOption: {
     backgroundColor: '#E8F0FE',
-    borderColor: '#5E5CE6',
+    borderColor: '#AE5CE6',
   },
   wrongOption: {
-    backgroundColor: '#FDE8E8',
-    borderColor: '#FF4D4D',
+    backgroundColor: '#E8F0FE',
+    borderColor: '#AE5CE6',
   },
   correctOptionText: {
-    color: '#5E5CE6',
+    color: '#AE5CE6',
   },
   wrongOptionText: {
-    color: '#FF4D4D',
+    color: '#AE5CE6',
   },
   resultIcon: {
     marginLeft: 10,
