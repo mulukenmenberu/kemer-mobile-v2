@@ -1,23 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, StatusBar, Alert } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TestAd } from '../TestAd';
 
 const ExamMode = ({ route, navigation }) => {
-  // const { loading, error } = useSelector((state) => state.questions);
   const [selectedOptions, setSelectedOptions] = useState([]);
-  // const [descriptionManagers, setDescriptionManagers] = useState([]);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [wrongAnswers, setWrongAnswers] = useState(0);
-  const [isFavorite, setIsFavorite] = useState(false);
   const [refresh, setRefresh] = useState(0);
   const [progressObj, setProgressObj] = useState({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // To track the current question
 
   const { package_id, package_name, tags, question_data } = route.params;
   const questions = question_data
-let descriptionManagers = []
+  let descriptionManagers = []
 
 
 
@@ -43,7 +39,6 @@ let descriptionManagers = []
     }
 
     setSelectedOptions(updatedSelections);
-    // storeAnsweredToAsyncStorage(question_id, optionIndex); // Store the progress
 
   };
 
@@ -80,9 +75,7 @@ let descriptionManagers = []
         <View>
           <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
             <Text style={styles.tag}>{tags}</Text>
-            <TouchableOpacity >
-              {/* <AntDesign name={isFavorite ? "heart" : "hearto"} style={styles.heartIcon} size={16} color="#5E5CE6" /> */}
-            </TouchableOpacity>
+
           </View>
           <Text style={styles.subtitle}>{package_name}</Text>
         </View>
@@ -104,12 +97,9 @@ let descriptionManagers = []
               const isCorrect = optionText.endsWith('**');
               const option = { text: optionText.replace('**', ''), correct: isCorrect };
               const isSelected = selectedOptions[currentQuestionIndex]?.includes(optionIndex);
-              // const isStored = currentQuestionIndex //d = {"0": 3, "1": 3}
-              // const isStored = progressObj.hasOwnProperty(currentQuestion.question_id);
               const isStored = progressObj?.hasOwnProperty(currentQuestion.question_id) || false;
               if (isStored || (isCorrect && isSelected)) {
                 descriptionManagers.push(currentQuestion.question_id)
-                // setDescriptionManagers((prevDescriptionManagers) => [...prevDescriptionManagers, currentQuestion.question_id]);
 
               }
               return (
@@ -117,7 +107,6 @@ let descriptionManagers = []
                   key={optionIndex}
                   style={[
                     styles.optionButton,
-                    // isSelected && (isCorrect ? styles.correctOption : styles.wrongOption),
                     (isSelected || isStored)
                       ? (isCorrect ? styles.correctOption : styles.wrongOption)
                       : null
@@ -127,7 +116,6 @@ let descriptionManagers = []
                   <Text
                     style={[
                       styles.optionText,
-                      // isSelected && (isCorrect ? styles.correctOptionText : styles.wrongOptionText),
                       (isSelected || isStored)
                         ? (isCorrect ? styles.correctOption : styles.wrongOption)
                         : null
@@ -148,7 +136,7 @@ let descriptionManagers = []
             })}
           </View>
         )}
-      
+
       </ScrollView>
 
 
@@ -156,7 +144,6 @@ let descriptionManagers = []
         <TouchableOpacity
           style={[styles.navigationButton, currentQuestionIndex === 0 && styles.disabledButton]}
           onPress={goToPreviousQuestion}
-        // disabled={currentQuestionIndex === 0}
         >
           <Text style={styles.navigationButtonText}>Previous</Text>
         </TouchableOpacity>
@@ -164,7 +151,6 @@ let descriptionManagers = []
         <TouchableOpacity
           style={[styles.navigationButton, currentQuestionIndex === questions.length - 1 && styles.disabledButton]}
           onPress={goToNextQuestion}
-        // disabled={currentQuestionIndex === questions.length - 1}
         >
           <Text style={styles.navigationButtonText}>Next</Text>
         </TouchableOpacity>
