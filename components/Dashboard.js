@@ -27,21 +27,46 @@ export default function Dashboard({ navigation }) {
     const [refreshing, setRefreshing] = useState(false); // State to manage refreshing
     const [selectedInterests, setSelectedInterests] = useState([]);
     const [refresh, setRefresh] = useState(true);
+    const [exam_loaddr, setExamLoader] = useState(false);
 
     const [visible, setVisible] = useState(false);
     const showModal = () => setVisible(true);
-    const hideModal = () => setVisible(false);
-    const generateExamMode = () => {
-        setVisible(false);
+    const hideModal = () => {
+        if (!exam_loaddr) {
+            setVisible(false);
+        }
     }
-    
+    const { examMode, loadingg, errorr } = useSelector((state) => state.examMode);
+
+    const generateExamMode = () => {
+        setExamLoader(true)
+        readData('interestList').then((data) => {
+
+            const interestsArray = Object.keys(data)
+                .filter((key) => data[key] === "selected")
+            // .join(' - '); 
+
+            dispatch(fetchExamMode(interestsArray)).then((response) => {
+                navigation.navigate('ExamMode', {
+                    package_id: 1,
+                    question_data: response.payload,
+                    package_name: "Model Exam",
+                    tags: "",
+                })
+
+                setVisible(false);
+                setExamLoader(false)
+
+            })
+        });
+    }
+
     const containerStyle = { backgroundColor: 'white', padding: 20, marginTop: verticalScale(-70), width: '80%', alignSelf: 'center' };
 
 
 
     const dispatch = useDispatch();
     const { courses, loading, error } = useSelector((state) => state.courses);
-    const { examMode, loadingg, errorr } = useSelector((state) => state.examMode);
     const { packages, loading: packagesLoading, error: packagesError } = useSelector((state) => state.question_packages);
 
     useEffect(() => {
@@ -256,9 +281,12 @@ export default function Dashboard({ navigation }) {
                 <View style={{ height: verticalScale(100), marginBottom: verticalScale(20) }} />
             </ScrollView>
             <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
-                <TouchableOpacity style={styles.getStartedButton} onPress={() => generateExamMode()}>
+                {!exam_loaddr ? <TouchableOpacity style={styles.getStartedButton} onPress={() => generateExamMode()}>
                     <Text style={styles.buttonText}>Generate Model Exam</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> :
+                    <TouchableOpacity style={styles.getStartedButton2}>
+                        <Text style={styles.buttonText}>Please wait</Text>
+                    </TouchableOpacity>}
             </Modal>
 
             <StatusBar backgroundColor="#F2F2F2" barStyle="dark-content" />
@@ -272,17 +300,23 @@ const styles = StyleSheet.create({
     },
     getStartedButton: {
         backgroundColor: '#5E5CE6',
-        height:50,
-        justifyContent:'center',
+        height: 50,
+        justifyContent: 'center',
+        borderRadius: moderateScale(10),
+    },
+    getStartedButton2: {
+        backgroundColor: '#5E5CA6',
+        height: 50,
+        justifyContent: 'center',
         borderRadius: moderateScale(10),
     },
     buttonText: {
         color: '#fff',
         fontSize: verticalScale(16),
         fontWeight: 'bold',
-        alignSelf:'center',
-        justifyContent:'center',
-        alignItems:'center',
-        textAlign:'center'
-      },
+        alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center'
+    },
 });
