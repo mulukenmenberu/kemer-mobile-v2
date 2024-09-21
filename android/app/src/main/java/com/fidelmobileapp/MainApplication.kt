@@ -1,4 +1,4 @@
-package com.fidelmobileapp
+package com.KelemMobile
 
 import android.app.Application
 import com.facebook.react.PackageList
