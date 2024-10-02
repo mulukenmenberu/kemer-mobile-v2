@@ -29,6 +29,7 @@ export default function News({ navigation }) {
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [selectedTopic, setSelectedTopic] = useState(null);
     const [changePage, setChangePage] = useState(0);
+    const [isloading, setIsLoadingG] = useState(false);
 
     const scrollViewRef = useRef(null);
 
@@ -49,10 +50,16 @@ export default function News({ navigation }) {
 
     const handleTopicSelect = (topic) => {
         setSelectedTopic(topic);
-        setChangePage(changePage + 1)
-        if (scrollViewRef.current) {
-            scrollViewRef.current.scrollTo({ y: verticalScale(225), animated: true });
-        }
+        setIsLoadingG(true)
+        setTimeout(()=>{
+        setIsLoadingG(false)
+
+            setChangePage(changePage + 1)
+            if (scrollViewRef.current) {
+                scrollViewRef.current.scrollTo({ y: verticalScale(225), animated: true });
+            }
+        }, 5000)
+     
     };
 
 
@@ -79,9 +86,9 @@ export default function News({ navigation }) {
 
     };
 
-    if (loading || isLoading) {
-        return <SkeletonLoader />
-    }
+    // if (loading || isLoading) {
+    //     return <SkeletonLoader />
+    // }
 
     if (error) {
         return <NoInternetScreen isLoading={isLoading} setIsLoading={setIsLoading} />
@@ -173,6 +180,7 @@ export default function News({ navigation }) {
                     >
 
                         <Text></Text>
+                        {isloading &&  <SkeletonLoader />}
                         {changePage > 0 && <ReadText />}
                     </ScrollView>
                 </ScrollView>
