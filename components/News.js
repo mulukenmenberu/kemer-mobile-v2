@@ -166,12 +166,16 @@ export default function News({ navigation }) {
 
                         {/* Horizontally Scrollable Topic Selection */}
                         {selectedCourse && (
-                            <View style={{ width: '100%', alignItems: 'center', marginTop: 10 }}>
-                                <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10 }}>Select a Topic</Text>
-                                <TouchableOpacity onPress={() => setModalVisible(true)} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <View style={{ width: '100%', alignItems: 'center', marginTop: verticalScale(10) }}>
+                                <View style={{display:'flex', flexDirection:'row', justifyContent:'space-evenly'}}>
+                                <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10 }}>Select a Topic  </Text>
+                                <AntDesign name="select1" size={moderateScale(24)} onPress={() => setModalVisible(true)}  color="black" />
+
+                                {/* <TouchableOpacity onPress={() => setModalVisible(true)} style={{ flexDirection: 'row', alignItems: 'center' }}>
                                     <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{selectedTopic || 'Select a Topic'}</Text>
                                     <MaterialCommunityIcons name="menu-down" size={24} color="#222" style={{ marginLeft: 5 }} />
-                                </TouchableOpacity>
+                                </TouchableOpacity> */}
+                                </View>
                                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                                     <View style={{ flexDirection: 'row' }}>
                                         {courses[selectedCourse].map((topic) => (
