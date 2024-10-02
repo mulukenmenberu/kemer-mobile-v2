@@ -1,5 +1,5 @@
 // import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState, } from 'react';
+import { useEffect, useRef, useState, } from 'react';
 import { Image, StatusBar, StyleSheet, Text, View, StatusBar as stbar, Dimensions, SafeAreaView, ScrollView, RefreshControl, TouchableOpacity, Alert } from 'react-native';
 import { Card } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -30,6 +30,9 @@ export default function News({ navigation }) {
     const [selectedTopic, setSelectedTopic] = useState(null);
     const [changePage, setChangePage] = useState(0);
 
+    const scrollViewRef = useRef(null);
+
+
     const courses = {
         Math: ['Algebra', 'Geometry', 'Calculus', 'Statistics'],
         Chemistry: ['Organic Chemistry', 'Inorganic Chemistry', 'Physical Chemistry', 'Biochemistry'],
@@ -40,12 +43,16 @@ export default function News({ navigation }) {
     const handleCourseSelect = (course) => {
         setSelectedCourse(course);
         setSelectedTopic(null); // Reset topic when a new course is selected
-       
+
     };
+
 
     const handleTopicSelect = (topic) => {
         setSelectedTopic(topic);
         setChangePage(changePage + 1)
+        if (scrollViewRef.current) {
+            scrollViewRef.current.scrollTo({ y: verticalScale(225), animated: true });
+        }
     };
 
 
@@ -100,10 +107,12 @@ export default function News({ navigation }) {
                     </View>
                 </View>
             </Card>
-             <View>
-                <ScrollView refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                }>
+            <View>
+                <ScrollView
+               
+                    ref={scrollViewRef} refreshControl={
+                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                    }>
                     {/* <Text style={{ marginLeft: 10, marginTop: 10, fontSize: 20, alignSelf: 'center', color: '#222' }}>Preparation Notes</Text> */}
                     <TestAd />
                     <ScrollView contentContainerStyle={{ padding: 20, alignItems: 'center' }}>
@@ -164,11 +173,11 @@ export default function News({ navigation }) {
                     >
 
                         <Text></Text>
-                       {changePage>0 && <ReadText />}
+                        {changePage > 0 && <ReadText />}
                     </ScrollView>
                 </ScrollView>
             </View>
-        
+
             <StatusBar backgroundColor="#f2f2f2" barStyle="dark-content" />
         </SafeAreaView>
     );
