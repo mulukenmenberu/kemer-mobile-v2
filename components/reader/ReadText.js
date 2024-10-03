@@ -1,6 +1,6 @@
 import React from 'react';
 import { ScrollView, View, Text, StyleSheet, Linking } from 'react-native';
-import { verticalScale } from '../../utils/Device';
+import { horizontalScale, moderateScale, verticalScale } from '../../utils/Device';
 
 const data = [
   {
@@ -35,9 +35,6 @@ const data = [
 ];
 
 const ReadText = () => {
-  const handlePressLinkedIn = () => {
-    Linking.openURL('https://linkedin.com/in/mulukenm');
-  };
 
   return (
     <ScrollView style={styles.container}>
@@ -45,11 +42,6 @@ const ReadText = () => {
         <View key={page.id} style={styles.page}>
           <Text style={styles.header}>{page.header}</Text>
           <Text style={styles.text}>{page.content}</Text>
-          {page.id === 1 && (
-            <Text style={styles.linkText} onPress={handlePressLinkedIn}>
-              Check the following example to understand more about it
-            </Text>
-          )}
           <View style={styles.pageNumberContainer}>
             <Text style={styles.pageNumber}>Page {index + 1}</Text>
           </View>
@@ -67,10 +59,11 @@ const styles = StyleSheet.create({
   },
   page: {
     padding: 20,
-    marginBottom: 30,
+    marginBottom: verticalScale(10),
+    marginTop: verticalScale(10),
     backgroundColor: '#fff',
-    marginHorizontal: 20,
-    borderRadius: 10,
+    marginHorizontal:horizontalScale(20),
+    borderRadius: moderateScale(10),
     elevation: 5,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },

@@ -21,9 +21,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { readData } from '../data/DB';
 import { horizontalScale, moderateScale, verticalScale } from '../utils/Device';
-import SkeletonLoader from '../utils/SkeletonLoader';
+import SkeletonLoaderReader from '../utils/SkeletonLoaderReader';
 import NoInternetScreen from '../utils/NoInternetScreen';
 import ReadText from './reader/ReadText';
+import ReadTextMessage from './reader/ReadTextMessage';
 
 export default function News({ navigation }) {
     const { width, height } = Dimensions.get('screen');
@@ -33,6 +34,7 @@ export default function News({ navigation }) {
     const [refreshing, setRefreshing] = useState(false);
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [selectedTopic, setSelectedTopic] = useState(null);
+    const [courseSelected, setCourseSelected] = useState(0);
     const [changePage, setChangePage] = useState(0);
     const [isloading, setIsLoadingG] = useState(false);
     const [isModalVisible, setModalVisible] = useState(false);
@@ -49,11 +51,14 @@ export default function News({ navigation }) {
     const handleCourseSelect = (course) => {
         setSelectedCourse(course);
         setSelectedTopic(null);
+        setCourseSelected(courseSelected+1)
     };
 
     const handleTopicSelect = (topic) => {
         setSelectedTopic(topic);
         setIsLoadingG(true);
+        // setCourseSelected(0)
+        // setSelectedTopic(0);
         setTimeout(() => {
             setIsLoadingG(false);
             setChangePage(changePage + 1);
@@ -140,7 +145,7 @@ export default function News({ navigation }) {
                     }>
                     <TestAd />
                     <ScrollView contentContainerStyle={{ padding: 20, alignItems: 'center' }}>
-                        <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>Select a Course</Text>
+                        <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>Select a Subject</Text>
 
                         {/* Horizontally Scrollable Course Selection */}
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 20 }}>
@@ -171,10 +176,6 @@ export default function News({ navigation }) {
                                 <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10 }}>Select a Topic  </Text>
                                 <AntDesign name="select1" size={moderateScale(24)} onPress={() => setModalVisible(true)}  color="black" />
 
-                                {/* <TouchableOpacity onPress={() => setModalVisible(true)} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                    <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{selectedTopic || 'Select a Topic'}</Text>
-                                    <MaterialCommunityIcons name="menu-down" size={24} color="#222" style={{ marginLeft: 5 }} />
-                                </TouchableOpacity> */}
                                 </View>
                                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                                     <View style={{ flexDirection: 'row' }}>
@@ -203,8 +204,9 @@ export default function News({ navigation }) {
                         contentInsetAdjustmentBehavior="automatic"
                         style={backgroundStyle}
                     >
-                        {isloading && <SkeletonLoader />}
-                        {changePage > 0 && <ReadText />}
+                        {isloading && <SkeletonLoaderReader />}
+                        {(changePage > 0 && !isloading) && <ReadText />}
+                        {(changePage <= 0 || courseSelected<=0) && <ReadTextMessage messageText={courseSelected<=0?'Please Select a Subject':'Please Select a Topic'} />}
                     </ScrollView>
                 </ScrollView>
             </View>
