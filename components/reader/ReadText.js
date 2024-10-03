@@ -31,6 +31,20 @@ const data = [
     const data = use(fetchData());
 
     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sit amet lectus nulla. Cras venenatis ligula sed ligula tristique, a tincidunt urna consequat. Duis ut arcu sem. Vivamus venenatis enim ac velit placerat, eget commodo mauris ullamcorper.`
+  },
+  {
+    id: 4,
+    header: "Mathematical Equation Example",
+    content: `This is an example of a mathematical equation (Quadratic Formula):
+    
+    x = (-b ± √(b² - 4ac)) / 2a`
+  },
+  {
+    id: 5,
+    header: "Chemical Formula Example",
+    content: `This is an example of a chemical formula:
+    
+    H₂O (Water), CO₂ (Carbon Dioxide)`
   }
 ];
 
