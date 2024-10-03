@@ -253,7 +253,7 @@ export default function News({ navigation }) {
                         {/* <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>Select a Subject</Text> */}
 
                         <View style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
-                                <Text style={{ fontSize: moderateScale(17), fontWeight: 'bold', marginBottom: 10 }}>Select a Subject  </Text>
+                                <Text style={{color:'#222', fontSize: moderateScale(17), fontWeight: 'bold', marginBottom: 10 }}>Select a Subject  </Text>
                                 <FontAwesome name="th-list" size={moderateScale(24)} onPress={() => setModalSubjectVisible(true)}  color="black" />
 
                                 </View>
@@ -284,7 +284,7 @@ export default function News({ navigation }) {
                         {selectedCourse && (
                             <View style={{ width: '100%',  marginTop: verticalScale(10) }}>
                                 <View style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
-                                <Text style={{ fontSize: moderateScale(17), fontWeight: 'bold', marginBottom: 10 }}>Select a Topic  </Text>
+                                <Text style={{color:'#222', fontSize: moderateScale(17), fontWeight: 'bold', marginBottom: 10 }}>Select a Topic  </Text>
                                 <FontAwesome name="th-list" size={moderateScale(24)} onPress={() => setModalVisible(true)}  color="black" />
 
                                 </View>
