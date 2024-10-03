@@ -26,7 +26,33 @@ import NoInternetScreen from '../utils/NoInternetScreen';
 import ReadText from './reader/ReadText';
 import ReadTextMessage from './reader/ReadTextMessage';
 
+
+const initialCourses = {
+    Math_Grade_9: ['Algebra', 'Geometry', 'Calculus', 'Statistics'],
+    Chemistry_Grade_9: ['Organic Chemistry', 'Inorganic Chemistry', 'Physical Chemistry', 'Biochemistry'],
+    Biology_Grade_9: ['Genetics', 'Ecology', 'Cell Biology', 'Anatomy'],
+    Physics_Grade_9: ['Mechanics', 'Optics', 'Thermodynamics', 'Quantum Physics'],
+
+    Math_Grade_10: ['Algebra', 'Geometry', 'Calculus', 'Statistics'],
+    Chemistry_Grade_10: ['Organic Chemistry', 'Inorganic Chemistry', 'Physical Chemistry', 'Biochemistry'],
+    Biology_Grade_10: ['Genetics', 'Ecology', 'Cell Biology', 'Anatomy'],
+    Physics_Grade_10: ['Mechanics', 'Optics', 'Thermodynamics', 'Quantum Physics'],
+
+    Math_Grade_11: ['Algebra', 'Geometry', 'Calculus', 'Statistics'],
+    Chemistry_Grade_11: ['Organic Chemistry', 'Inorganic Chemistry', 'Physical Chemistry', 'Biochemistry'],
+    Biology_Grade_11: ['Genetics', 'Ecology', 'Cell Biology', 'Anatomy'],
+    Physics_Grade_11: ['Mechanics', 'Optics', 'Thermodynamics', 'Quantum Physics'],
+
+    Math_Grade_12: ['Algebra', 'Geometry', 'Calculus', 'Statistics'],
+    Chemistry_Grade_12: ['Organic Chemistry', 'Inorganic Chemistry', 'Physical Chemistry', 'Biochemistry'],
+    Biology_Grade_12: ['Genetics', 'Ecology', 'Cell Biology', 'Anatomy'],
+    Physics_Grade_12: ['Mechanics', 'Optics', 'Thermodynamics', 'Quantum Physics'],
+};
+
 export default function News({ navigation }) {
+    const [courses, setCourses] = useState(initialCourses);
+
+
     const { width, height } = Dimensions.get('screen');
     const [selectedInterests, setSelectedInterests] = useState([]);
     const [refresh, setRefresh] = useState(true);
@@ -42,27 +68,35 @@ export default function News({ navigation }) {
 
     const scrollViewRef = useRef(null);
 
-    const courses = {
-        Math_Grade_9: ['Algebra', 'Geometry', 'Calculus', 'Statistics'],
-        Chemistry_Grade_9: ['Organic Chemistry', 'Inorganic Chemistry', 'Physical Chemistry', 'Biochemistry'],
-        Biology_Grade_9: ['Genetics', 'Ecology', 'Cell Biology', 'Anatomy'],
-        Physics_Grade_9: ['Mechanics', 'Optics', 'Thermodynamics', 'Quantum Physics'],
 
-        Math_Grade_10: ['Algebra', 'Geometry', 'Calculus', 'Statistics'],
-        Chemistry_Grade_10: ['Organic Chemistry', 'Inorganic Chemistry', 'Physical Chemistry', 'Biochemistry'],
-        Biology_Grade_10: ['Genetics', 'Ecology', 'Cell Biology', 'Anatomy'],
-        Physics_Grade_10: ['Mechanics', 'Optics', 'Thermodynamics', 'Quantum Physics'],
 
-        Math_Grade_11: ['Algebra', 'Geometry', 'Calculus', 'Statistics'],
-        Chemistry_Grade_11: ['Organic Chemistry', 'Inorganic Chemistry', 'Physical Chemistry', 'Biochemistry'],
-        Biology_Grade_11: ['Genetics', 'Ecology', 'Cell Biology', 'Anatomy'],
-        Physics_Grade_11: ['Mechanics', 'Optics', 'Thermodynamics', 'Quantum Physics'],
+ const reorderCoursesInPlace = (selectedCourse) => {
+        // Reorder and update the state directly
+        const selectedTopics = courses[selectedCourse];
+        const reorderedCourses = {
+            [selectedCourse]: selectedTopics,
+            ...Object.keys(courses).reduce((acc, key) => {
+                if (key !== selectedCourse) acc[key] = courses[key];
+                return acc;
+            }, {}),
+        };
+        setCourses(reorderedCourses);
+    };
 
-        Math_Grade_12: ['Algebra', 'Geometry', 'Calculus', 'Statistics'],
-        Chemistry_Grade_12: ['Organic Chemistry', 'Inorganic Chemistry', 'Physical Chemistry', 'Biochemistry'],
-        Biology_Grade_12: ['Genetics', 'Ecology', 'Cell Biology', 'Anatomy'],
-        Physics_Grade_12: ['Mechanics', 'Optics', 'Thermodynamics', 'Quantum Physics'],
+    const reorderTopicsInPlace = (selectedTopic) => {
+        if (selectedCourse) {
+            const topics = courses[selectedCourse];
+            const reorderedTopics = [
+                selectedTopic,
+                ...topics.filter((topic) => topic !== selectedTopic)
+            ];
 
+            // Update the courses object with reordered topics for the selected course
+            setCourses((prevCourses) => ({
+                ...prevCourses,
+                [selectedCourse]: reorderedTopics,
+            }));
+        }
     };
 
     const handleCourseSelect = (course) => {
@@ -70,6 +104,7 @@ export default function News({ navigation }) {
         setSelectedTopic(null);
         setCourseSelected(courseSelected+1)
         setChangePage(0)
+        reorderCoursesInPlace(course);
     };
 
     const handleTopicSelect = (topic) => {
@@ -77,6 +112,7 @@ export default function News({ navigation }) {
         setIsLoadingG(true);
         // setCourseSelected(0)
         // setSelectedTopic(0);
+        reorderTopicsInPlace(topic);
         setTimeout(() => {
             setIsLoadingG(false);
             setChangePage(changePage + 1);
@@ -89,7 +125,7 @@ export default function News({ navigation }) {
     const handleTopicSelectFromModal = (topic) => {
 
         setSelectedTopic(topic);
-
+        reorderTopicsInPlace(topic);
         setIsLoadingG(true);
         setTimeout(() => {
             setIsLoadingG(false);
@@ -100,13 +136,13 @@ export default function News({ navigation }) {
         }, 5000);
         setModalVisible(false);
     };
-    const handleSubjectSelectFromModal = (topic) => {
-        setSelectedCourse(topic);
+    const handleSubjectSelectFromModal = (course) => {
+        setSelectedCourse(course);
         setSelectedTopic(null);
         setCourseSelected(courseSelected+1)
 
         setChangePage(0)
-
+        reorderCoursesInPlace(course);
         setModalSubjectVisible(false);
     };
 
