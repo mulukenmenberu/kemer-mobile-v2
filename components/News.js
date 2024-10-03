@@ -63,7 +63,7 @@ export default function News({ navigation }) {
             setIsLoadingG(false);
             setChangePage(changePage + 1);
             if (scrollViewRef.current) {
-                scrollViewRef.current.scrollTo({ y: verticalScale(225), animated: true });
+                scrollViewRef.current.scrollTo({ y: verticalScale(235), animated: true });
             }
         }, 5000);
     };
