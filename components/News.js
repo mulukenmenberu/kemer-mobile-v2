@@ -68,6 +68,8 @@ export default function News({ navigation }) {
     const [isModalSubjectVisible, setModalSubjectVisible] = useState(false);
 
     const scrollViewRef = useRef(null);
+    const courseScrollViewRef = useRef(null);
+    const topicScrollViewRef = useRef(null);
 
 
 
@@ -106,6 +108,10 @@ export default function News({ navigation }) {
         setCourseSelected(courseSelected+1)
         setChangePage(0)
         reorderCoursesInPlace(course);
+
+        if (courseScrollViewRef.current) {
+            courseScrollViewRef.current.scrollTo({ x: 0, animated: true });
+          }
     };
 
     const handleTopicSelect = (topic) => {
@@ -114,6 +120,11 @@ export default function News({ navigation }) {
         // setCourseSelected(0)
         // setSelectedTopic(0);
         reorderTopicsInPlace(topic);
+
+        if (topicScrollViewRef.current) {
+            topicScrollViewRef.current.scrollTo({ x: 0, animated: true });
+          }
+
         setTimeout(() => {
             setIsLoadingG(false);
             setChangePage(changePage + 1);
@@ -128,6 +139,10 @@ export default function News({ navigation }) {
         setSelectedTopic(topic);
         reorderTopicsInPlace(topic);
         setIsLoadingG(true);
+        if (topicScrollViewRef.current) {
+            topicScrollViewRef.current.scrollTo({ x: 0, animated: true });
+          }
+
         setTimeout(() => {
             setIsLoadingG(false);
             setChangePage(changePage + 1);
@@ -145,6 +160,10 @@ export default function News({ navigation }) {
         setChangePage(0)
         reorderCoursesInPlace(course);
         setModalSubjectVisible(false);
+
+        if (courseScrollViewRef.current) {
+            courseScrollViewRef.current.scrollTo({ x: 0, animated: true });
+          }
     };
 
     
@@ -234,13 +253,13 @@ export default function News({ navigation }) {
                         {/* <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>Select a Subject</Text> */}
 
                         <View style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
-                                <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10 }}>Select a Subject  </Text>
+                                <Text style={{ fontSize: moderateScale(17), fontWeight: 'bold', marginBottom: 10 }}>Select a Subject  </Text>
                                 <FontAwesome name="th-list" size={moderateScale(24)} onPress={() => setModalSubjectVisible(true)}  color="black" />
 
                                 </View>
 
                         {/* Horizontally Scrollable Course Selection */}
-                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 20 }}>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 20 }} ref={courseScrollViewRef}>
                             <View style={{ flexDirection: 'row' }}>
                                 {Object.keys(courses).map((course) => (
                                     <TouchableOpacity
@@ -265,11 +284,11 @@ export default function News({ navigation }) {
                         {selectedCourse && (
                             <View style={{ width: '100%',  marginTop: verticalScale(10) }}>
                                 <View style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
-                                <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10 }}>Select a Topic  </Text>
+                                <Text style={{ fontSize: moderateScale(17), fontWeight: 'bold', marginBottom: 10 }}>Select a Topic  </Text>
                                 <FontAwesome name="th-list" size={moderateScale(24)} onPress={() => setModalVisible(true)}  color="black" />
 
                                 </View>
-                                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                                <ScrollView horizontal showsHorizontalScrollIndicator={false} ref={topicScrollViewRef}>
                                     <View style={{ flexDirection: 'row' }}>
                                         {courses[selectedCourse].map((topic) => (
                                             <TouchableOpacity
