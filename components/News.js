@@ -38,20 +38,38 @@ export default function News({ navigation }) {
     const [changePage, setChangePage] = useState(0);
     const [isloading, setIsLoadingG] = useState(false);
     const [isModalVisible, setModalVisible] = useState(false);
+    const [isModalSubjectVisible, setModalSubjectVisible] = useState(false);
 
     const scrollViewRef = useRef(null);
 
     const courses = {
-        Math: ['Algebra', 'Geometry', 'Calculus', 'Statistics'],
-        Chemistry: ['Organic Chemistry', 'Inorganic Chemistry', 'Physical Chemistry', 'Biochemistry'],
-        Biology: ['Genetics', 'Ecology', 'Cell Biology', 'Anatomy'],
-        Physics: ['Mechanics', 'Optics', 'Thermodynamics', 'Quantum Physics'],
+        Math_Grade_9: ['Algebra', 'Geometry', 'Calculus', 'Statistics'],
+        Chemistry_Grade_9: ['Organic Chemistry', 'Inorganic Chemistry', 'Physical Chemistry', 'Biochemistry'],
+        Biology_Grade_9: ['Genetics', 'Ecology', 'Cell Biology', 'Anatomy'],
+        Physics_Grade_9: ['Mechanics', 'Optics', 'Thermodynamics', 'Quantum Physics'],
+
+        Math_Grade_10: ['Algebra', 'Geometry', 'Calculus', 'Statistics'],
+        Chemistry_Grade_10: ['Organic Chemistry', 'Inorganic Chemistry', 'Physical Chemistry', 'Biochemistry'],
+        Biology_Grade_10: ['Genetics', 'Ecology', 'Cell Biology', 'Anatomy'],
+        Physics_Grade_10: ['Mechanics', 'Optics', 'Thermodynamics', 'Quantum Physics'],
+
+        Math_Grade_11: ['Algebra', 'Geometry', 'Calculus', 'Statistics'],
+        Chemistry_Grade_11: ['Organic Chemistry', 'Inorganic Chemistry', 'Physical Chemistry', 'Biochemistry'],
+        Biology_Grade_11: ['Genetics', 'Ecology', 'Cell Biology', 'Anatomy'],
+        Physics_Grade_11: ['Mechanics', 'Optics', 'Thermodynamics', 'Quantum Physics'],
+
+        Math_Grade_12: ['Algebra', 'Geometry', 'Calculus', 'Statistics'],
+        Chemistry_Grade_12: ['Organic Chemistry', 'Inorganic Chemistry', 'Physical Chemistry', 'Biochemistry'],
+        Biology_Grade_12: ['Genetics', 'Ecology', 'Cell Biology', 'Anatomy'],
+        Physics_Grade_12: ['Mechanics', 'Optics', 'Thermodynamics', 'Quantum Physics'],
+
     };
 
     const handleCourseSelect = (course) => {
         setSelectedCourse(course);
         setSelectedTopic(null);
         setCourseSelected(courseSelected+1)
+        setChangePage(0)
     };
 
     const handleTopicSelect = (topic) => {
@@ -69,7 +87,9 @@ export default function News({ navigation }) {
     };
 
     const handleTopicSelectFromModal = (topic) => {
+
         setSelectedTopic(topic);
+
         setIsLoadingG(true);
         setTimeout(() => {
             setIsLoadingG(false);
@@ -80,12 +100,22 @@ export default function News({ navigation }) {
         }, 5000);
         setModalVisible(false);
     };
+    const handleSubjectSelectFromModal = (topic) => {
+        setSelectedCourse(topic);
+        setSelectedTopic(null);
+        setCourseSelected(courseSelected+1)
 
+        setChangePage(0)
+
+        setModalSubjectVisible(false);
+    };
+
+    
     const renderTopicItem = ({ item }) => (
         <TouchableOpacity
             onPress={() => handleTopicSelectFromModal(item)}
             style={{
-                paddingVertical: 10,
+                paddingVertical: 9,
                 paddingHorizontal: 15,
                 backgroundColor: selectedTopic === item ? '#3ac569' : '#2e78f0',
                 borderRadius: 10,
@@ -96,7 +126,22 @@ export default function News({ navigation }) {
             <Text style={{ color: '#fff', fontSize: 14 }}>{item}</Text>
         </TouchableOpacity>
     );
-
+    const renderSubjectItem = ({ item }) => (
+        
+        <TouchableOpacity
+            onPress={() => handleSubjectSelectFromModal(item)}
+            style={{
+                paddingVertical: 9,
+                paddingHorizontal: 15,
+                backgroundColor: selectedTopic === item ? '#3ac569' : '#2e78f0',
+                borderRadius: 10,
+                margin: 5,
+                elevation: 3,
+            }}
+        >
+            <Text style={{ color: '#fff', fontSize: 14 }}>{item}</Text>
+        </TouchableOpacity>
+    );
     const backgroundStyle = {
         backgroundColor: Colors.lighter,
     };
@@ -145,7 +190,13 @@ export default function News({ navigation }) {
                     }>
                     <TestAd />
                     <ScrollView contentContainerStyle={{ padding: 20, alignItems: 'center' }}>
-                        <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>Select a Subject</Text>
+                        {/* <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>Select a Subject</Text> */}
+
+                        <View style={{display:'flex', flexDirection:'row', justifyContent:'space-evenly'}}>
+                                <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10 }}>Select a Subject  </Text>
+                                <AntDesign name="select1" size={moderateScale(24)} onPress={() => setModalSubjectVisible(true)}  color="black" />
+
+                                </View>
 
                         {/* Horizontally Scrollable Course Selection */}
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 20 }}>
@@ -163,7 +214,7 @@ export default function News({ navigation }) {
                                             elevation: 3,
                                         }}
                                     >
-                                        <Text style={{ color: '#fff', fontSize: 16 }}>{course}</Text>
+                                        <Text style={{ color: '#fff', fontSize: 16 }}>{course.replace(/_/g, ' ')}</Text>
                                     </TouchableOpacity>
                                 ))}
                             </View>
@@ -230,6 +281,32 @@ export default function News({ navigation }) {
                             />
                         </ScrollView>
                         <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
+                            <Text style={styles.closeButtonText}>Close</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
+
+                  {/* Modal to select topic from grid */}
+                  <Modal
+                visible={isModalSubjectVisible}
+                animationType="slide"
+                transparent={true}
+                onRequestClose={() => setModalSubjectVisible(false)}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+
+                            <FlatList
+                                // data={courses[selectedCourse]}
+                                data={Object.keys(courses)} 
+                                renderItem={renderSubjectItem}
+                                keyExtractor={(item) => item}
+                                numColumns={2} // Adjust the number of columns as needed
+                            />
+                        </ScrollView>
+                        <TouchableOpacity onPress={() => setModalSubjectVisible(false)} style={styles.closeButton}>
                             <Text style={styles.closeButtonText}>Close</Text>
                         </TouchableOpacity>
                     </View>
