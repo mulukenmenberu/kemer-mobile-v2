@@ -154,13 +154,14 @@ export default function News({ navigation }) {
             style={{
                 paddingVertical: 9,
                 paddingHorizontal: 15,
-                backgroundColor: selectedTopic === item ? '#3ac569' : '#2e78f0',
+                backgroundColor: selectedTopic === item ? '#3ac569' : '#f2f2f2',
                 borderRadius: 10,
                 margin: 5,
                 elevation: 3,
+                width: (Dimensions.get('window').width / 2) - 35,
             }}
         >
-            <Text style={{ color: '#fff', fontSize: 14 }}>{item}</Text>
+            <Text style={{ color: '#222', fontSize: 14 }}>{item}</Text>
         </TouchableOpacity>
     );
     const renderSubjectItem = ({ item }) => (
@@ -170,13 +171,16 @@ export default function News({ navigation }) {
             style={{
                 paddingVertical: 9,
                 paddingHorizontal: 15,
-                backgroundColor: selectedTopic === item ? '#3ac569' : '#2e78f0',
+                backgroundColor: selectedCourse === item ? '#3ac569' : '#f2f2f2',
                 borderRadius: 10,
                 margin: 5,
                 elevation: 3,
+                width: (Dimensions.get('window').width / 2) - 35,
+
+                
             }}
         >
-            <Text style={{ color: '#fff', fontSize: 14 }}>{item}</Text>
+            <Text style={{ color: '#222', fontSize: 14 }}>{item}</Text>
         </TouchableOpacity>
     );
     const backgroundStyle = {
@@ -314,7 +318,8 @@ export default function News({ navigation }) {
                                 data={courses[selectedCourse]}
                                 renderItem={renderTopicItem}
                                 keyExtractor={(item) => item}
-                                numColumns={2} // Adjust the number of columns as needed
+                                numColumns={2} 
+                                columnWrapperStyle={{ justifyContent: 'space-between' }}
                             />
                         </ScrollView>
                         <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
