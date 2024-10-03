@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { Card } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { TestAd } from '../TestAd';
 import { useDispatch, useSelector } from 'react-redux';
@@ -225,12 +226,12 @@ export default function News({ navigation }) {
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                     }>
                     <TestAd />
-                    <ScrollView contentContainerStyle={{ padding: 20, alignItems: 'center' }}>
+                    <ScrollView contentContainerStyle={{ padding: 20 }}>
                         {/* <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>Select a Subject</Text> */}
 
-                        <View style={{display:'flex', flexDirection:'row', justifyContent:'space-evenly'}}>
+                        <View style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
                                 <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10 }}>Select a Subject  </Text>
-                                <AntDesign name="select1" size={moderateScale(24)} onPress={() => setModalSubjectVisible(true)}  color="black" />
+                                <FontAwesome name="th-list" size={moderateScale(24)} onPress={() => setModalSubjectVisible(true)}  color="black" />
 
                                 </View>
 
@@ -258,10 +259,10 @@ export default function News({ navigation }) {
 
                         {/* Horizontally Scrollable Topic Selection */}
                         {selectedCourse && (
-                            <View style={{ width: '100%', alignItems: 'center', marginTop: verticalScale(10) }}>
-                                <View style={{display:'flex', flexDirection:'row', justifyContent:'space-evenly'}}>
+                            <View style={{ width: '100%',  marginTop: verticalScale(10) }}>
+                                <View style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
                                 <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10 }}>Select a Topic  </Text>
-                                <AntDesign name="select1" size={moderateScale(24)} onPress={() => setModalVisible(true)}  color="black" />
+                                <FontAwesome name="th-list" size={moderateScale(24)} onPress={() => setModalVisible(true)}  color="black" />
 
                                 </View>
                                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
