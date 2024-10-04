@@ -26,7 +26,7 @@ import SkeletonLoaderReader from '../utils/SkeletonLoaderReader';
 import NoInternetScreen from '../utils/NoInternetScreen';
 import ReadText from './reader/ReadText';
 import ReadTextMessage from './reader/ReadTextMessage';
-
+import { fetchSubjects } from '../redux/reducers/notesSlice';
 
 const initialCourses = {
     Math_Grade_9: ['Algebra', 'Geometry', 'Calculus', 'Statistics'],
@@ -51,7 +51,7 @@ const initialCourses = {
 };
 
 export default function News({ navigation }) {
-    const [courses, setCourses] = useState(initialCourses);
+    const [courses, setCourses] = useState({});
 
 
     const { width, height } = Dimensions.get('screen');
@@ -70,10 +70,36 @@ export default function News({ navigation }) {
     const scrollViewRef = useRef(null);
     const courseScrollViewRef = useRef(null);
     const topicScrollViewRef = useRef(null);
+    const dispatch = useDispatch();
+
+    const { subjects, loadings, errors } = useSelector((state) => state.subjects);
+
+    useEffect(() => {
+        readData('interestList').then((data) => {
+
+            const interestsArray = Object.keys(data)
+                .filter((key) => data[key] === "selected")
 
 
+            // Process the array
+            const levels = interestsArray.map(str =>
+                str.toLowerCase()            // Convert to lowercase
+                    .replace(/,/g, '')        // Remove commas
+                    .replace(/&/g, 'and')     // Replace & with 'and'
+                    .replace(/\s+/g, '')      // Remove all spaces
+            ).join(',');
 
- const reorderCoursesInPlace = (selectedCourse) => {
+
+            dispatch(fetchSubjects(levels)).then((response) => {
+                setCourses(response.payload)
+                console.log(response.payload, " u")
+                setRefreshing(false)
+            })
+        });
+    }, [refreshing]);
+
+
+    const reorderCoursesInPlace = (selectedCourse) => {
         // Reorder and update the state directly
         const selectedTopics = courses[selectedCourse];
         const reorderedCourses = {
@@ -105,13 +131,13 @@ export default function News({ navigation }) {
     const handleCourseSelect = (course) => {
         setSelectedCourse(course);
         setSelectedTopic(null);
-        setCourseSelected(courseSelected+1)
+        setCourseSelected(courseSelected + 1)
         setChangePage(0)
         reorderCoursesInPlace(course);
 
         if (courseScrollViewRef.current) {
             courseScrollViewRef.current.scrollTo({ x: 0, animated: true });
-          }
+        }
     };
 
     const handleTopicSelect = (topic) => {
@@ -123,7 +149,7 @@ export default function News({ navigation }) {
 
         if (topicScrollViewRef.current) {
             topicScrollViewRef.current.scrollTo({ x: 0, animated: true });
-          }
+        }
 
         setTimeout(() => {
             setIsLoadingG(false);
@@ -141,7 +167,7 @@ export default function News({ navigation }) {
         setIsLoadingG(true);
         if (topicScrollViewRef.current) {
             topicScrollViewRef.current.scrollTo({ x: 0, animated: true });
-          }
+        }
 
         setTimeout(() => {
             setIsLoadingG(false);
@@ -155,7 +181,7 @@ export default function News({ navigation }) {
     const handleSubjectSelectFromModal = (course) => {
         setSelectedCourse(course);
         setSelectedTopic(null);
-        setCourseSelected(courseSelected+1)
+        setCourseSelected(courseSelected + 1)
 
         setChangePage(0)
         reorderCoursesInPlace(course);
@@ -163,10 +189,10 @@ export default function News({ navigation }) {
 
         if (courseScrollViewRef.current) {
             courseScrollViewRef.current.scrollTo({ x: 0, animated: true });
-          }
+        }
     };
 
-    
+
     const renderTopicItem = ({ item }) => (
         <TouchableOpacity
             onPress={() => handleTopicSelectFromModal(item)}
@@ -184,7 +210,7 @@ export default function News({ navigation }) {
         </TouchableOpacity>
     );
     const renderSubjectItem = ({ item }) => (
-        
+
         <TouchableOpacity
             onPress={() => handleSubjectSelectFromModal(item)}
             style={{
@@ -196,7 +222,7 @@ export default function News({ navigation }) {
                 elevation: 3,
                 width: (Dimensions.get('window').width / 2) - 35,
 
-                
+
             }}
         >
             <Text style={{ color: '#222', fontSize: 14 }}>{item}</Text>
@@ -252,11 +278,11 @@ export default function News({ navigation }) {
                     <ScrollView contentContainerStyle={{ padding: 20 }}>
                         {/* <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>Select a Subject</Text> */}
 
-                        <View style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
-                                <Text style={{color:'#222', fontSize: moderateScale(17), fontWeight: 'bold', marginBottom: 10 }}>Select a Subject  </Text>
-                                <FontAwesome name="th-list" size={moderateScale(24)} onPress={() => setModalSubjectVisible(true)}  color="black" />
+                        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <Text style={{ color: '#222', fontSize: moderateScale(17), fontWeight: 'bold', marginBottom: 10 }}>Select a Subject  </Text>
+                            <FontAwesome name="th-list" size={moderateScale(24)} onPress={() => setModalSubjectVisible(true)} color="black" />
 
-                                </View>
+                        </View>
 
                         {/* Horizontally Scrollable Course Selection */}
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 20 }} ref={courseScrollViewRef}>
@@ -282,10 +308,10 @@ export default function News({ navigation }) {
 
                         {/* Horizontally Scrollable Topic Selection */}
                         {selectedCourse && (
-                            <View style={{ width: '100%',  marginTop: verticalScale(10) }}>
-                                <View style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
-                                <Text style={{color:'#222', fontSize: moderateScale(17), fontWeight: 'bold', marginBottom: 10 }}>Select a Topic  </Text>
-                                <FontAwesome name="th-list" size={moderateScale(24)} onPress={() => setModalVisible(true)}  color="black" />
+                            <View style={{ width: '100%', marginTop: verticalScale(10) }}>
+                                <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                                    <Text style={{ color: '#222', fontSize: moderateScale(17), fontWeight: 'bold', marginBottom: 10 }}>Select a Topic  </Text>
+                                    <FontAwesome name="th-list" size={moderateScale(24)} onPress={() => setModalVisible(true)} color="black" />
 
                                 </View>
                                 <ScrollView horizontal showsHorizontalScrollIndicator={false} ref={topicScrollViewRef}>
@@ -316,8 +342,8 @@ export default function News({ navigation }) {
                         style={backgroundStyle}
                     >
                         {isloading && <SkeletonLoaderReader />}
-                        {(changePage > 0 && !isloading) && <ReadText />}
-                        {(changePage <= 0 || courseSelected<=0) && <ReadTextMessage messageText={courseSelected<=0?'Please Select a Subject':'Please Select a Topic'} />}
+                        {(changePage > 0 && !isloading) && <ReadText selectedTopic={selectedTopic} selectedCourse={selectedCourse}/>}
+                        {(changePage <= 0 || courseSelected <= 0) && <ReadTextMessage messageText={courseSelected <= 0 ? 'Please Select a Subject' : 'Please Select a Topic'} />}
                     </ScrollView>
                 </ScrollView>
             </View>
@@ -337,7 +363,7 @@ export default function News({ navigation }) {
                                 data={courses[selectedCourse]}
                                 renderItem={renderTopicItem}
                                 keyExtractor={(item) => item}
-                                numColumns={2} 
+                                numColumns={2}
                                 columnWrapperStyle={{ justifyContent: 'space-between' }}
                             />
                         </ScrollView>
@@ -348,8 +374,8 @@ export default function News({ navigation }) {
                 </View>
             </Modal>
 
-                  {/* Modal to select topic from grid */}
-                  <Modal
+            {/* Modal to select topic from grid */}
+            <Modal
                 visible={isModalSubjectVisible}
                 animationType="slide"
                 transparent={true}
@@ -361,7 +387,7 @@ export default function News({ navigation }) {
 
                             <FlatList
                                 // data={courses[selectedCourse]}
-                                data={Object.keys(courses)} 
+                                data={Object.keys(courses)}
                                 renderItem={renderSubjectItem}
                                 keyExtractor={(item) => item}
                                 numColumns={2} // Adjust the number of columns as needed
@@ -410,7 +436,7 @@ const styles = StyleSheet.create({
     closeButtonText: {
         color: '#222',
         fontSize: moderateScale(18),
-        alignSelf:'center'
+        alignSelf: 'center'
     },
 
     sectionContainer: {

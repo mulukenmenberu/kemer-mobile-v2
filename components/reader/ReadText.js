@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ScrollView, View, Text, StyleSheet, Linking } from 'react-native';
 import { horizontalScale, moderateScale, verticalScale } from '../../utils/Device';
 
@@ -48,7 +48,10 @@ const data = [
   }
 ];
 
-const ReadText = () => {
+const ReadText = ({selectedTopic, selectedCourse}) => {
+  useEffect(()=>{
+console.log(selectedTopic, selectedCourse, "hh")
+  },[])
 
   return (
     <ScrollView style={styles.container}>
