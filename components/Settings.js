@@ -10,7 +10,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   ScrollView,
-  StatusBar,
+  StatusBar, Button
 } from 'react-native';
 import { Card } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -32,30 +32,33 @@ export default function Settings({ navigation }) {
   const [refresh, setRefresh] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
 
+  const [fullName, setFullName] = useState('');
+  const [emailorPhone, setEmailorPhone] = useState('');
+
   const toggleInterest = (interest) => {
     // Step 1: Update the selected interests state
     setSelectedInterests((prevSelectedInterests) => {
       const updatedSelectedInterests = prevSelectedInterests.includes(interest)
         ? prevSelectedInterests.filter((item) => item !== interest)
         : [...prevSelectedInterests, interest];
-  
+
       // Step 2: Update the interests based on the latest selected interests
       const updatedInterests = { ...allInterests };
-  
+
       for (let value of Object.values(updatedInterests)) {
         updatedInterests[value] = updatedSelectedInterests.includes(value)
           ? 'selected'
           : 'notselected';
       }
-  
+
       // Step 3: Store the updated interests in local storage
       storeData('interestList', updatedInterests);
-  
+
       return updatedSelectedInterests; // Return the updated interests to be set
     });
   };
 
-  
+
   const toggleInterestt = (interest) => {
     let updatedInterests = { ...allInterests };
 
@@ -67,7 +70,7 @@ export default function Settings({ navigation }) {
 
     console.log(selectedInterests)
     // for (let key in updatedInterests) {
-      for (let value of Object.values(updatedInterests)) {
+    for (let value of Object.values(updatedInterests)) {
 
       if (selectedInterests.includes(value)) {
         updatedInterests[value] = 'selected';
@@ -122,30 +125,30 @@ export default function Settings({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-         <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <MaterialCommunityIcons name="menu-open" size={24} color="#222" />
+      <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
+        <MaterialCommunityIcons name="menu-open" size={24} color="#222" />
 
-                </View>
-                <Card style={{ marginTop: verticalScale(8), marginBottom: verticalScale(20), alignSelf: 'center', height: verticalScale(80), width: width - 20, backgroundColor: '#5E5CE6', justifyContent: 'center' }} onPress={() => navigation.navigate('Quiz')}>
-                    <View style={{ marginLeft: horizontalScale(10), marginRight: verticalScale(10), flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-                        <View>
-                            <Image source={require('../assets/avatar.png')} style={{ width: horizontalScale(50), height: verticalScale(50), borderRadius: moderateScale(50 / 2) }} />
-                        </View>
-                        <View style={{ marginLeft: horizontalScale(20) }}>
-                            <View style={{ flexDirection: 'row' }}>
-                                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: moderateScale(19) }}>Welcome </Text>
-                                <AntDesign name="edit" size={moderateScale(24)} color="white" />
-                            </View>
-                            <Text style={{ color: '#fff', paddingRight:horizontalScale(10) }}>{selectedInterests.join(' - ')}</Text>
-                        </View>
-                    </View>
-                </Card>
+      </View>
+      <Card style={{ marginTop: verticalScale(8), marginBottom: verticalScale(20), alignSelf: 'center', height: verticalScale(80), width: width - 20, backgroundColor: '#5E5CE6', justifyContent: 'center' }} onPress={() => navigation.navigate('Quiz')}>
+        <View style={{ marginLeft: horizontalScale(10), marginRight: verticalScale(10), flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+          <View>
+            <Image source={require('../assets/avatar.png')} style={{ width: horizontalScale(50), height: verticalScale(50), borderRadius: moderateScale(50 / 2) }} />
+          </View>
+          <View style={{ marginLeft: horizontalScale(20) }}>
+            <View style={{ flexDirection: 'row' }}>
+              <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: moderateScale(19) }}>Welcome </Text>
+              <AntDesign name="edit" size={moderateScale(24)} color="white" />
+            </View>
+            <Text style={{ color: '#fff', paddingRight: horizontalScale(10) }}>{selectedInterests.join(' - ')}</Text>
+          </View>
+        </View>
+      </Card>
       {/* </ImageBackground> */}
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <TestAd/>
+        <TestAd />
         <Text style={styles.mainTitle}>Time to customize your level</Text>
-       
+
 
         {/* Custom Swiper for Interests */}
         <ScrollView
@@ -198,10 +201,35 @@ export default function Settings({ navigation }) {
             />
           ))}
         </View>
+        <View style={{ padding: 20 }}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.textInput}
+              placeholder="Full name"
+              value={fullName}
+              onChangeText={setFullName}
+            />
+            {fullName ? <Text style={styles.checkmark}>✔️</Text> : null}
+          </View>
+
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.textInput}
+              placeholder="Email or phone"
+              value={emailorPhone}
+              onChangeText={setEmailorPhone}
+            />
+            {emailorPhone ? <Text style={styles.checkmark}>✔️</Text> : null}
+          </View>
+
+          <TouchableOpacity style={styles.saveButton} >
+            <Text style={styles.buttonText}>Save</Text>
+          </TouchableOpacity>
+        </View>
 
         <View style={styles.inputsContainer}>
           {/* <TestAd/> */}
-      
+
 
           <Text style={styles.loyaltyTitle}>Kelem Points</Text>
           <Text style={styles.loyaltyPoints}>Comming Soon</Text>
@@ -214,7 +242,7 @@ export default function Settings({ navigation }) {
         </View>
       </ScrollView>
       <StatusBar backgroundColor="#F2F2F2" barStyle="dark-content" />
-      </SafeAreaView>
+    </SafeAreaView>
   );
 }
 
@@ -280,14 +308,14 @@ const styles = StyleSheet.create({
     marginTop: verticalScale(10),
     marginBottom: verticalScale(10),
     fontSize: moderateScale(20),
-    color:'#222',
+    color: '#222',
     alignSelf: 'center',
   },
   swiper: {
     marginTop: verticalScale(10),
   },
   interestsContainer: {
-    width: Dimensions.get('screen').width, 
+    width: Dimensions.get('screen').width,
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-evenly',
@@ -336,14 +364,14 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(18),
     fontWeight: 'bold',
     marginTop: verticalScale(20),
-    alignSelf:'center',
-    color:'#222'
+    alignSelf: 'center',
+    color: '#222'
   },
   loyaltyPoints: {
     fontSize: moderateScale(18),
     color: '#5E5CE6',
     marginVertical: verticalScale(10),
-    alignSelf:'center'
+    alignSelf: 'center'
   },
   loyaltyDescription: {
     fontSize: moderateScale(14),
@@ -354,12 +382,37 @@ const styles = StyleSheet.create({
     backgroundColor: '#5E5CE6',
     paddingVertical: verticalScale(12),
     borderRadius: moderateScale(8),
-    opacity:0.5,
+    opacity: 0.5,
     alignItems: 'center',
   },
+  saveButton: {
+    backgroundColor: '#5E5CE6',
+    paddingVertical: verticalScale(12),
+    borderRadius: moderateScale(8),
+    // opacity: 0.5,
+    alignItems: 'center',
+  },
+
   buttonText: {
     color: '#FFFFFF',
     fontWeight: 'bold',
   },
-
+  inputContainer: {
+    position: 'relative',
+    marginBottom: 20,
+  },
+  textInput: {
+    borderColor: 'gray',
+    borderRadius:10,
+    borderWidth: 1,
+    padding: 10,
+    paddingRight: 30, // Make room for the checkmark
+    flex: 1,
+  },
+  checkmark: {
+    position: 'absolute',
+    right: 10,
+    top: 12,
+    fontSize: 18,
+  },
 });
