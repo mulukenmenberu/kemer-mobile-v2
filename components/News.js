@@ -28,7 +28,7 @@ import ReadText from './reader/ReadText';
 import ReadTextMessage from './reader/ReadTextMessage';
 import { fetchSubjects } from '../redux/reducers/notesSlice';
 import SkeletonLoader from '../utils/SkeletonLoader';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const initialCourses = {
     Math_Grade_9: ['Algebra', 'Geometry', 'Calculus', 'Statistics'],
     Chemistry_Grade_9: ['Organic Chemistry', 'Inorganic Chemistry', 'Physical Chemistry', 'Biochemistry'],
@@ -71,6 +71,10 @@ export default function News({ navigation }) {
     const scrollViewRef = useRef(null);
     const courseScrollViewRef = useRef(null);
     const topicScrollViewRef = useRef(null);
+
+    const [fullName, setFullName] = useState('');
+    const [emailorPhone, setEmailorPhone] = useState('');
+
     const dispatch = useDispatch();
 
     const { subjects, loadings, errors } = useSelector((state) => state.subjects);
@@ -190,6 +194,7 @@ export default function News({ navigation }) {
         }
     };
 
+ 
 
     const renderTopicItem = ({ item }) => (
         <TouchableOpacity
@@ -244,6 +249,21 @@ export default function News({ navigation }) {
         setRefreshing(true);
     };
 
+    useEffect(() => {
+        const getUserData = async () => {
+            try {
+                const userData = await AsyncStorage.getItem('userInformation') || {};
+                const userData2 = JSON.parse(userData);
+                setFullName(userData2.fullName);
+                setEmailorPhone(userData2.emailorPhone);
+            } catch (error) {
+                console.error('Failed to fetch favorite status', error);
+            }
+        };
+
+        getUserData();
+    }, []);
+
     if (error) {
         return <NoInternetScreen isLoading={isLoading} setIsLoading={setIsLoading} />;
     }
@@ -260,7 +280,7 @@ export default function News({ navigation }) {
                     </View>
                     <View style={{ marginLeft: horizontalScale(20) }}>
                         <View style={{ flexDirection: 'row' }}>
-                            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: moderateScale(19) }}>Welcome </Text>
+                            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: moderateScale(19) }}>Welcome {fullName}</Text>
                             <AntDesign name="edit" size={moderateScale(24)} color="white" />
                         </View>
                         <Text style={{ color: '#fff', paddingRight: horizontalScale(10) }}>{selectedInterests.join(' - ')}</Text>

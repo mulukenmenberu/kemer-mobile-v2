@@ -29,6 +29,9 @@ export default function Dashboard({ navigation }) {
     const [refresh, setRefresh] = useState(true);
     const [exam_loaddr, setExamLoader] = useState(false);
 
+    const [fullName, setFullName] = useState('');
+    const [emailorPhone, setEmailorPhone] = useState('');
+
     const [visible, setVisible] = useState(false);
     const showModal = () => setVisible(true);
     const hideModal = () => {
@@ -37,6 +40,7 @@ export default function Dashboard({ navigation }) {
         }
     }
     const { examMode, loadingg, errorr } = useSelector((state) => state.examMode);
+
 
     const generateExamMode = () => {
         setExamLoader(true)
@@ -128,6 +132,22 @@ export default function Dashboard({ navigation }) {
         setRefreshing(true);
 
     };
+  
+
+      useEffect(() => {
+        const getUserData = async () => {
+            try {
+                const userData = await AsyncStorage.getItem('userInformation') || {};
+                const userDataa = JSON.parse(userData);
+                setFullName(userDataa.fullName);
+                setEmailorPhone(userDataa.emailorPhone); 
+            } catch (error) {
+                console.error('Failed to fetch favorite status', error);
+            } 
+        };
+
+        getUserData();
+    }, []);
     if (loading || isLoading) {
         return <SkeletonLoader />
     }
@@ -159,7 +179,7 @@ export default function Dashboard({ navigation }) {
                     </View>
                     <View style={{ marginLeft: horizontalScale(20) }}>
                         <View style={{ flexDirection: 'row' }}>
-                            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: moderateScale(19) }}>Welcome </Text>
+                            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: moderateScale(19) }}>Welcome {fullName}</Text>
                             <AntDesign name="edit" size={moderateScale(24)} color="#fff" />
                         </View>
                         <Text style={{ color: '#fff', paddingRight: 10 }}>{selectedInterests.join(' - ')}</Text>

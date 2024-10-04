@@ -25,6 +25,9 @@ import { TestAd } from '../TestAd';
 import { horizontalScale, moderateScale, verticalScale } from '../utils/Device';
 import Welcome from './Welcome';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
 export default function Settings({ navigation }) {
   const { width } = Dimensions.get('screen');
   const [selectedInterests, setSelectedInterests] = useState([]);
@@ -118,6 +121,29 @@ export default function Settings({ navigation }) {
     setCurrentPage(currentPageIndex);
   };
 
+
+
+  // Save user information to AsyncStorage
+  const saveUserInfo = async () => {
+    const userData = { fullName, emailorPhone };
+    await AsyncStorage.setItem('userInformation', JSON.stringify(userData));
+  };
+
+ 
+  useEffect(() => {
+    const getUserData = async () => {
+        try {
+          const userData = await AsyncStorage.getItem('userInformation') || {};
+          const userData2 = JSON.parse(userData);
+          setFullName(userData2.fullName);
+          setEmailorPhone(userData2.emailorPhone);
+        } catch (error) {
+            console.error('Failed to fetch favorite status', error);
+        }
+    };
+
+    getUserData();
+}, []);
   if (refresh) {
     return <SkeletonLoader />;
   }
@@ -136,7 +162,7 @@ export default function Settings({ navigation }) {
           </View>
           <View style={{ marginLeft: horizontalScale(20) }}>
             <View style={{ flexDirection: 'row' }}>
-              <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: moderateScale(19) }}>Welcome </Text>
+              <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: moderateScale(19) }}>Welcome {fullName}</Text>
               <AntDesign name="edit" size={moderateScale(24)} color="white" />
             </View>
             <Text style={{ color: '#fff', paddingRight: horizontalScale(10) }}>{selectedInterests.join(' - ')}</Text>
@@ -222,7 +248,7 @@ export default function Settings({ navigation }) {
             {emailorPhone ? <Text style={styles.checkmark}>✔️</Text> : null}
           </View>
 
-          <TouchableOpacity style={styles.saveButton} >
+          <TouchableOpacity style={styles.saveButton} onPress={() => saveUserInfo()}>
             <Text style={styles.buttonText}>Save</Text>
           </TouchableOpacity>
         </View>
@@ -403,7 +429,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     borderColor: 'gray',
-    borderRadius:10,
+    borderRadius: 10,
     borderWidth: 1,
     padding: 10,
     paddingRight: 30, // Make room for the checkmark

@@ -19,6 +19,8 @@ export default function Saved({ navigation }) {
     const [selectedInterests, setSelectedInterests] = useState([]);
     const [refresh, setRefresh] = useState(true);
     const [isFavorite, setIsFavorite] = useState([]);
+    const [fullName, setFullName] = useState('');
+    const [emailorPhone, setEmailorPhone] = useState('');
 
     const dispatch = useDispatch();
     const { packagesSaved, loading: packagesLoading, error: packagesError } = useSelector((state) => state.question_packages);
@@ -46,7 +48,7 @@ export default function Saved({ navigation }) {
         try {
             const courseId = await AsyncStorage.getItem('savedPackages'); //["1","2"]
             const parsedCourseId = JSON.parse(courseId); // Ensure it's an array
-            const commaCourseIDv = parsedCourseId.join(',')
+            const commaCourseIDv = parsedCourseId?.join(',')
              dispatch(fetchQuestionPackagesSaved(`course_ids=${commaCourseIDv}`))
         } catch (error) {
             console.error('Failed to fetch question packages:', error);
@@ -56,6 +58,8 @@ export default function Saved({ navigation }) {
         }
     };
     
+
+
     useEffect(() => {
         readData('interestList').then((data) => {
           const interestsArray = Object.keys(data).filter((key) => data[key] === 'selected')
@@ -72,7 +76,20 @@ export default function Saved({ navigation }) {
         setRefreshing(true);
         // fetchData().then(() => setRefreshing(false)); // Refresh data on pull
     };
+      useEffect(() => {
+        const getUserData = async () => {
+            try {
+                const userData = await AsyncStorage.getItem('userInformation') || {};
+                const userData2 = JSON.parse(userData);
+                setFullName(userData2.fullName);
+                setEmailorPhone(userData2.emailorPhone);
+            } catch (error) {
+                console.error('Failed to fetch favorite status', error);
+            }
+        };
 
+        getUserData();
+    }, []);
 if(isLoading) return <Text>Loading....</Text>
     return (
         <SafeAreaView style={styles.container}>
@@ -87,7 +104,7 @@ if(isLoading) return <Text>Loading....</Text>
                         </View>
                         <View style={{ marginLeft: horizontalScale(20) }}>
                             <View style={{ flexDirection: 'row' }}>
-                                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: moderateScale(19) }}>Welcome </Text>
+                                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: moderateScale(19) }}>Welcome {fullName}</Text>
                                 <AntDesign name="edit" size={moderateScale(24)} color="white" />
                             </View>
                             <Text style={{ color: '#fff', paddingRight:horizontalScale(10) }}>{selectedInterests.join(' - ')}</Text>
