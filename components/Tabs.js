@@ -1,8 +1,9 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Feather from 'react-native-vector-icons/Feather';
 import Dashboard from './Dashboard';
-import Jobs from './Jobs';
+import News from './News';
 import Saved from './Saved';
 import Settings from './Settings';
 const Tab = createBottomTabNavigator();
@@ -41,12 +42,12 @@ export default Tabs = ()=> {
         }}
       />
       <Tab.Screen
-        name="Jobs"
-        component={Jobs}
+        name="News"
+        component={News}
         options={{
-          tabBarLabel: 'Jobs',
+          tabBarLabel: 'News',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="chart-line-variant" color={color} size={size} />
+            <Feather name="book-open" color={color} size={size} />
             
           ),
         }}

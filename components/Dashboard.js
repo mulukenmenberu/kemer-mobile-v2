@@ -1,6 +1,6 @@
 // import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { Image, StatusBar, TextInput, StyleSheet, Text, View, Platform, StatusBar as stbar, Dimensions, SafeAreaView, ImageBackground, TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
+import { Image, StatusBar, TextInput, StyleSheet, Text, View, Platform, StatusBar as stbar, Dimensions, SafeAreaView, ImageBackground, TouchableOpacity, ScrollView, RefreshControl, Alert } from 'react-native';
 import { Card } from 'react-native-paper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -16,13 +16,58 @@ import SkeletonLoader from '../utils/SkeletonLoader';
 import NoInternetScreen from '../utils/NoInternetScreen';
 import { readData } from '../data/DB';
 import { TestAd } from '../TestAd';
-
+import { horizontalScale, moderateScale, verticalScale } from '../utils/Device';
+import { Modal, Portal, Button, Provider } from 'react-native-paper';
+import { fetchExamMode } from '../redux/reducers/examModeSlice';
 export default function Dashboard({ navigation }) {
     const { width, height } = Dimensions.get('screen')
     const [active, setActive] = useState(0)
     const [isLoading, setIsLoading] = useState(false);
     const [isFavorite, setIsFavorite] = useState([]);
     const [refreshing, setRefreshing] = useState(false); // State to manage refreshing
+    const [selectedInterests, setSelectedInterests] = useState([]);
+    const [refresh, setRefresh] = useState(true);
+    const [exam_loaddr, setExamLoader] = useState(false);
+
+    const [fullName, setFullName] = useState('');
+    const [emailorPhone, setEmailorPhone] = useState('');
+
+    const [visible, setVisible] = useState(false);
+    const showModal = () => setVisible(true);
+    const hideModal = () => {
+        if (!exam_loaddr) {
+            setVisible(false);
+        }
+    }
+    const { examMode, loadingg, errorr } = useSelector((state) => state.examMode);
+
+
+    const generateExamMode = () => {
+        setExamLoader(true)
+        readData('interestList').then((data) => {
+
+            const interestsArray = Object.keys(data)
+                .filter((key) => data[key] === "selected")
+            // .join(' - '); 
+
+            dispatch(fetchExamMode(interestsArray)).then((response) => {
+                navigation.navigate('ExamMode', {
+                    package_id: 1,
+                    question_data: response.payload,
+                    package_name: "Model Exam",
+                    tags: "",
+                })
+
+                setVisible(false);
+                setExamLoader(false)
+
+            })
+        });
+    }
+
+    const containerStyle = { backgroundColor: 'white', padding: 20, marginTop: verticalScale(-70), width: '80%', alignSelf: 'center' };
+
+
 
     const dispatch = useDispatch();
     const { courses, loading, error } = useSelector((state) => state.courses);
@@ -32,7 +77,9 @@ export default function Dashboard({ navigation }) {
         readData('interestList').then((data) => {
 
             const interestsArray = Object.keys(data)
-            .filter((key) => data[key] === "selected");
+                .filter((key) => data[key] === "selected")
+            // .join(' - '); 
+
             dispatch(fetchCourses(interestsArray)).then((response) => {
                 setActive(response.payload[0].course_id)
                 setRefreshing(false)
@@ -43,108 +90,134 @@ export default function Dashboard({ navigation }) {
     useEffect(() => {
         if (active !== 0) {
             setIsLoading(true);
-            dispatch(fetchQuestionPackages(active)).then((response) => {
 
+            dispatch(fetchQuestionPackages(active)).then((response) => {
+                // console.log(packages)
                 setIsLoading(false);
             }).catch(() => {
                 setIsLoading(false);
             });
         }
-    }, [active, dispatch]);
+    }, [active, dispatch,]);
 
 
+    useEffect(() => {
+        readData('interestList').then((data) => {
+            const interestsArray = Object.keys(data).filter((key) => data[key] === 'selected');
+            //   console.log(interestsArray)
+            setSelectedInterests(interestsArray);
+            setRefresh(false);
+        });
+    }, [refresh]);
 
 
-      useEffect(() => {
+    useEffect(() => {
         const checkFavoriteStatus = async () => {
-          try {
-            const savedPackages = JSON.parse(await AsyncStorage.getItem('savedPackages')) || [];
-            setIsFavorite(savedPackages);
-          } catch (error) {
-            console.error('Failed to fetch favorite status', error);
-          }
+            try {
+                const savedPackages = JSON.parse(await AsyncStorage.getItem('savedPackages')) || [];
+                setIsFavorite(savedPackages);
+            } catch (error) {
+                console.error('Failed to fetch favorite status', error);
+            }
         };
-    
+
         checkFavoriteStatus();
-      }, []);
+    }, []);
 
-      const checkFavoriteStatus =  (package_id) => {
-          return isFavorite.includes(package_id)
+    const checkFavoriteStatus = (package_id) => {
+        return isFavorite.includes(package_id)
 
-      };
-
-      const onRefresh = () => {
+    };
+    const onRefresh = () => {
         setRefreshing(true);
 
     };
-      if (loading || isLoading) {
-        return <SkeletonLoader/>
-      }
-    
-      if (error) {
-        return <NoInternetScreen/>
-      }
+  
+
+      useEffect(() => {
+        const getUserData = async () => {
+            try {
+                const userData = await AsyncStorage.getItem('userInformation') || {};
+                const userDataa = JSON.parse(userData);
+                setFullName(userDataa.fullName);
+                setEmailorPhone(userDataa.emailorPhone); 
+            } catch (error) {
+                console.error('Failed to fetch favorite status', error);
+            } 
+        };
+
+        getUserData();
+    }, []);
+    if (loading || isLoading) {
+        return <SkeletonLoader />
+    }
+
+    if (error) {
+        return <NoInternetScreen isLoading={isLoading} setIsLoading={setIsLoading} />
+    }
     return (
 
         <SafeAreaView style={styles.container}>
-            {/* <ImageBackground
-                source={require('../assets/image2.png')} // Replace with your background image path
-                style={styles.backgroundImage}
-            > */}
-                <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
-                    {/* <Image source={require('../assets/logo.png')} style={{ width: 30, height: 30 }} /> */}
-                    {/* <Text style={{ fontWeight: 'bold', color: '#fff' }}>Dashboard</Text> */}
 
-                    <MaterialCommunityIcons name="menu-open" size={24} color="#222" />
-                </View>
-                <Card style={{ marginTop: 8, marginBottom: 20, alignSelf: 'center', height: 80, width: width - 20, backgroundColor: '#5E5CE6', justifyContent: 'center' }} >
-                    <View style={{ marginLeft: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+            <View style={{
+                marginLeft: horizontalScale(10), marginTop: verticalScale(10), marginRight: horizontalScale(10),
+                flexDirection: 'row', justifyContent: 'space-between'
+            }}>
+                <MaterialCommunityIcons name="menu-open" size={moderateScale(24)} color="#222" onPress={showModal} />
+            </View>
+            <Card style={{
+                marginTop: verticalScale(8), marginBottom: horizontalScale(20), alignSelf: 'center',
+                height: verticalScale(80), width: width - 20, backgroundColor: '#5E5CE6', justifyContent: 'center'
+            }} >
+                <View style={{ marginLeft: horizontalScale(10), marginRight: horizontalScale(10), flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
 
-                        <View>
-                            <Image source={require('../assets/avatar.png')} style={{ width: 50, height: 50, borderRadius: 50 / 2 }} />
-                        </View>
-                        <View style={{ marginLeft: 20 }}>
-                            <View style={{ flexDirection: 'row' }}>
-                                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 19 }}>Muluken M </Text>
-                                <AntDesign name="edit" size={24} color="#fff" />
-                            </View>
-                            <Text style={{ color: '#fff' }}>Information Technology - 3rd year</Text>
-                        </View>
+                    <View>
+                        <Image source={require('../assets/avatar.png')} style={{
+                            width: horizontalScale(50),
+                            height: verticalScale(50), borderRadius: moderateScale(50 / 2)
+                        }} />
                     </View>
-                </Card>
-            {/* </ImageBackground> */}
+                    <View style={{ marginLeft: horizontalScale(20) }}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: moderateScale(19) }}>Welcome {fullName}</Text>
+                            <AntDesign name="edit" size={moderateScale(24)} color="#fff" />
+                        </View>
+                        <Text style={{ color: '#fff', paddingRight: 10 }}>{selectedInterests.join(' - ')}</Text>
+                    </View>
+                </View>
+            </Card>
+            <TestAd />
             <ScrollView
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                 }
             >
-
-                {/* <Text style={{ marginLeft: 10, marginTop: 10, fontSize: 20 }}> Welcome, Muluken</Text> */}
-                    <TestAd/>
-
                 <View>
-                    <View style={{ marginTop: 10, flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                        <View style={{ padding: 10, borderRadius: 20, backgroundColor: '#FF8A80', height: 130, width: 180 }}>
-                            <Entypo name="newsletter" size={24} style={{ alignSelf: 'flex-end' }} color="#fff" />
-                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: 35 }}>3</Text>
-                            <Text style={{ color: '#fff', fontSize: 13 }}>Recently Posted Items</Text>
+                    <View style={{ marginTop: verticalScale(10), flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                        <View style={{ padding: moderateScale(10), borderRadius: moderateScale(16), backgroundColor: '#FF8A80', height: verticalScale(130), width: horizontalScale(180) }}>
+                            <Entypo name="newsletter" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
+                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: moderateScale(35) }}>3</Text>
+                            <Text style={{ color: '#fff', fontSize: moderateScale(13) }}>Recently Posted Items</Text>
                         </View>
-                        <View style={{ padding: 10, borderRadius: 20, backgroundColor: '#FDD835', height: 130, width: 180 }}>
-                            <Ionicons name="alarm" size={24} style={{ alignSelf: 'flex-end' }} color="#fff" />
+                        <View style={{ padding: 10, borderRadius: moderateScale(16), backgroundColor: '#FDD835', height: verticalScale(130), width: horizontalScale(180) }}>
+                            <Ionicons name="alarm" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
                             <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: 35 }}>120</Text>
-                            <Text style={{ color: '#fff', fontSize: 13 }}>Most Visited Items</Text>
+                            <Text style={{ color: '#fff', fontSize: moderateScale(13) }}>Most Visited Items</Text>
                         </View>
                     </View>
-                    <View style={{ marginTop: 10, flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                        <View style={{ padding: 10, borderRadius: 20, backgroundColor: '#5C6BC0', height: 130, width: 180 }}>
-                            <MaterialIcons name="category" size={24} style={{ alignSelf: 'flex-end' }} color="#fff" />
-                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: 35 }}>7</Text>
-                            <Text style={{ color: '#fff', fontSize: 13 }}>Your Saved Items</Text>
+                    <View style={{ marginTop: verticalScale(10), flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                        <View style={{ padding: moderateScale(10), borderRadius: moderateScale(16), backgroundColor: '#5C6BC0', height: verticalScale(130), width: horizontalScale(180) }}>
+                            <MaterialIcons name="category" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
+                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: moderateScale(35) }}>7</Text>
+                            <Text style={{ color: '#fff', fontSize: moderateScale(13) }}>Your Saved Items</Text>
                         </View>
-                        <View style={{ padding: 10, borderRadius: 20, backgroundColor: '#424242', height: 130, width: 180 }} >
-                            <FontAwesome name="sticky-note" size={24} style={{ alignSelf: 'flex-end' }} color="#fff" />
-                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: 35 }}>13</Text>
-                            <Text style={{ color: '#fff', fontSize: 13 }}>Active Items</Text>
+                        <View style={{
+                            padding: moderateScale(10), borderRadius: moderateScale(16), backgroundColor: '#424242', height: verticalScale(130),
+                            width: horizontalScale(180)
+                        }} >
+                            <FontAwesome name="sticky-note" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
+                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: moderateScale(35) }}>13</Text>
+                            <Text style={{ color: '#fff', fontSize: moderateScale(13) }}>Active Items</Text>
                         </View>
                     </View>
 
@@ -155,16 +228,14 @@ export default function Dashboard({ navigation }) {
                         horizontal
                         showsHorizontalScrollIndicator={false}>
                         {courses.map((course) => (
-                            <Text onPress={() => setActive(course.course_id)} style={{ margin: 20, fontWeight: active == course.course_id ? 'bold' : '', color: active == course.course_id ? '#5E5CE6' : '#CBD1DF' }}>{course.course_name}</Text>
+                            <Text key={course.course_id} onPress={() => setActive(course.course_id)} style={{ margin: moderateScale(20), fontWeight: active == course.course_id ? 'bold' : '', color: active == course.course_id ? '#5E5CE6' : '#CBD1DF' }}>{course.course_name}</Text>
                         ))}
-
-
                     </ScrollView>
                 </View>
-              
+
                 <View>
                     {isLoading ? (
-                        <View style={{ alignItems: 'center', marginTop: 20 }}>
+                        <View style={{ alignItems: 'center', marginTop: verticalScale(20) }}>
                             <Text>Loading...</Text>
                         </View>
                     ) : (
@@ -172,16 +243,16 @@ export default function Dashboard({ navigation }) {
                             <TouchableOpacity
                                 key={item.package_id}
                                 style={{
-                                    marginTop: 15,
+                                    marginTop: verticalScale(15),
                                     alignSelf: 'center',
-                                    borderRadius: 12,
+                                    borderRadius: moderateScale(12),
                                     backgroundColor: '#FFFFFF',
                                     width: width - 40,
                                     shadowOffset: { width: 0, height: 2 },
                                     shadowOpacity: 0.2,
-                                    shadowRadius: 4,
+                                    shadowRadius: moderateScale(4),
                                 }}
-                                onPress={() => navigation.navigate('Quiz', {
+                                onPress={() => navigation.navigate(item.has_description == 0 ? 'QuizeDescription' : 'QuizeDescription', {
                                     package_id: item.package_id,
                                     package_name: item.package_name,
                                     tags: item.tags,
@@ -190,38 +261,54 @@ export default function Dashboard({ navigation }) {
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <Text style={{
                                         fontWeight: 'bold',
-                                        marginLeft: 15,
-                                        marginTop: 5,
-                                        color: '#fff', 
-                                        fontSize: 13,
+                                        marginLeft: horizontalScale(15),
+                                        marginTop: verticalScale(5),
+                                        color: '#fff',
+                                        fontSize: moderateScale(13),
                                         alignSelf: 'flex-start',
-                                        backgroundColor: '#FF6347', 
-                                        paddingVertical: 5,
-                                        paddingHorizontal: 10,
-                                        borderRadius: 8, 
+                                        backgroundColor: '#FF6347',
+                                        paddingVertical: verticalScale(5),
+                                        paddingHorizontal: horizontalScale(10),
+                                        borderRadius: moderateScale(8),
                                         textAlign: 'center',
                                         overflow: 'hidden'
                                     }}>
                                         {item.tags}
                                     </Text>
-
-                                    <AntDesign name={checkFavoriteStatus(item.package_id)?"heart":'hearto'} style={{ padding: 10 }} size={16} color="#5E5CE6">  </AntDesign>
+                                    <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                                        {/* {item.is_locked==1?<Entypo name="lock" style={{ padding: moderateScale(10) }} size={moderateScale(16)} color="#5E5CE6">  </Entypo>:''} */}
+                                        <AntDesign name={checkFavoriteStatus(item.package_id) ? "heart" : 'hearto'} style={{ padding: 10 }} size={moderateScale(16)} color="#5E5CE6">  </AntDesign>
+                                    </View>
                                 </View>
-                                <Text style={{ paddingLeft: 10, paddingRight: 10, color: '#222', fontSize: 17, alignSelf: 'flex-start' }}>
+
+                                <Text style={{ paddingLeft: horizontalScale(10), paddingRight: horizontalScale(10), color: '#222', fontSize: moderateScale(17), alignSelf: 'flex-start' }}>
                                     {item.package_name}
                                 </Text>
+
+                                <Text style={{ textAlign: 'justify', padding: moderateScale(5), color: '#dfdfdf', fontSize: moderateScale(13), alignSelf: 'flex-start' }}>
+                                    {item.description}
+                                </Text>
+
                                 <View style={{ flex: 1, justifyContent: 'flex-end', flexDirection: 'column' }}>
-                                    <View style={{ padding: 20, paddingBotom: 30, flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                                    <View style={{ padding: moderateScale(20), paddingBotom: verticalScale(30), flexDirection: 'row', justifyContent: 'space-evenly' }}>
                                     </View>
                                 </View>
                             </TouchableOpacity>
                         ))
                     )}
-                    <View style={{ height: 100 , marginBottom:20}} />
+                    <View style={{ height: verticalScale(100), marginBottom: verticalScale(20) }} />
                 </View>
-                <View style={{ height: 100 , marginBottom:20}} />
-
+                <View style={{ height: verticalScale(100), marginBottom: verticalScale(20) }} />
             </ScrollView>
+            <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
+                {!exam_loaddr ? <TouchableOpacity style={styles.getStartedButton} onPress={() => generateExamMode()}>
+                    <Text style={styles.buttonText}>Generate Model Exam</Text>
+                </TouchableOpacity> :
+                    <TouchableOpacity style={styles.getStartedButton2}>
+                        <Text style={styles.buttonText}>Please wait</Text>
+                    </TouchableOpacity>}
+            </Modal>
+
             <StatusBar backgroundColor="#F2F2F2" barStyle="dark-content" />
         </SafeAreaView>
     );
@@ -229,8 +316,27 @@ export default function Dashboard({ navigation }) {
 
 const styles = StyleSheet.create({
     container: {
+
     },
-    backgroundImage: {
-        borderBottomLeftRadius: 40,
-    }
+    getStartedButton: {
+        backgroundColor: '#5E5CE6',
+        height: 50,
+        justifyContent: 'center',
+        borderRadius: moderateScale(10),
+    },
+    getStartedButton2: {
+        backgroundColor: '#5E5CA6',
+        height: 50,
+        justifyContent: 'center',
+        borderRadius: moderateScale(10),
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: verticalScale(16),
+        fontWeight: 'bold',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center'
+    },
 });

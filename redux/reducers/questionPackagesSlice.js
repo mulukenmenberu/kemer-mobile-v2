@@ -7,10 +7,11 @@ export const fetchQuestionPackages = createAsyncThunk(
   async (courseId) => {
     try {
       const response = await fetch(`${rootURL}question_packages/packages.php?course_id=${courseId}`);
+      // console.log(`${rootURL}question_packages/packages.php?course_id=${courseId}`)
       const data = await response.json();
 
       if (data.status === 'success') {
-        return data.data; // Return the data to be used in the reducer
+        return data.data ?? [];
       } else {
         throw new Error(data.message);
       }

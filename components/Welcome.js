@@ -6,6 +6,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { storeData } from '../data/DB';
 import SkeletonLoader from '../utils/SkeletonLoader';
 import NoInternetScreen from '../utils/NoInternetScreen';
+import { horizontalScale, moderateScale, verticalScale } from '../utils/Device';
 
 const Welcome = ({ navigation, setPage, page }) => {
   const dispatch = useDispatch();
@@ -13,6 +14,7 @@ const Welcome = ({ navigation, setPage, page }) => {
   const [selectedInterests, setSelectedInterests] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const { width } = Dimensions.get('screen');
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     dispatch(fetchDepartments());
@@ -60,19 +62,19 @@ const Welcome = ({ navigation, setPage, page }) => {
   }
 
   if (error) {
-    return <NoInternetScreen />
+    return <NoInternetScreen  isLoading={isLoading} setIsLoading={setIsLoading}/>
   }
 
   return (
     <SafeAreaView style={styles.container}>
       {/* Back Icon */}
       <TouchableOpacity style={styles.backIconContainer} onPress={() => setPage(page - 1)}>
-        <MaterialCommunityIcons name="arrow-left" color={"#333"} size={30} />
+        <MaterialCommunityIcons name="arrow-left" color={"#333"} size={moderateScale(30)} />
       </TouchableOpacity>
 
       {/* Placeholder for the icon above the text */}
       <View style={styles.iconContainer}>
-        <Image source={require('../assets/logo.png')} style={{ width: 200, height: 200 }} />
+        <Image source={require('../assets/logo.png')} style={{ width: horizontalScale(200), height: verticalScale(200) }} />
       </View>
 
       <ScrollView
@@ -102,7 +104,7 @@ const Welcome = ({ navigation, setPage, page }) => {
                   <MaterialCommunityIcons
                     name={interest.icon}
                     color={selectedInterests.includes(interest.department_name) ? '#FFFFFF' : '#555'}
-                    size={40}
+                    size={moderateScale(40)}
                   />
                   <Text
                     style={[
@@ -150,34 +152,34 @@ const styles = StyleSheet.create({
   },
   backIconContainer: {
     position: 'absolute',
-    top: 10,
-    left: 10,
+    top: verticalScale(10),
+    left: horizontalScale(10),
   },
 
   title: {
-    fontSize: 20,
+    fontSize: moderateScale(20),
     color: '#333',
     textAlign: 'center',
-    marginVertical: 20,
+    marginVertical: verticalScale(20),
     fontWeight: '600',
   },
   continueButton: {
     backgroundColor: '#5E5CE6',
-    paddingVertical: 15,
-    paddingHorizontal: 100,
-    borderRadius: 30,
+    paddingVertical: verticalScale(15),
+    paddingHorizontal: horizontalScale(100),
+    borderRadius: moderateScale(30),
   },
   getStartedButton: {
     backgroundColor: '#5E5CE6',
-    paddingVertical: 15,
-    paddingHorizontal: 100,
-    borderRadius: 20,
+    paddingVertical: verticalScale(15),
+    paddingHorizontal: horizontalScale(100),
+    borderRadius: moderateScale(20),
     alignSelf:'center'
     // marginTop: 30,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: moderateScale(16),
     fontWeight: 'bold',
     alignSelf:'center'
   },
@@ -193,14 +195,14 @@ const styles = StyleSheet.create({
   dotContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginVertical: 10,
+    marginVertical: verticalScale(10),
   },
   dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: horizontalScale(8),
+    height: verticalScale(8),
+    borderRadius: moderateScale(4),
     backgroundColor: '#ccc',
-    marginHorizontal: 4,
+    marginHorizontal: horizontalScale(4),
   },
   activeDot: {
     backgroundColor: '#5E5CE6',
@@ -209,16 +211,16 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginLeft: 10,
-    marginTop: 10,
-    marginRight: 10,
+    marginLeft: horizontalScale(10),
+    marginTop: verticalScale(10),
+    marginRight: horizontalScale(10),
   },
   logo: {
-    width: 30,
-    height: 30,
+    width: horizontalScale(30),
+    height: verticalScale(30),
   },
   swiper: {
-    marginTop: 10,
+    marginTop: verticalScale(10),
   },
   interestsContainer: {
     width: Dimensions.get('screen').width, // Full width for each page
@@ -228,31 +230,31 @@ const styles = StyleSheet.create({
   },
   interestButton: {
     width: '30%',
-    marginVertical: 10,
-    padding: 10,
-    borderRadius: 10,
+    marginVertical: verticalScale(10),
+    padding: moderateScale(10),
+    borderRadius: moderateScale(10),
     backgroundColor: '#f0f0f0',
     alignItems: 'center',
   },
   interestText: {
-    fontSize: 16,
-    marginTop: 10,
+    fontSize: moderateScale(16),
+    marginTop: verticalScale(10),
     color: '#555',
   },
   dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: horizontalScale(8),
+    height: verticalScale(8),
+    borderRadius: moderateScale(4),
     backgroundColor: '#ccc',
-    marginHorizontal: 4,
+    marginHorizontal: horizontalScale(4),
   },
   activeDot: {
     backgroundColor: '#5E5CE6',
   },
   continueButton: {
     backgroundColor: '#5E5CE6',
-    paddingVertical: 12,
-    borderRadius: 8,
+    paddingVertical: verticalScale(12),
+    borderRadius: moderateScale(8),
     alignItems: 'center',
   },
 

@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "FidelMobileApp.app"
-               BlueprintName = "FidelMobileApp"
-               ReferencedContainer = "container:FidelMobileApp.xcodeproj">
+               BuildableName = "KelemMobile.app"
+               BlueprintName = "KelemMobile"
+               ReferencedContainer = "container:KelemMobile.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "FidelMobileAppTests.xctest"
-               BlueprintName = "FidelMobileAppTests"
-               ReferencedContainer = "container:FidelMobileApp.xcodeproj">
+               BuildableName = "KelemMobileTests.xctest"
+               BlueprintName = "KelemMobileTests"
+               ReferencedContainer = "container:KelemMobile.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "FidelMobileApp.app"
-            BlueprintName = "FidelMobileApp"
-            ReferencedContainer = "container:FidelMobileApp.xcodeproj">
+            BuildableName = "KelemMobile.app"
+            BlueprintName = "KelemMobile"
+            ReferencedContainer = "container:KelemMobile.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "FidelMobileApp.app"
-            BlueprintName = "FidelMobileApp"
-            ReferencedContainer = "container:FidelMobileApp.xcodeproj">
+            BuildableName = "KelemMobile.app"
+            BlueprintName = "KelemMobile"
+            ReferencedContainer = "container:KelemMobile.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
