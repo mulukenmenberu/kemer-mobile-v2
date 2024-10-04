@@ -28,12 +28,12 @@ export const fetchSubjects = createAsyncThunk(
 
 export const fetchNotes = createAsyncThunk(
   "courses/fetchNotes",
-  async (subject, topic) => {
+  async ({selectedCourse, selectedTopic}) => {
     try {
 
 
-      const response = await fetch(`${rootURL}notes/get_note.php?subject=${subject}&topic=${topic}`);
-      // console.log(`${rootURL}notes/get_note_info.php?${levels.toString()}`)
+      const response = await fetch(`${rootURL}notes/get_note.php?subject=${selectedCourse}&topic=${selectedTopic}`);
+      console.log(`${rootURL}notes/get_note.php?subject=${selectedCourse}&topic=${selectedTopic}`)
       const data = await response.json();
 
       if (data.status === 'success') {

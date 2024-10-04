@@ -27,6 +27,7 @@ import NoInternetScreen from '../utils/NoInternetScreen';
 import ReadText from './reader/ReadText';
 import ReadTextMessage from './reader/ReadTextMessage';
 import { fetchSubjects } from '../redux/reducers/notesSlice';
+import SkeletonLoader from '../utils/SkeletonLoader';
 
 const initialCourses = {
     Math_Grade_9: ['Algebra', 'Geometry', 'Calculus', 'Statistics'],
@@ -92,7 +93,6 @@ export default function News({ navigation }) {
 
             dispatch(fetchSubjects(levels)).then((response) => {
                 setCourses(response.payload)
-                console.log(response.payload, " u")
                 setRefreshing(false)
             })
         });
@@ -120,7 +120,6 @@ export default function News({ navigation }) {
                 ...topics.filter((topic) => topic !== selectedTopic)
             ];
 
-            // Update the courses object with reordered topics for the selected course
             setCourses((prevCourses) => ({
                 ...prevCourses,
                 [selectedCourse]: reorderedTopics,
@@ -143,21 +142,20 @@ export default function News({ navigation }) {
     const handleTopicSelect = (topic) => {
         setSelectedTopic(topic);
         setIsLoadingG(true);
-        // setCourseSelected(0)
-        // setSelectedTopic(0);
+
         reorderTopicsInPlace(topic);
 
         if (topicScrollViewRef.current) {
             topicScrollViewRef.current.scrollTo({ x: 0, animated: true });
         }
 
-        setTimeout(() => {
+        // setTimeout(() => {
             setIsLoadingG(false);
             setChangePage(changePage + 1);
             if (scrollViewRef.current) {
                 scrollViewRef.current.scrollTo({ y: verticalScale(235), animated: true });
             }
-        }, 5000);
+        // }, 5000);
     };
 
     const handleTopicSelectFromModal = (topic) => {
@@ -269,12 +267,15 @@ export default function News({ navigation }) {
                     </View>
                 </View>
             </Card>
-            <View>
+            {(!courses && loading ) && <TestAd/>}
+            {!courses?  (!loadings?<ReadTextMessage messageText={"No reading materials for your selected levels"} />:<SkeletonLoader/>):
+            <>
+            <View> 
                 <ScrollView
                     ref={scrollViewRef} refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                    }>
-                    <TestAd />
+                    }> 
+                    <TestAd /> 
                     <ScrollView contentContainerStyle={{ padding: 20 }}>
                         {/* <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>Select a Subject</Text> */}
 
@@ -341,8 +342,8 @@ export default function News({ navigation }) {
                         contentInsetAdjustmentBehavior="automatic"
                         style={backgroundStyle}
                     >
-                        {isloading && <SkeletonLoaderReader />}
-                        {(changePage > 0 && !isloading) && <ReadText selectedTopic={selectedTopic} selectedCourse={selectedCourse}/>}
+                        {/* {isloading && <SkeletonLoaderReader />} */}
+                        {(changePage > 0 && !isloading) && <ReadText selectedTopic={selectedTopic} selectedCourse={selectedCourse} />}
                         {(changePage <= 0 || courseSelected <= 0) && <ReadTextMessage messageText={courseSelected <= 0 ? 'Please Select a Subject' : 'Please Select a Topic'} />}
                     </ScrollView>
                 </ScrollView>
@@ -399,6 +400,7 @@ export default function News({ navigation }) {
                     </View>
                 </View>
             </Modal>
+            </>}
         </SafeAreaView>
     );
 }
