@@ -10,7 +10,8 @@ import {
   ImageBackground,
   TouchableOpacity,
   ScrollView,
-  StatusBar, Button
+  StatusBar, Button,
+  Alert
 } from 'react-native';
 import { Card } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -136,6 +137,19 @@ export default function Settings({ navigation }) {
       });
       const result = await response.json();
       console.log('Device ID saved to server:', result);
+      
+      Alert.alert(
+        "Registration Success", // Title
+        "You have been successfully registered!", // Body
+        [
+          {
+            text: "OK", // Button text
+            onPress: () => console.log("OK Pressed"), // Optional onPress handler
+          },
+        ],
+        { cancelable: false } // Optional options
+      );
+
     } catch (error) {
       console.error('Error saving device ID to server:', error);
     }
