@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { ScrollView, View, Text, StyleSheet, Linking } from 'react-native';
 import { horizontalScale, moderateScale, verticalScale } from '../../utils/Device';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchNotes } from '../../redux/reducers/notesSlice';
 const data = [
   {
     id: 1,
@@ -49,6 +50,10 @@ const data = [
 ];
 
 const ReadText = ({selectedTopic, selectedCourse}) => {
+  const dispatch = useDispatch();
+
+  const { notes, loadings2, errors2 } = useSelector((state) => state.subjects);
+
   useEffect(()=>{
 console.log(selectedTopic, selectedCourse, "hh")
   },[])

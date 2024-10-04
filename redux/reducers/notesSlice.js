@@ -26,12 +26,37 @@ export const fetchSubjects = createAsyncThunk(
   }
 );
 
+export const fetchNotes = createAsyncThunk(
+  "courses/fetchNotes",
+  async (subject, topic) => {
+    try {
+
+
+      const response = await fetch(`${rootURL}notes/get_note.php?subject=${subject}&topic=${topic}`);
+      // console.log(`${rootURL}notes/get_note_info.php?${levels.toString()}`)
+      const data = await response.json();
+
+      if (data.status === 'success') {
+        return data.data; // Return the data to be used in the reducer
+      } else {
+        throw new Error(data.message);
+      }
+    } catch (error) {
+      throw error; // This will be caught and rejected in the thunk
+    }
+  }
+);
+
+
 const notesSlice = createSlice({
   name: "subjects",
   initialState: {
     subjects: {},
+    notes: [],
     loadings: false,
     errors: null,
+    loadings2: false,
+    errors2: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -47,6 +72,19 @@ const notesSlice = createSlice({
       .addCase(fetchSubjects.rejected, (state, action) => {
         state.loadings = false;
         state.errors = action.error.message;
+      })
+
+      .addCase(fetchNotes.pending, (state) => {
+        state.loadings2 = true;
+        state.errors2 = null;
+      })
+      .addCase(fetchNotes.fulfilled, (state, action) => {
+        state.loadings2 = false;
+        state.subjects = action.payload;
+      })
+      .addCase(fetchNotes.rejected, (state, action) => {
+        state.loadings2 = false;
+        state.errors2 = action.error.message;
       });
   },
 });
