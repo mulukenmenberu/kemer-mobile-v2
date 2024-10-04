@@ -24,8 +24,10 @@ import SkeletonLoader from '../utils/SkeletonLoader';
 import { TestAd } from '../TestAd';
 import { horizontalScale, moderateScale, verticalScale } from '../utils/Device';
 import Welcome from './Welcome';
+import DeviceInfo from 'react-native-device-info';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { rootURL } from '../config/baseApi';
 
 
 export default function Settings({ navigation }) {
@@ -37,6 +39,7 @@ export default function Settings({ navigation }) {
 
   const [fullName, setFullName] = useState('');
   const [emailorPhone, setEmailorPhone] = useState('');
+  const [deviceId, setDeviceId] = useState('');
 
   const toggleInterest = (interest) => {
     // Step 1: Update the selected interests state
@@ -122,28 +125,52 @@ export default function Settings({ navigation }) {
   };
 
 
+  const saveDeviceIdToServer = async () => {
+    try {
+      const response = await fetch(`${rootURL}users/register_device.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ device_id: deviceId, full_name: fullName, email: emailorPhone }),
+      });
+      const result = await response.json();
+      console.log('Device ID saved to server:', result);
+    } catch (error) {
+      console.error('Error saving device ID to server:', error);
+    }
+  };
 
   // Save user information to AsyncStorage
   const saveUserInfo = async () => {
-    const userData = { fullName, emailorPhone };
+    const userData = { fullName, emailorPhone, deviceId };
     await AsyncStorage.setItem('userInformation', JSON.stringify(userData));
+    saveDeviceIdToServer()
   };
 
- 
+
   useEffect(() => {
     const getUserData = async () => {
-        try {
-          const userData = await AsyncStorage.getItem('userInformation') || {};
-          const userData2 = JSON.parse(userData);
-          setFullName(userData2.fullName);
-          setEmailorPhone(userData2.emailorPhone);
-        } catch (error) {
-            console.error('Failed to fetch favorite status', error);
-        }
+      try {
+        const userData = await AsyncStorage.getItem('userInformation') || {};
+        const userData2 = JSON.parse(userData);
+        setFullName(userData2.fullName);
+        setEmailorPhone(userData2.emailorPhone);
+      } catch (error) {
+        console.error('Failed to fetch favorite status', error);
+      }
     };
 
     getUserData();
-}, []);
+  }, []);
+  useEffect(() => {
+    const fetchDeviceId = async () => {
+      const id = await DeviceInfo.getUniqueId();
+      setDeviceId(id);
+    };
+
+    fetchDeviceId();
+  }, []);
   if (refresh) {
     return <SkeletonLoader />;
   }
@@ -227,6 +254,8 @@ export default function Settings({ navigation }) {
             />
           ))}
         </View>
+        <Text style={styles.loyaltyTitle}>Bind Name and Email(phone)</Text>
+
         <View style={{ padding: 20 }}>
           <View style={styles.inputContainer}>
             <TextInput
