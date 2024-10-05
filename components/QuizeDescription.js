@@ -143,7 +143,7 @@ let descriptionManagers = []
   if (error) return <NoInternetScreen />;
 
   const currentQuestion = questions[currentQuestionIndex];
-
+// console.log(package_id)
   return (
     <SafeAreaView style={styles.container}>
       <TouchableOpacity style={styles.backIconContainer} onPress={() => navigation.navigate('Tabs')}>
@@ -161,9 +161,9 @@ let descriptionManagers = []
           <Text style={styles.subtitle}>{package_name}</Text>
         </View>
         <View>
-          <Text style={styles.statsText}>Correct: {correctAnswers}</Text>
-          <Text style={styles.statsTextWrong}>Wrong: {' ' + wrongAnswers}</Text>
-          <Text style={styles.statsTextTotal}>Total Q: {questions.length}</Text>
+          <Text style={styles.statsText}></Text>
+          <Text style={styles.statsTextTotal}>Type: Multiple Choice</Text>
+          <Text style={styles.statsTextTotal}>Total Questions: {questions.length}</Text>
         </View>
       </View>
 
@@ -223,10 +223,11 @@ let descriptionManagers = []
           </View>
         )}
         {descriptionManagers?.includes(`${currentQuestion?.question_id}`) ? (
+          (currentQuestion?.answer_description !==null && currentQuestion?.answer_description !='') && (
           <View style={{ justifyContent: 'center', alignItems: 'center', padding: 10, backgroundColor: '#f5f5f5', borderRadius: 5 }}>
             <Text style={{ alignSelf: 'left', fontWeight: 'bold', color: '#222' }}>Description</Text>
             <Text style={{ fontFamily: 'monospace', padding: 10, borderRadius: 5, color: '#222' }}>{currentQuestion?.answer_description}</Text>
-          </View>) : ''}
+          </View>)) : ''}
       </ScrollView>
 
 
