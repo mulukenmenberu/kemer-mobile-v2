@@ -4,11 +4,12 @@ import { rootURL } from "../../config/baseApi";
 // Async thunk to fetch the course data
 export const fetchExamMode = createAsyncThunk(
   "courses/fetchExamMode",
-  async (departmentNames) => {
+  async ({interestsArray,userNames}) => {
     try {
 
         const params = new URLSearchParams({
-          department_names: JSON.stringify(departmentNames),
+          department_names: JSON.stringify(interestsArray),
+          userNames: JSON.stringify(userNames),
         }); 
       const response = await fetch(`${rootURL}/courses/exam_mode.php?${params.toString()}`);
       // console.log(`${rootURL}/courses/courses.php?${params.toString()}`)
