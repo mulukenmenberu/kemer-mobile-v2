@@ -9,24 +9,24 @@ const ExamMode = ({ route, navigation }) => {
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [wrongAnswers, setWrongAnswers] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [showresult, setShowResult] = useState(false);
+  const [showResult, setShowResult] = useState(false);
+  const [reviewMode, setReviewMode] = useState(false); // Added for review mode
 
   const { package_id, package_name, tags, question_data } = route.params;
   const questions = question_data;
 
-  // Track if the correct or wrong answer has been counted for each question
   const [countedAnswers, setCountedAnswers] = useState({});
 
   const selectOption = (questionIndex, optionIndex, isCorrect) => {
+    if (reviewMode) return; // Disable selection in review mode
+
     const updatedSelections = [...selectedOptions];
     updatedSelections[questionIndex] = optionIndex;
 
-    // Check if we've already counted an answer for this question
     const previouslySelectedOption = selectedOptions[questionIndex];
     const isPreviouslyCorrect = questions[questionIndex][`question_ans${previouslySelectedOption + 1}`]?.endsWith('**');
 
     if (countedAnswers[questionIndex]) {
-      // If the previous option was correct or wrong, update the counters
       if (isPreviouslyCorrect) {
         setCorrectAnswers((prev) => prev - 1);
       } else {
@@ -36,14 +36,12 @@ const ExamMode = ({ route, navigation }) => {
 
     setSelectedOptions(updatedSelections);
 
-    // Update the counters based on the new selection
     if (isCorrect) {
       setCorrectAnswers((prev) => prev + 1);
     } else {
       setWrongAnswers((prev) => prev + 1);
     }
 
-    // Mark that this question's answer has been counted
     setCountedAnswers((prev) => ({
       ...prev,
       [questionIndex]: true,
@@ -55,19 +53,21 @@ const ExamMode = ({ route, navigation }) => {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     }
   };
-  const reviewAnswers = ()=>{
-    
-  }
-  const showResult = () => {
-    setShowResult(true)
-  };
-
 
   const goToPreviousQuestion = () => {
-    setShowResult(false)
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
     }
+  };
+
+  const showResults = () => {
+    setShowResult(true);
+  };
+
+  const reviewAnswers = () => {
+    setShowResult(false);  // Go back to question one
+    setReviewMode(true);   // Enter review mode
+    setCurrentQuestionIndex(0); // Go to the first question
   };
 
   const currentQuestion = questions[currentQuestionIndex];
@@ -90,75 +90,94 @@ const ExamMode = ({ route, navigation }) => {
       </View>
 
       <TestAd />
-      {!showresult && <ScrollView contentContainerStyle={styles.scrollContent}>
-        {currentQuestion && (
-          <View key={currentQuestion.question_id} style={styles.questionContainer}>
-            <Text style={styles.questionText}>{currentQuestionIndex + 1} {'. ' + currentQuestion.question_text}</Text>
-            {[currentQuestion.question_ans1, currentQuestion.question_ans2, currentQuestion.question_ans3, currentQuestion.question_ans4].map((optionText, optionIndex) => {
-              if (!optionText) return null;
+      {!showResult && (
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          {currentQuestion && (
+            <View key={currentQuestion.question_id} style={styles.questionContainer}>
+              <Text style={styles.questionText}>
+                {currentQuestionIndex + 1} {'. ' + currentQuestion.question_text}
+              </Text>
+              {[currentQuestion.question_ans1, currentQuestion.question_ans2, currentQuestion.question_ans3, currentQuestion.question_ans4].map((optionText, optionIndex) => {
+                if (!optionText) return null;
 
-              const isCorrect = optionText.endsWith('**');
-              const option = { text: optionText.replace('**', ''), correct: isCorrect };
-              const isSelected = selectedOptions[currentQuestionIndex] === optionIndex;
+                const isCorrect = optionText.endsWith('**');
+                const option = { text: optionText.replace('**', ''), correct: isCorrect };
+                const isSelected = selectedOptions[currentQuestionIndex] === optionIndex;
 
-              return (
-                <TouchableOpacity
-                  key={optionIndex}
-                  style={[
-                    styles.optionButton,
-                    isSelected ? (isCorrect ? styles.correctOption : styles.wrongOption) : null
-                  ]}
-                  onPress={() => selectOption(currentQuestionIndex, optionIndex, isCorrect)}
-                >
-                  <Text
-                    style={[
-                      styles.optionText,
-                      isSelected ? (isCorrect ? styles.correctOption : styles.wrongOption) : null
-                    ]}
+                const optionStyleold = reviewMode
+                  ? (isSelected
+                    ? (isCorrect ? styles.correctOption : styles.wrongOption)
+                    : (isCorrect ? styles.correctOption : null))
+                  : (isSelected ? (isCorrect ? styles.correctOption : styles.wrongOption) : null);
+
+                const optionStyle = reviewMode
+                  ? (isSelected
+                    ? (isCorrect ? styles.correctOptionShow : styles.wrongOptionShow)
+                    : (isCorrect ? styles.correctOptionShow : null))
+                  : (isSelected ? (isCorrect ? styles.correctOption : styles.wrongOption) : null);
+
+
+                return (
+                  <TouchableOpacity
+                    key={optionIndex}
+                    style={[styles.optionButton, optionStyle]}
+                    onPress={() => selectOption(currentQuestionIndex, optionIndex, isCorrect)}
+                    disabled={reviewMode} // Disable in review mode
                   >
-                    {option.text}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
+                    <Text style={[styles.optionText, optionStyle]}>
+                      {option.text}
+                    </Text>
+                    {((isSelected && reviewMode) || (reviewMode && isCorrect)) && (
+                    <MaterialCommunityIcons
+                      name={isCorrect ? "check-circle" : "close-circle"}
+                      color={isCorrect ? "#2ecc71" : "#FF4D4D"}
+                      size={24}
+                      style={styles.resultIcon}
+                    />
+                  )}
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          )}
+        </ScrollView>
+      )}
+
+      {showResult && (
+        <View>
+          <Text style={{ fontWeight: 'bold', paddingLeft: moderateScale(20), fontSize: moderateScale(15), paddingBottom: 5 }}>Exam Result</Text>
+          <View style={{ alignSelf: 'center', marginBottom: 50, width: '90%', borderWidth: 1, borderColor: '#ddd', borderRadius: 8, padding: 10 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#ccc' }}>
+              <Text style={{ fontWeight: 'bold', color: '#333' }}>Correct Answers:</Text>
+              <Text style={{ fontWeight: 'bold', color: '#28a745' }}>{correctAnswers}</Text>
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#ccc' }}>
+              <Text style={{ fontWeight: 'bold', color: '#333' }}>Wrong Answers:</Text>
+              <Text style={{ fontWeight: 'bold', color: '#dc3545' }}>{' ' + wrongAnswers}</Text>
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#ccc' }}>
+              <Text style={{ fontWeight: 'bold', color: '#333' }}>Unanswered Questions:</Text>
+              <Text style={{ fontWeight: 'bold', color: '#dc3545' }}>{' ' + (questions.length - (wrongAnswers + correctAnswers))}</Text>
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 10 }}>
+              <Text style={{ fontWeight: 'bold', color: '#333' }}>Total Questions:</Text>
+              <Text style={{ fontWeight: 'bold', color: '#17a2b8' }}>{questions.length}</Text>
+            </View>
           </View>
-        )}
-      </ScrollView>}
-      {showresult && <View>
-        <Text style={{ fontWeight: 'bold', paddingLeft: moderateScale(20), fontSize: moderateScale(15), paddingBottom:5 }}>Exam Result</Text>
-        <View style={{ alignSelf: 'center', marginBottom: 50, width: '90%', borderWidth: 1, borderColor: '#ddd', borderRadius: 8, padding: 10 }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#ccc' }}>
-            <Text style={{ fontWeight: 'bold', color: '#333' }}>Correct Answers:</Text>
-            <Text style={{ fontWeight: 'bold', color: '#28a745' }}>{correctAnswers}</Text>
-          </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#ccc' }}>
-            <Text style={{ fontWeight: 'bold', color: '#333' }}>Wrong Answers:</Text>
-            <Text style={{ fontWeight: 'bold', color: '#dc3545' }}>{' ' + wrongAnswers}</Text>
-          </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#ccc' }}>
-            <Text style={{ fontWeight: 'bold', color: '#333' }}>Unanswered Questions:</Text>
-            <Text style={{ fontWeight: 'bold', color: '#dc3545' }}>{' ' + parseInt(questions.length) - (parseInt(wrongAnswers) + parseInt(correctAnswers))}</Text>
-          </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 10 }}>
-            <Text style={{ fontWeight: 'bold', color: '#333' }}>Total Questions:</Text>
-            <Text style={{ fontWeight: 'bold', color: '#17a2b8' }}>{questions.length}</Text>
-          </View>
+
+          {currentQuestionIndex === questions.length - 1 && (
+            <TouchableOpacity style={styles.navigationButtonResultReview} onPress={reviewAnswers}>
+              <Text style={styles.navigationButtonText}>Review Answers</Text>
+            </TouchableOpacity>
+          )}
         </View>
+      )}
 
-        {currentQuestionIndex === questions.length - 1 && <TouchableOpacity
-          style={[styles.navigationButtonResultReview]}
-          onPress={reviewAnswers}
-        >
-          <Text style={styles.navigationButtonText}>Review Answers</Text>
-        </TouchableOpacity>}
-      </View>}
-
-      {(currentQuestionIndex === questions.length - 1 && !showresult) && <TouchableOpacity
-        style={[styles.navigationButtonResult]}
-        onPress={showResult}
-      >
-        <Text style={styles.navigationButtonText}>Show Result</Text>
-      </TouchableOpacity>}
+      {currentQuestionIndex === questions.length - 1 && !showResult && (
+        <TouchableOpacity style={styles.navigationButtonResult} onPress={showResults}>
+          <Text style={styles.navigationButtonText}>Show Result</Text>
+        </TouchableOpacity>
+      )}
 
       <View style={styles.navigationButtonsContainer}>
         <TouchableOpacity
@@ -174,9 +193,6 @@ const ExamMode = ({ route, navigation }) => {
         >
           <Text style={styles.navigationButtonText}>Next</Text>
         </TouchableOpacity>
-
-
-
       </View>
 
       <StatusBar backgroundColor="#f2f2f2" barStyle="dark-content" />
@@ -267,6 +283,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#E8F0FE',
     borderColor: '#E8F0FE',
   },
+  correctOptionShow: {
+    backgroundColor: '#E8F0FE',
+    borderColor: '#2ecc71',
+    color:'#222'
+  },
+  wrongOptionShow: {
+    backgroundColor: '#E8F0FE',
+    borderColor: '#FF4D4D',
+    color:'#222'
+
+  },
   navigationButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -300,7 +327,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: '#FF6347',
   },
-  
+
   disabledButton: {
     backgroundColor: '#ccc',
   },

@@ -212,7 +212,7 @@ let descriptionManagers = []
                   {(isSelected || isStored) && (
                     <MaterialCommunityIcons
                       name={isCorrect ? "check-circle" : "close-circle"}
-                      color={isCorrect ? "#5E5CE6" : "#FF4D4D"}
+                      color={isCorrect ? "#2ecc71" : "#FF4D4D"}
                       size={24}
                       style={styles.resultIcon}
                     />
@@ -333,14 +333,14 @@ const styles = StyleSheet.create({
   },
   correctOption: {
     backgroundColor: '#E8F0FE',
-    borderColor: '#5E5CE6',
+    borderColor: '#2ecc71',
   },
   wrongOption: {
     backgroundColor: '#FDE8E8',
     borderColor: '#FF4D4D',
   },
   correctOptionText: {
-    color: '#5E5CE6',
+    color: '#2ecc71',
   },
   wrongOptionText: {
     color: '#FF4D4D',
