@@ -2,22 +2,24 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
+import Entypo from 'react-native-vector-icons/Entypo';
 import Dashboard from './Dashboard';
-import News from './News';
+import Notes from './Notes';
 import Saved from './Saved';
 import Settings from './Settings';
+import Worksheets from './Worksheets';
 const Tab = createBottomTabNavigator();
 
-export default Tabs = ()=> {
+export default Tabs = () => {
   return (
     <Tab.Navigator
       initialRouteName="home"
       screenOptions={{
         tabBarActiveTintColor: '#5E5CE6',
-        headerShown:false
+        headerShown: false
       }}
       tabBarOptions={{
-        showLabel:false
+        showLabel: true
 
       }}
     >
@@ -42,17 +44,29 @@ export default Tabs = ()=> {
         }}
       />
       <Tab.Screen
-        name="News"
-        component={News}
+        name="Notes"
+        component={Notes}
         options={{
-          tabBarLabel: 'News',
+          tabBarLabel: 'Notes',
           tabBarIcon: ({ color, size }) => (
             <Feather name="book-open" color={color} size={size} />
-            
+
           ),
         }}
       />
-         <Tab.Screen
+      <Tab.Screen
+        name="Worksheets"
+        component={Worksheets}
+        options={{
+          tabBarLabel: 'Worksheets',
+          tabBarIcon: ({ color, size }) => (
+            <Entypo name="pencil" color={color} size={size} />
+
+          ),
+        }}
+      />
+           
+      <Tab.Screen
         name="Settings"
         component={Settings}
         options={{

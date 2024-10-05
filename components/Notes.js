@@ -51,7 +51,7 @@ const initialCourses = {
     Physics_Grade_12: ['Mechanics', 'Optics', 'Thermodynamics', 'Quantum Physics'],
 };
 
-export default function News({ navigation }) {
+export default function Notes({ navigation }) {
     const [courses, setCourses] = useState({});
 
 

@@ -11,6 +11,7 @@ import { TestAd } from '../TestAd';
 import { readData } from '../data/DB';
 import { horizontalScale, moderateScale, verticalScale } from '../utils/Device';
 import Entypo from 'react-native-vector-icons/Entypo';
+import ReadTextMessage from './reader/ReadTextMessage';
 
 export default function Saved({ navigation }) {
     const { width, height } = Dimensions.get('screen')
@@ -111,15 +112,17 @@ if(isLoading) return <Text>Loading....</Text>
                         </View>
                     </View>
                 </Card>
+                <TestAd/>
+                {packagesSaved.length<=0 ? <Text style={{fontSize:moderateScale(25), color:"#dfdfdf", justifyContent:'center', alignSelf:'center', marginTop:verticalScale(150)}}>No saved items found</Text>:
             <ScrollView
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
             >
-                  <TestAd/>
+            
                 <Text style={{ marginLeft: horizontalScale(10), marginTop: verticalScale(10), fontSize: moderateScale(20),
                      alignSelf:'center', color:'#222'}}>
-                    Saved Items</Text>
+                    Saved Question Packages</Text>
                   
                 <View>
                     {
@@ -183,7 +186,7 @@ if(isLoading) return <Text>Loading....</Text>
                         })
                     }
                 </View>
-            </ScrollView>
+            </ScrollView>}
             <StatusBar backgroundColor="#f2f2f2" barStyle="dark-content" />
         </SafeAreaView>
     );

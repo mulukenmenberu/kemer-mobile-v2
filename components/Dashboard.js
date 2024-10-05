@@ -194,22 +194,22 @@ export default function Dashboard({ navigation }) {
             >
                 <View>
                     <View style={{ marginTop: verticalScale(10), flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                        <View style={{ padding: moderateScale(10), borderRadius: moderateScale(16), backgroundColor: '#FF8A80', height: verticalScale(130), width: horizontalScale(180) }}>
+                        <View style={{ padding: moderateScale(10), borderRadius: moderateScale(16), backgroundColor: '#8FBC8F', height: verticalScale(130), width: horizontalScale(180) }}>
                             <Entypo name="newsletter" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
                             <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: moderateScale(35) }}>3</Text>
-                            <Text style={{ color: '#fff', fontSize: moderateScale(13) }}>Recently Posted Items</Text>
+                            <Text style={{ alignSelf: 'center',color: '#fff', fontSize: moderateScale(13) }}>Recently Posted Items</Text>
                         </View>
-                        <View style={{ padding: 10, borderRadius: moderateScale(16), backgroundColor: '#FDD835', height: verticalScale(130), width: horizontalScale(180) }}>
+                        <View style={{ padding: 10, borderRadius: moderateScale(16), backgroundColor: '#3C565B', height: verticalScale(130), width: horizontalScale(180) }}>
                             <Ionicons name="alarm" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
                             <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: 35 }}>120</Text>
-                            <Text style={{ color: '#fff', fontSize: moderateScale(13) }}>Most Visited Items</Text>
+                            <Text style={{ alignSelf: 'center',color: '#fff', fontSize: moderateScale(13) }}>Most Visited Items</Text>
                         </View>
                     </View>
                     <View style={{ marginTop: verticalScale(10), flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                        <View style={{ padding: moderateScale(10), borderRadius: moderateScale(16), backgroundColor: '#5C6BC0', height: verticalScale(130), width: horizontalScale(180) }}>
+                        <View style={{ padding: moderateScale(10), borderRadius: moderateScale(16), backgroundColor: '#7C9D8E', height: verticalScale(130), width: horizontalScale(180) }}>
                             <MaterialIcons name="category" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
                             <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: moderateScale(35) }}>7</Text>
-                            <Text style={{ color: '#fff', fontSize: moderateScale(13) }}>Your Saved Items</Text>
+                            <Text style={{ alignSelf: 'center',color: '#fff', fontSize: moderateScale(13) }}>Your Saved Items</Text>
                         </View>
                         <View style={{
                             padding: moderateScale(10), borderRadius: moderateScale(16), backgroundColor: '#424242', height: verticalScale(130),
@@ -217,7 +217,7 @@ export default function Dashboard({ navigation }) {
                         }} >
                             <FontAwesome name="sticky-note" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
                             <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: moderateScale(35) }}>13</Text>
-                            <Text style={{ color: '#fff', fontSize: moderateScale(13) }}>Active Items</Text>
+                            <Text style={{ alignSelf: 'center',color: '#fff', fontSize: moderateScale(13) }}>Active Items</Text>
                         </View>
                     </View>
 

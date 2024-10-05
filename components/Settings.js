@@ -477,6 +477,7 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingRight: 30, // Make room for the checkmark
     flex: 1,
+    color:'#222'
   },
   checkmark: {
     position: 'absolute',
