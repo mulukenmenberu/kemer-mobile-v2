@@ -29,6 +29,8 @@ import { fetchSubjects } from '../redux/reducers/worksheetSlice';
 import SkeletonLoader from '../utils/SkeletonLoader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ReadWorksheet from './reader/ReadWorksheet';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
 const initialCourses = {
     Math_Grade_9: ['Algebra', 'Geometry', 'Calculus', 'Statistics'],
     Chemistry_Grade_9: ['Organic Chemistry', 'Inorganic Chemistry', 'Physical Chemistry', 'Biochemistry'],
@@ -272,6 +274,8 @@ export default function Worksheets({ navigation }) {
         <SafeAreaView style={styles.container}>
             <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
                 <MaterialCommunityIcons name="menu-open" size={24} color="#222" />
+                <Ionicons name="notifications-outline" size={moderateScale(24)} color="#222"  />
+
             </View>
             <Card style={{ marginTop: verticalScale(8), marginBottom: verticalScale(20), alignSelf: 'center', height: verticalScale(80), width: width - 20, backgroundColor: '#5E5CE6', justifyContent: 'center' }} onPress={() => navigation.navigate('Quiz')}>
                 <View style={{ marginLeft: horizontalScale(10), marginRight: verticalScale(10), flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>

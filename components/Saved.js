@@ -12,6 +12,7 @@ import { readData } from '../data/DB';
 import { horizontalScale, moderateScale, verticalScale } from '../utils/Device';
 import Entypo from 'react-native-vector-icons/Entypo';
 import ReadTextMessage from './reader/ReadTextMessage';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function Saved({ navigation }) {
     const { width, height } = Dimensions.get('screen')
@@ -96,6 +97,7 @@ if(isLoading) return <Text>Loading....</Text>
         <SafeAreaView style={styles.container}>
                 <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
                     <MaterialCommunityIcons name="menu-open" size={24} color="#222" />
+                    <Ionicons name="notifications-outline" size={moderateScale(24)} color="#222"  />
 
                 </View>
                 <Card style={{ marginTop: verticalScale(8), marginBottom: verticalScale(20), alignSelf: 'center', height: verticalScale(80), width: width - 20, backgroundColor: '#5E5CE6', justifyContent: 'center' }} onPress={() => navigation.navigate('Quiz')}>

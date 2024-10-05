@@ -164,6 +164,7 @@ export default function Dashboard({ navigation }) {
                 flexDirection: 'row', justifyContent: 'space-between'
             }}>
                 <MaterialCommunityIcons name="menu-open" size={moderateScale(24)} color="#222" onPress={showModal} />
+                <Ionicons name="notifications-outline" size={moderateScale(24)} color="#222"  />
             </View>
             <Card style={{
                 marginTop: verticalScale(8), marginBottom: horizontalScale(20), alignSelf: 'center',
