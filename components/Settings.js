@@ -41,7 +41,9 @@ export default function Settings({ navigation }) {
 
   const [fullName, setFullName] = useState('');
   const [emailorPhone, setEmailorPhone] = useState('');
+  const [username, setUsername] = useState('');
   const [deviceId, setDeviceId] = useState('');
+  const [usernameerror, setUsernameError] = useState('');
 
   const toggleInterest = (interest) => {
     // Step 1: Update the selected interests state
@@ -67,28 +69,6 @@ export default function Settings({ navigation }) {
   };
 
 
-  const toggleInterestt = (interest) => {
-    let updatedInterests = { ...allInterests };
-
-    setSelectedInterests((prevSelectedInterests) =>
-      prevSelectedInterests.includes(interest)
-        ? prevSelectedInterests.filter((item) => item !== interest)
-        : [...prevSelectedInterests, interest]
-    );
-
-    console.log(selectedInterests)
-    // for (let key in updatedInterests) {
-    for (let value of Object.values(updatedInterests)) {
-
-      if (selectedInterests.includes(value)) {
-        updatedInterests[value] = 'selected';
-      } else {
-        updatedInterests[value] = 'notselected';
-      }
-    }
-
-    storeData('interestList', updatedInterests);
-  };
 
 
 
@@ -134,11 +114,11 @@ export default function Settings({ navigation }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ device_id: deviceId, full_name: fullName, email: emailorPhone }),
+        body: JSON.stringify({ device_id: deviceId, username: username, full_name: fullName, email: emailorPhone }),
       });
       const result = await response.json();
       console.log('Device ID saved to server:', result);
-      
+
       Alert.alert(
         "Registration Success", // Title
         "You have been successfully registered!", // Body
@@ -158,9 +138,35 @@ export default function Settings({ navigation }) {
 
   // Save user information to AsyncStorage
   const saveUserInfo = async () => {
-    const userData = { fullName, emailorPhone, deviceId };
-    await AsyncStorage.setItem('userInformation', JSON.stringify(userData));
-    saveDeviceIdToServer()
+    // check if username existed
+    setUsernameError('')
+    if (username.length <= 0) {
+      setUsernameError('  Username is required')
+      return
+    }
+
+    try {
+      const response = await fetch(`${rootURL}users/check_username.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username: username, deviceId:deviceId}),
+      });
+      const result = await response.json();
+      if(result?.status=='success'){
+        const userData = { fullName, emailorPhone, deviceId, username };
+        await AsyncStorage.setItem('userInformation', JSON.stringify(userData));
+        saveDeviceIdToServer()
+      }else{
+        setUsernameError('   Username already taken. please try another')
+
+      }
+    } catch (error) {
+      console.error('Error saving device ID to server:', error);
+    }
+
+
   };
 
 
@@ -171,6 +177,8 @@ export default function Settings({ navigation }) {
         const userData2 = JSON.parse(userData);
         setFullName(userData2.fullName);
         setEmailorPhone(userData2.emailorPhone);
+        setUsername(userData2.username);
+        setDeviceId(userData2.deviceId);
       } catch (error) {
         console.error('Failed to fetch favorite status', error);
       }
@@ -195,7 +203,7 @@ export default function Settings({ navigation }) {
     <SafeAreaView style={styles.container}>
       <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
         <MaterialCommunityIcons name="menu-open" size={24} color="#222" />
-        <Ionicons name="notifications-outline" size={moderateScale(24)} color="#222"  />
+        <Ionicons name="notifications-outline" size={moderateScale(24)} color="#222" />
 
       </View>
       <Card style={{ marginTop: verticalScale(8), marginBottom: verticalScale(20), alignSelf: 'center', height: verticalScale(80), width: width - 20, backgroundColor: '#5E5CE6', justifyContent: 'center' }} onPress={() => navigation.navigate('Quiz')}>
@@ -293,6 +301,17 @@ export default function Settings({ navigation }) {
             {emailorPhone ? <Text style={styles.checkmark}>✔️</Text> : null}
           </View>
 
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.textInput}
+              placeholder="User name"
+              value={username}
+              onChangeText={setUsername}
+            />
+            {username ? <Text style={styles.checkmark}>✔️</Text> : null}
+          </View>
+        {usernameerror.length>0 && <Text style={{color:'red',alignSelf:'center', marginBottom:verticalScale(50), fontSize:moderateScale(12)}} >          <MaterialCommunityIcons name="cancel" size={moderateScale(12)} color="red" style={{alignSelf:'align-right'}}/>
+          {usernameerror}</Text>}
           <TouchableOpacity style={styles.saveButton} onPress={() => saveUserInfo()}>
             <Text style={styles.buttonText}>Save</Text>
           </TouchableOpacity>
@@ -479,7 +498,7 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingRight: 30, // Make room for the checkmark
     flex: 1,
-    color:'#222'
+    color: '#222'
   },
   checkmark: {
     position: 'absolute',
