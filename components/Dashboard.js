@@ -148,6 +148,21 @@ export default function Dashboard({ navigation }) {
 
         getUserData();
     }, []);
+
+    const [textInputs, setTextInputs] = useState([{ id: 1, value: '' }]);
+
+    const addTextInput = () => {
+        setTextInputs([...textInputs, { id: textInputs.length + 1, value: '' }]);
+    };
+
+    const removeTextInput = (id) => {
+        setTextInputs(textInputs.filter(input => input.id !== id));
+    };
+
+    const handleTextChange = (id, newValue) => {
+        setTextInputs(textInputs.map(input => input.id === id ? { ...input, value: newValue } : input));
+    };
+
     if (loading || isLoading) {
         return <SkeletonLoader />
     }
@@ -302,18 +317,77 @@ export default function Dashboard({ navigation }) {
                 <View style={{ height: verticalScale(100), marginBottom: verticalScale(20) }} />
             </ScrollView>
             <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
-                <Text style={{ fontWeight: 'bold', alignSelf: 'center', alignContent: 'center' }}>Get a random set of questions and test your understanding in exam mode</Text>
-                {!exam_loaddr ? <>
-                    <Text style={{ fontWeight: 'bold', alignSelf: 'center', alignContent: 'center' }}>Invite users to join this challenge</Text>
+            <Text style={{ fontWeight: 'bold', alignSelf: 'center', alignContent: 'center', fontSize:moderateScale(18) }}>
+                Get a random set of questions and test your understanding in exam mode
+            </Text>
+            {!exam_loaddr ? (
+                <>
+                    <Text style={{ fontWeight: 'bold', alignSelf: 'center', alignContent: 'center', fontSize:moderateScale(17), marginTop:verticalScale(10) }}>
+                        Invite users to join this challenge <Text style={{color:'green'}}>and make it Fun </Text>
+                    </Text>
+
+                    {/* Dynamic text boxes with add and remove feature */}
+                    {textInputs.map((input, index) => (
+                        <View key={input.id} style={{ flexDirection: 'row', marginVertical: 10 }}>
+                            <TextInput
+                                style={{
+                                    borderWidth: 1,
+                                    borderColor: 'gray',
+                                    borderRadius: 10,
+                                    padding: 10,
+                                    flex: 1,
+                                    color:'#222',
+                                    fontSize: 16,
+                                    shadowColor: '#000',
+                                    shadowOpacity: 0.8,
+                                    shadowRadius: 2,
+                                }}
+                                placeholder={`Type Username`}
+                                value={input.value}
+                                onChangeText={(text) => handleTextChange(input.id, text)}
+                            />
+                            
+                            <AntDesign name="delete" size={moderateScale(24)} color="red"   onPress={() => removeTextInput(input.id)}
+                                style={{
+                                    marginLeft: 10,
+                                    paddingHorizontal: 10,
+                                    paddingVertical: 5,
+                                    borderRadius: 5,
+                                    justifyContent: 'center',
+                                }} />
+                        </View>
+                    ))}
+
+                    <TouchableOpacity
+                        onPress={addTextInput}
+                        style={{
+                            alignSelf: 'center',
+                            marginTop: verticalScale(10),
+                            marginBottom:verticalScale(10),
+                            backgroundColor: '#007BFF',
+                            paddingHorizontal: 20,
+                            paddingVertical: 10,
+                            borderRadius: 10,
+                            shadowColor: '#000',
+                            shadowOffset: { width: 0, height: 2 },
+                            shadowOpacity: 0.8,
+                            shadowRadius: 2,
+                            elevation: 5,
+                        }}
+                    >
+                        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16 }}>+ Add User</Text>
+                    </TouchableOpacity>
 
                     <TouchableOpacity style={styles.getStartedButton} onPress={() => generateExamMode()}>
                         <Text style={styles.buttonText}>Generate Model Exam</Text>
                     </TouchableOpacity>
-                </> :
-                    <TouchableOpacity style={styles.getStartedButton2}>
-                        <Text style={styles.buttonText}>Please wait</Text>
-                    </TouchableOpacity>}
-            </Modal>
+                </>
+            ) : (
+                <TouchableOpacity style={styles.getStartedButton2}>
+                    <Text style={styles.buttonText}>Please wait</Text>
+                </TouchableOpacity>
+            )}
+        </Modal>
 
             <StatusBar backgroundColor="#F2F2F2" barStyle="dark-content" />
         </SafeAreaView>
