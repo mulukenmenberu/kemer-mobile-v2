@@ -24,11 +24,11 @@ import { readData } from '../data/DB';
 import { horizontalScale, moderateScale, verticalScale } from '../utils/Device';
 import SkeletonLoaderReader from '../utils/SkeletonLoaderReader';
 import NoInternetScreen from '../utils/NoInternetScreen';
-import ReadText from './reader/ReadText';
 import ReadTextMessage from './reader/ReadTextMessage';
-import { fetchSubjects } from '../redux/reducers/notesSlice';
+import { fetchSubjects } from '../redux/reducers/worksheetSlice';
 import SkeletonLoader from '../utils/SkeletonLoader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ReadWorksheet from './reader/ReadWorksheet';
 const initialCourses = {
     Math_Grade_9: ['Algebra', 'Geometry', 'Calculus', 'Statistics'],
     Chemistry_Grade_9: ['Organic Chemistry', 'Inorganic Chemistry', 'Physical Chemistry', 'Biochemistry'],
@@ -77,7 +77,7 @@ export default function Worksheets({ navigation }) {
 
     const dispatch = useDispatch();
 
-    const { subjects, loadings, errors } = useSelector((state) => state.subjects);
+    const { subjects, loadings, errors } = useSelector((state) => state.worksheets);
 
     useEffect(() => {
         readData('interestList').then((data) => {
@@ -288,7 +288,7 @@ export default function Worksheets({ navigation }) {
                 </View>
             </Card>
             {(!courses && loading ) && <TestAd/>}
-            {!courses?  (!loadings?<ReadTextMessage messageText={"No reading materials for your selected levels"} />:<SkeletonLoader/>):
+            {!courses?  (!loadings?<ReadTextMessage messageText={"No worksheet materials for your selected levels"} />:<SkeletonLoader/>):
             <>
             <View> 
                 <ScrollView
@@ -363,7 +363,7 @@ export default function Worksheets({ navigation }) {
                         style={backgroundStyle}
                     >
                         {/* {isloading && <SkeletonLoaderReader />} */}
-                        {(changePage > 0 && !isloading) && <ReadText selectedTopic={selectedTopic} selectedCourse={selectedCourse} />}
+                        {(changePage > 0 && !isloading) && <ReadWorksheet selectedTopic={selectedTopic} selectedCourse={selectedCourse} />}
                         {(changePage <= 0 || courseSelected <= 0) && <ReadTextMessage messageText={courseSelected <= 0 ? 'Please Select a Subject' : 'Please Select a Topic'} />}
                     </ScrollView>
                 </ScrollView>

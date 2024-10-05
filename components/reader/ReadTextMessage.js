@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#dfdfdf',
     textAlign: 'center', // Centers text within the Text component
-    marginTop: verticalScale(160)
+    marginTop: verticalScale(10)
   },
 });
 

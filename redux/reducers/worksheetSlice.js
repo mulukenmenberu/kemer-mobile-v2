@@ -11,8 +11,8 @@ export const fetchSubjects = createAsyncThunk(
           level: JSON.stringify(levels),
         }); 
 
-      const response = await fetch(`${rootURL}notes/get_note_info.php?level=${levels}`);
-      // console.log(`${rootURL}notes/get_note_info.php?${levels.toString()}`)
+      const response = await fetch(`${rootURL}worksheets/get_worksheet_info.php?level=${levels}`);
+      // console.log(`${rootURL}worksheets/get_note_info.php?${levels.toString()}`)
       const data = await response.json();
 
       if (data.status === 'success') {
@@ -32,8 +32,8 @@ export const fetchNotes = createAsyncThunk(
     try {
 
 
-      const response = await fetch(`${rootURL}notes/get_note.php?subject=${selectedCourse}&topic=${selectedTopic}`);
-      // console.log(`${rootURL}notes/get_note.php?subject=${selectedCourse}&topic=${selectedTopic}`)
+      const response = await fetch(`${rootURL}worksheets/get_worksheet.php?subject=${selectedCourse}&topic=${selectedTopic}`);
+      // console.log(`${rootURL}worksheets/get_note.php?subject=${selectedCourse}&topic=${selectedTopic}`)
       const data = await response.json();
 
       if (data.status === 'success') {
