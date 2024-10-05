@@ -65,7 +65,7 @@ export default function Dashboard({ navigation }) {
         });
     }
 
-    const containerStyle = { backgroundColor: 'white', padding: 20, marginTop: verticalScale(-70), width: '80%', alignSelf: 'center' };
+    const containerStyle = { backgroundColor: 'white', padding: 20, marginTop: verticalScale(-70), width: '90%', alignSelf: 'center', borderRadius: moderateScale(15) };
 
 
 
@@ -132,18 +132,18 @@ export default function Dashboard({ navigation }) {
         setRefreshing(true);
 
     };
-  
 
-      useEffect(() => {
+
+    useEffect(() => {
         const getUserData = async () => {
             try {
                 const userData = await AsyncStorage.getItem('userInformation') || {};
                 const userDataa = JSON.parse(userData);
                 setFullName(userDataa.fullName);
-                setEmailorPhone(userDataa.emailorPhone); 
+                setEmailorPhone(userDataa.emailorPhone);
             } catch (error) {
                 console.error('Failed to fetch favorite status', error);
-            } 
+            }
         };
 
         getUserData();
@@ -197,19 +197,19 @@ export default function Dashboard({ navigation }) {
                         <View style={{ padding: moderateScale(10), borderRadius: moderateScale(16), backgroundColor: '#8FBC8F', height: verticalScale(130), width: horizontalScale(180) }}>
                             <Entypo name="newsletter" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
                             <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: moderateScale(35) }}>3</Text>
-                            <Text style={{ alignSelf: 'center',color: '#fff', fontSize: moderateScale(13) }}>Recently Posted Items</Text>
+                            <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>Recently Posted Items</Text>
                         </View>
                         <View style={{ padding: 10, borderRadius: moderateScale(16), backgroundColor: '#3C565B', height: verticalScale(130), width: horizontalScale(180) }}>
                             <Ionicons name="alarm" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
                             <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: 35 }}>120</Text>
-                            <Text style={{ alignSelf: 'center',color: '#fff', fontSize: moderateScale(13) }}>Most Visited Items</Text>
+                            <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>Most Visited Items</Text>
                         </View>
                     </View>
                     <View style={{ marginTop: verticalScale(10), flexDirection: 'row', justifyContent: 'space-evenly' }}>
                         <View style={{ padding: moderateScale(10), borderRadius: moderateScale(16), backgroundColor: '#7C9D8E', height: verticalScale(130), width: horizontalScale(180) }}>
                             <MaterialIcons name="category" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
                             <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: moderateScale(35) }}>7</Text>
-                            <Text style={{ alignSelf: 'center',color: '#fff', fontSize: moderateScale(13) }}>Your Saved Items</Text>
+                            <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>Your Saved Items</Text>
                         </View>
                         <View style={{
                             padding: moderateScale(10), borderRadius: moderateScale(16), backgroundColor: '#424242', height: verticalScale(130),
@@ -217,7 +217,7 @@ export default function Dashboard({ navigation }) {
                         }} >
                             <FontAwesome name="sticky-note" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
                             <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: moderateScale(35) }}>13</Text>
-                            <Text style={{ alignSelf: 'center',color: '#fff', fontSize: moderateScale(13) }}>Active Items</Text>
+                            <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>Active Items</Text>
                         </View>
                     </View>
 
@@ -301,9 +301,14 @@ export default function Dashboard({ navigation }) {
                 <View style={{ height: verticalScale(100), marginBottom: verticalScale(20) }} />
             </ScrollView>
             <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
-                {!exam_loaddr ? <TouchableOpacity style={styles.getStartedButton} onPress={() => generateExamMode()}>
-                    <Text style={styles.buttonText}>Generate Model Exam</Text>
-                </TouchableOpacity> :
+                <Text style={{ fontWeight: 'bold', alignSelf: 'center', alignContent: 'center' }}>Get a random set of questions and test your understanding in exam mode</Text>
+                {!exam_loaddr ? <>
+                    <Text style={{ fontWeight: 'bold', alignSelf: 'center', alignContent: 'center' }}>Invite users to join this challenge</Text>
+
+                    <TouchableOpacity style={styles.getStartedButton} onPress={() => generateExamMode()}>
+                        <Text style={styles.buttonText}>Generate Model Exam</Text>
+                    </TouchableOpacity>
+                </> :
                     <TouchableOpacity style={styles.getStartedButton2}>
                         <Text style={styles.buttonText}>Please wait</Text>
                     </TouchableOpacity>}
