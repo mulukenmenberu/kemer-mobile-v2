@@ -44,6 +44,7 @@ export default function Settings({ navigation }) {
   const [username, setUsername] = useState('');
   const [deviceId, setDeviceId] = useState('');
   const [usernameerror, setUsernameError] = useState('');
+  const [savingUser, setSavingUser] = useState(false);
 
   const toggleInterest = (interest) => {
     // Step 1: Update the selected interests state
@@ -108,6 +109,7 @@ export default function Settings({ navigation }) {
 
 
   const saveDeviceIdToServer = async () => {
+    setSavingUser(true)
     try {
       const response = await fetch(`${rootURL}users/register_device.php`, {
         method: 'POST',
@@ -118,7 +120,7 @@ export default function Settings({ navigation }) {
       });
       const result = await response.json();
       console.log('Device ID saved to server:', result);
-
+      setSavingUser(false)
       Alert.alert(
         "Registration Success", // Title
         "You have been successfully registered!", // Body
@@ -133,6 +135,8 @@ export default function Settings({ navigation }) {
 
     } catch (error) {
       console.error('Error saving device ID to server:', error);
+      setSavingUser(false)
+
     }
   };
 
@@ -146,24 +150,42 @@ export default function Settings({ navigation }) {
     }
 
     try {
+      setSavingUser(true)
       const response = await fetch(`${rootURL}users/check_username.php`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username: username, deviceId:deviceId}),
+        body: JSON.stringify({ username: username, deviceId: deviceId }),
       });
       const result = await response.json();
-      if(result?.status=='success'){
+
+      if (result?.status == 'success') {
         const userData = { fullName, emailorPhone, deviceId, username };
         await AsyncStorage.setItem('userInformation', JSON.stringify(userData));
         saveDeviceIdToServer()
-      }else{
+        setSavingUser(false)
+
+      } else {
         setUsernameError('   Username already taken. please try another')
+        setSavingUser(false)
 
       }
     } catch (error) {
+      setSavingUser(false)
+      Alert.alert(
+        "Registration Error", // Title
+        "Something went wrong. Please check your network", // Body
+        [
+          {
+            text: "OK", // Button text
+            onPress: () => console.log("OK Pressed"), // Optional onPress handler
+          },
+        ],
+        { cancelable: false } // Optional options
+      );
       console.error('Error saving device ID to server:', error);
+
     }
 
 
@@ -310,11 +332,14 @@ export default function Settings({ navigation }) {
             />
             {username ? <Text style={styles.checkmark}>✔️</Text> : null}
           </View>
-        {usernameerror.length>0 && <Text style={{color:'red',alignSelf:'center', marginBottom:verticalScale(50), fontSize:moderateScale(12)}} >          <MaterialCommunityIcons name="cancel" size={moderateScale(12)} color="red" style={{alignSelf:'align-right'}}/>
-          {usernameerror}</Text>}
-          <TouchableOpacity style={styles.saveButton} onPress={() => saveUserInfo()}>
-            <Text style={styles.buttonText}>Save</Text>
-          </TouchableOpacity>
+          {usernameerror.length > 0 && <Text style={{ color: 'red', alignSelf: 'center', marginBottom: verticalScale(50), fontSize: moderateScale(12) }} >          <MaterialCommunityIcons name="cancel" size={moderateScale(12)} color="red" style={{ alignSelf: 'align-right' }} />
+            {usernameerror}</Text>}
+          {!savingUser ? <TouchableOpacity style={styles.saveButton} onPress={() => saveUserInfo()} >
+            <Text style={styles.buttonText}> Save</Text>
+          </TouchableOpacity> :
+            <TouchableOpacity style={styles.continueButton}  disabled>
+              <Text style={styles.buttonText}>Binding Info. Please wait....</Text>
+            </TouchableOpacity>}
         </View>
 
         <View style={styles.inputsContainer}>
