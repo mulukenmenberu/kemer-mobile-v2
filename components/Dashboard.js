@@ -397,14 +397,14 @@ export default function Dashboard({ navigation }) {
             </ScrollView>
             <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
                 <Text style={styles.tag}>{"Exam Mode"}</Text>
-                <Text style={{ fontWeight: 'bold', alignSelf: 'center', alignContent: 'center', fontSize: moderateScale(18) }}>
+                <Text style={{color:'#222', fontWeight: 'bold', alignSelf: 'center', alignContent: 'center', fontSize: moderateScale(18) }}>
                     Get a random set of questions and test your understanding in exam mode
                 </Text>
                 {!exam_loaddr ? (
                     <>
                         <Text style={styles.tag}>{"Fun with friends"}</Text>
 
-                        <Text style={{ fontWeight: 'bold', alignSelf: 'center', alignContent: 'center', fontSize: moderateScale(17), marginTop: verticalScale(10) }}>
+                        <Text style={{color:'#222', fontWeight: 'bold', alignSelf: 'center', alignContent: 'center', fontSize: moderateScale(17), marginTop: verticalScale(10) }}>
                             Invite users to join this challenge <Text style={{ color: 'green' }}>and make it Fun </Text>
                         </Text>
 
