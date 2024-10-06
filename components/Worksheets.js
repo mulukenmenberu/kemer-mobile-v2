@@ -69,6 +69,7 @@ export default function Worksheets({ navigation }) {
     const [isloading, setIsLoadingG] = useState(false);
     const [isModalVisible, setModalVisible] = useState(false);
     const [isModalSubjectVisible, setModalSubjectVisible] = useState(false);
+    const [customError, setCustomError] = useState(false);
 
     const scrollViewRef = useRef(null);
     const courseScrollViewRef = useRef(null);
@@ -82,6 +83,8 @@ export default function Worksheets({ navigation }) {
     const { subjects, loadings, errors } = useSelector((state) => state.worksheets);
 
     useEffect(() => {
+        setCustomError(false)
+
         readData('interestList').then((data) => {
 
             const interestsArray = Object.keys(data)
@@ -100,6 +103,10 @@ export default function Worksheets({ navigation }) {
             dispatch(fetchSubjects(levels)).then((response) => {
                 setCourses(response.payload)
                 setRefreshing(false)
+                // console.log(response)
+                if(response.meta.requestStatus=='rejected'){
+                    setCustomError(true)
+                }
             })
         });
     }, [refreshing]);
@@ -266,8 +273,8 @@ export default function Worksheets({ navigation }) {
         getUserData();
     }, []);
 
-    if (error) {
-        return <NoInternetScreen isLoading={isLoading} setIsLoading={setIsLoading} />;
+    if (customError) {
+        return <NoInternetScreen isLoading={refreshing} setIsLoading={setRefreshing} />;
     }
 
     return (

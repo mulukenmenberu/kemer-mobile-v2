@@ -76,12 +76,15 @@ export default function Notes({ navigation }) {
 
     const [fullName, setFullName] = useState('');
     const [emailorPhone, setEmailorPhone] = useState('');
+    const [customError, setCustomError] = useState(false);
 
     const dispatch = useDispatch();
 
     const { subjects, loadings, errors } = useSelector((state) => state.subjects);
 
     useEffect(() => {
+        setCustomError(false)
+
         readData('interestList').then((data) => {
 
             const interestsArray = Object.keys(data)
@@ -100,6 +103,9 @@ export default function Notes({ navigation }) {
             dispatch(fetchSubjects(levels)).then((response) => {
                 setCourses(response.payload)
                 setRefreshing(false)
+                if(response.meta.requestStatus=='rejected'){
+                    setCustomError(true)
+                }
             })
         });
     }, [refreshing]);
@@ -266,8 +272,8 @@ export default function Notes({ navigation }) {
         getUserData();
     }, []);
 
-    if (error) {
-        return <NoInternetScreen isLoading={isLoading} setIsLoading={setIsLoading} />;
+    if (customError) {
+        return <NoInternetScreen isLoading={refreshing} setIsLoading={setRefreshing} />;
     }
 
     return (
