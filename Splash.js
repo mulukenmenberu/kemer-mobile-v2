@@ -59,7 +59,11 @@ const Splash = ({ navigation }) => {
   const nextPage = () => {
     readData('interestList')
       .then((data) => {
-        const interestsArray = Object.keys(data).filter((key) => data[key] === "selected");
+        let interestsArray = []
+        if(data!=null){
+           interestsArray = Object.keys(data).filter((key) => data[key] === "selected");
+
+        }
         if (interestsArray.length > 0) {
           navigation.navigate('Tabs');
         } else {

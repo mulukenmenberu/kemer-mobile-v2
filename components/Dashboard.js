@@ -410,7 +410,7 @@ export default function Dashboard({ navigation }) {
 
                         {/* Dynamic text boxes with add and remove feature */}
                         {Array.isArray(textInputs) && textInputs.map((input, index) => (
-                            <>
+                            <View  key={input.id}>
                                 <View key={input.id} style={{ flexDirection: 'row', marginVertical: 10 }}>
                                     <TextInput
                                         style={{
@@ -447,7 +447,7 @@ export default function Dashboard({ navigation }) {
 
                                 </View>
                                 {input.hasError && <Text style={{ color: 'red' }}>Invalid username</Text>}
-                            </>
+                            </View>
                         ))}
 
                         <TouchableOpacity
