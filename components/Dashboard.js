@@ -396,11 +396,14 @@ export default function Dashboard({ navigation }) {
                 <View style={{ height: verticalScale(100), marginBottom: verticalScale(20) }} />
             </ScrollView>
             <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
+                <Text style={styles.tag}>{"Exam Mode"}</Text>
                 <Text style={{ fontWeight: 'bold', alignSelf: 'center', alignContent: 'center', fontSize: moderateScale(18) }}>
                     Get a random set of questions and test your understanding in exam mode
                 </Text>
                 {!exam_loaddr ? (
                     <>
+                        <Text style={styles.tag}>{"Fun with friends"}</Text>
+
                         <Text style={{ fontWeight: 'bold', alignSelf: 'center', alignContent: 'center', fontSize: moderateScale(17), marginTop: verticalScale(10) }}>
                             Invite users to join this challenge <Text style={{ color: 'green' }}>and make it Fun </Text>
                         </Text>
@@ -408,42 +411,42 @@ export default function Dashboard({ navigation }) {
                         {/* Dynamic text boxes with add and remove feature */}
                         {Array.isArray(textInputs) && textInputs.map((input, index) => (
                             <>
-                            <View key={input.id} style={{ flexDirection: 'row', marginVertical: 10 }}>
-                                <TextInput
-                                    style={{
-                                        borderWidth: 1,
-                                        borderColor: input.hasError ? 'red' : 'gray',
-                                        borderRadius: 10,
-                                        padding: 10,
-                                        flex: 1,
-                                        color: '#222',
-                                        fontSize: 16,
-                                        shadowColor: '#000',
-                                        shadowOpacity: 0.8,
-                                        shadowRadius: 2,
-                                    }}
-                                    placeholder="Type Username (optionsl)"
-                                    value={input.value}
-                                    onChangeText={(text) => handleTextChange(input.id, text)}
-                                />
+                                <View key={input.id} style={{ flexDirection: 'row', marginVertical: 10 }}>
+                                    <TextInput
+                                        style={{
+                                            borderWidth: 1,
+                                            borderColor: input.hasError ? 'red' : 'gray',
+                                            borderRadius: 10,
+                                            padding: 10,
+                                            flex: 1,
+                                            color: '#222',
+                                            fontSize: 16,
+                                            shadowColor: '#000',
+                                            shadowOpacity: 0.8,
+                                            shadowRadius: 2,
+                                        }}
+                                        placeholder="Type Username (optionsl)"
+                                        value={input.value}
+                                        onChangeText={(text) => handleTextChange(input.id, text)}
+                                    />
 
-                              
-                                <AntDesign
-                                    name="delete"
-                                    size={moderateScale(24)}
-                                    color={(textInputs.length <= 1  && index <= 0) ? '#6a6a6a' : 'red'} // Set color based on condition
-                                    onPress={(textInputs.length <= 1  && index <= 0) ? null : () => removeTextInput(input.id)} // Set onPress conditionally
-                                    style={{
-                                        marginLeft: 10,
-                                        paddingHorizontal: 10,
-                                        paddingVertical: 5,
-                                        borderRadius: 5,
-                                        justifyContent: 'center',
-                                    }}
-                                />
 
-                            </View>
-                            {input.hasError && <Text style={{color:'red'}}>Invalid username</Text>}
+                                    <AntDesign
+                                        name="delete"
+                                        size={moderateScale(24)}
+                                        color={(textInputs.length <= 1 && index <= 0) ? '#6a6a6a' : 'red'} // Set color based on condition
+                                        onPress={(textInputs.length <= 1 && index <= 0) ? null : () => removeTextInput(input.id)} // Set onPress conditionally
+                                        style={{
+                                            marginLeft: 10,
+                                            paddingHorizontal: 10,
+                                            paddingVertical: 5,
+                                            borderRadius: 5,
+                                            justifyContent: 'center',
+                                        }}
+                                    />
+
+                                </View>
+                                {input.hasError && <Text style={{ color: 'red' }}>Invalid username</Text>}
                             </>
                         ))}
 
@@ -507,5 +510,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         textAlign: 'center'
+    },
+    tag: {
+        color: '#fff',
+        fontSize: 10,
+        backgroundColor: '#FF6347',
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        borderRadius: 8,
+        width: "30%",
+        textAlign: 'center',
+        overflow: 'hidden'
     },
 });
