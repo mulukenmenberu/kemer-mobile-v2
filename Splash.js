@@ -4,15 +4,66 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Welcome from './components/Welcome';
 import { readData } from './data/DB';
 import { horizontalScale, moderateScale, verticalScale } from './utils/Device';
-
+import DeviceInfo from 'react-native-device-info';
+import { rootURL } from './config/baseApi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const Splash = ({ navigation }) => {
   const [page, setPage] = useState(0)
+  const [deviceId, setDeviceId] = useState('');
 
+
+  useEffect(() => {
+    const fetchDeviceId = async () => {
+      try {
+        // Check if device ID exists in AsyncStorage
+        const storedDeviceId = await AsyncStorage.getItem('deviceID');
+        if (!storedDeviceId) {
+          // If no device ID is found in AsyncStorage, fetch it
+          const newDeviceId = await DeviceInfo.getUniqueId();
+          setDeviceId(newDeviceId);
+
+          // Save it to AsyncStorage
+          await AsyncStorage.setItem('deviceID', newDeviceId);
+
+          // Send the new device ID to your API to save it in the database
+          await saveDeviceIdToServer(newDeviceId);
+        } else {
+          // Device ID exists, set it in state
+          setDeviceId(storedDeviceId);
+        }
+      } catch (error) {
+        console.error('Error fetching device ID:', error);
+      }
+    };
+
+    fetchDeviceId();
+  }, []);
+
+  // Function to send the device ID to the server
+  const saveDeviceIdToServer = async (deviceId) => {
+    try {
+      const response = await fetch(`${rootURL}users/register_device.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ device_id: deviceId, full_name: '', email: '' }),
+      });
+      const result = await response.json();
+      console.log('Device ID saved to server:', result);
+    } catch (error) {
+      console.error('Error saving device ID to server:', error);
+    }
+  };
 
   const nextPage = () => {
     readData('interestList')
       .then((data) => {
-        const interestsArray = Object.keys(data).filter((key) => data[key] === "selected");
+        let interestsArray = []
+        if(data!=null){
+           interestsArray = Object.keys(data).filter((key) => data[key] === "selected");
+
+        }
         if (interestsArray.length > 0) {
           navigation.navigate('Tabs');
         } else {
@@ -24,7 +75,7 @@ const Splash = ({ navigation }) => {
         setPage(page + 1);
       });
   }
-  
+
 
   if (page == 1) return <Welcome navigation={navigation} setPage={setPage} page={page} />
   return (

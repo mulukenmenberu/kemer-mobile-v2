@@ -10,7 +10,8 @@ import {
   ImageBackground,
   TouchableOpacity,
   ScrollView,
-  StatusBar, Button
+  StatusBar, Button,
+  Alert
 } from 'react-native';
 import { Card } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -24,8 +25,11 @@ import SkeletonLoader from '../utils/SkeletonLoader';
 import { TestAd } from '../TestAd';
 import { horizontalScale, moderateScale, verticalScale } from '../utils/Device';
 import Welcome from './Welcome';
+import DeviceInfo from 'react-native-device-info';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { rootURL } from '../config/baseApi';
 
 
 export default function Settings({ navigation }) {
@@ -37,6 +41,10 @@ export default function Settings({ navigation }) {
 
   const [fullName, setFullName] = useState('');
   const [emailorPhone, setEmailorPhone] = useState('');
+  const [username, setUsername] = useState('');
+  const [deviceId, setDeviceId] = useState('');
+  const [usernameerror, setUsernameError] = useState('');
+  const [savingUser, setSavingUser] = useState(false);
 
   const toggleInterest = (interest) => {
     // Step 1: Update the selected interests state
@@ -62,28 +70,6 @@ export default function Settings({ navigation }) {
   };
 
 
-  const toggleInterestt = (interest) => {
-    let updatedInterests = { ...allInterests };
-
-    setSelectedInterests((prevSelectedInterests) =>
-      prevSelectedInterests.includes(interest)
-        ? prevSelectedInterests.filter((item) => item !== interest)
-        : [...prevSelectedInterests, interest]
-    );
-
-    console.log(selectedInterests)
-    // for (let key in updatedInterests) {
-    for (let value of Object.values(updatedInterests)) {
-
-      if (selectedInterests.includes(value)) {
-        updatedInterests[value] = 'selected';
-      } else {
-        updatedInterests[value] = 'notselected';
-      }
-    }
-
-    storeData('interestList', updatedInterests);
-  };
 
 
 
@@ -122,28 +108,114 @@ export default function Settings({ navigation }) {
   };
 
 
+  const saveDeviceIdToServer = async () => {
+    setSavingUser(true)
+    try {
+      const response = await fetch(`${rootURL}users/register_device.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ device_id: deviceId, username: username, full_name: fullName, email: emailorPhone }),
+      });
+      const result = await response.json();
+      console.log('Device ID saved to server:', result);
+      setSavingUser(false)
+      Alert.alert(
+        "Registration Success", // Title
+        "You have been successfully registered!", // Body
+        [
+          {
+            text: "OK", // Button text
+            onPress: () => console.log("OK Pressed"), // Optional onPress handler
+          },
+        ],
+        { cancelable: false } // Optional options
+      );
+
+    } catch (error) {
+      console.error('Error saving device ID to server:', error);
+      setSavingUser(false)
+
+    }
+  };
 
   // Save user information to AsyncStorage
   const saveUserInfo = async () => {
-    const userData = { fullName, emailorPhone };
-    await AsyncStorage.setItem('userInformation', JSON.stringify(userData));
+    // check if username existed
+    setUsernameError('')
+    if (username.length <= 0) {
+      setUsernameError('  Username is required')
+      return
+    }
+
+    try {
+      setSavingUser(true)
+      const response = await fetch(`${rootURL}users/check_username.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username: username, deviceId: deviceId }),
+      });
+      const result = await response.json();
+
+      if (result?.status == 'success') {
+        const userData = { fullName, emailorPhone, deviceId, username };
+        await AsyncStorage.setItem('userInformation', JSON.stringify(userData));
+        saveDeviceIdToServer()
+        setSavingUser(false)
+
+      } else {
+        setUsernameError('   Username already taken. please try another')
+        setSavingUser(false)
+
+      }
+    } catch (error) {
+      setSavingUser(false)
+      Alert.alert(
+        "Registration Error", // Title
+        "Something went wrong. Please check your network", // Body
+        [
+          {
+            text: "OK", // Button text
+            onPress: () => console.log("OK Pressed"), // Optional onPress handler
+          },
+        ],
+        { cancelable: false } // Optional options
+      );
+      console.error('Error saving device ID to server:', error);
+
+    }
+
+
   };
 
- 
+
   useEffect(() => {
     const getUserData = async () => {
-        try {
-          const userData = await AsyncStorage.getItem('userInformation') || {};
-          const userData2 = JSON.parse(userData);
-          setFullName(userData2.fullName);
-          setEmailorPhone(userData2.emailorPhone);
-        } catch (error) {
-            console.error('Failed to fetch favorite status', error);
-        }
+      try {
+        const userData = await AsyncStorage.getItem('userInformation') || {};
+        const userData2 = JSON.parse(userData);
+        setFullName(userData2.fullName);
+        setEmailorPhone(userData2.emailorPhone);
+        setUsername(userData2.username);
+        setDeviceId(userData2.deviceId);
+      } catch (error) {
+        console.error('Failed to fetch favorite status', error);
+      }
     };
 
     getUserData();
-}, []);
+  }, []);
+  useEffect(() => {
+    const fetchDeviceId = async () => {
+      const id = await DeviceInfo.getUniqueId();
+      setDeviceId(id);
+    };
+
+    fetchDeviceId();
+  }, []);
   if (refresh) {
     return <SkeletonLoader />;
   }
@@ -153,6 +225,7 @@ export default function Settings({ navigation }) {
     <SafeAreaView style={styles.container}>
       <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
         <MaterialCommunityIcons name="menu-open" size={24} color="#222" />
+        <Ionicons name="notifications-outline" size={moderateScale(24)} color="#222" />
 
       </View>
       <Card style={{ marginTop: verticalScale(8), marginBottom: verticalScale(20), alignSelf: 'center', height: verticalScale(80), width: width - 20, backgroundColor: '#5E5CE6', justifyContent: 'center' }} onPress={() => navigation.navigate('Quiz')}>
@@ -227,6 +300,8 @@ export default function Settings({ navigation }) {
             />
           ))}
         </View>
+        <Text style={styles.loyaltyTitle}>Bind Name and Email(phone)</Text>
+
         <View style={{ padding: 20 }}>
           <View style={styles.inputContainer}>
             <TextInput
@@ -248,9 +323,23 @@ export default function Settings({ navigation }) {
             {emailorPhone ? <Text style={styles.checkmark}>✔️</Text> : null}
           </View>
 
-          <TouchableOpacity style={styles.saveButton} onPress={() => saveUserInfo()}>
-            <Text style={styles.buttonText}>Save</Text>
-          </TouchableOpacity>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.textInput}
+              placeholder="User name"
+              value={username}
+              onChangeText={setUsername}
+            />
+            {username ? <Text style={styles.checkmark}>✔️</Text> : null}
+          </View>
+          {usernameerror.length > 0 && <Text style={{ color: 'red', alignSelf: 'center', marginBottom: verticalScale(50), fontSize: moderateScale(12) }} >          <MaterialCommunityIcons name="cancel" size={moderateScale(12)} color="red" style={{ alignSelf: 'align-right' }} />
+            {usernameerror}</Text>}
+          {!savingUser ? <TouchableOpacity style={styles.saveButton} onPress={() => saveUserInfo()} >
+            <Text style={styles.buttonText}> Save</Text>
+          </TouchableOpacity> :
+            <TouchableOpacity style={styles.continueButton}  disabled>
+              <Text style={styles.buttonText}>Binding Info. Please wait....</Text>
+            </TouchableOpacity>}
         </View>
 
         <View style={styles.inputsContainer}>
@@ -434,6 +523,7 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingRight: 30, // Make room for the checkmark
     flex: 1,
+    color: '#222'
   },
   checkmark: {
     position: 'absolute',
