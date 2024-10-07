@@ -9,7 +9,7 @@ const dataInit = [];
 const ReadWorksheet = ({ selectedTopic, selectedCourse }) => {
   const dispatch = useDispatch();
   const [data, setData] = useState(dataInit)
-  
+
   const { notes, loadings2, errors2 } = useSelector((state) => state.subjects);
 
   useEffect(() => {
@@ -19,18 +19,23 @@ const ReadWorksheet = ({ selectedTopic, selectedCourse }) => {
       // setRefreshing(false) 
     })
   }, [])
-if(loadings2){return <SkeletonLoaderReader/>}
+  if (loadings2) { return <SkeletonLoaderReader /> }
   return (
     <ScrollView style={styles.container}>
-      {data.map((page, index) => (
-        <View key={page.id} style={styles.page}>
-          <Text style={styles.header}>{page.subtopic}</Text>
-          <Text style={styles.text}>{page.content}</Text>
-          <View style={styles.pageNumberContainer}>
-            <Text style={styles.pageNumber}>Page {index + 1}</Text>
+      {Array.isArray(data) && data.length > 0 ? (
+        data.map((page, index) => (
+          <View key={page.id} style={styles.page}>
+            <Text style={styles.header}>{page.subtopic}</Text>
+            <Text style={styles.text}>{page.content}</Text>
+            <View style={styles.pageNumberContainer}>
+              <Text style={styles.pageNumber}>Page {index + 1}</Text>
+            </View>
           </View>
-        </View>
-      ))}
+        ))
+      ) : (
+        // Optional: Render a fallback UI if data is not available
+        <Text>No data available</Text>
+      )}
       <View style={{ marginTop: verticalScale(140) }}></View>
     </ScrollView>
   );

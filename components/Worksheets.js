@@ -71,7 +71,6 @@ export default function Worksheets({ navigation }) {
     const [isloading, setIsLoadingG] = useState(false);
     const [isModalVisible, setModalVisible] = useState(false);
     const [isModalSubjectVisible, setModalSubjectVisible] = useState(false);
-    const [customError, setCustomError] = useState(false);
 
     const scrollViewRef = useRef(null);
     const courseScrollViewRef = useRef(null);
@@ -95,7 +94,6 @@ export default function Worksheets({ navigation }) {
 
 
     useEffect(() => {
-        setCustomError(false)
 
         readData('interestList').then((data) => {
 
@@ -116,9 +114,7 @@ export default function Worksheets({ navigation }) {
                 setCourses(response.payload)
                 setRefreshing(false)
                 // console.log(response)
-                if (response.meta.requestStatus == 'rejected') {
-                    setCustomError(true)
-                }
+             
             })
         });
     }, [refreshing]);
@@ -285,10 +281,10 @@ export default function Worksheets({ navigation }) {
     //     getUserData();
     // }, []);
 
-    if (customError) {
-        // return <NoInternetScreen isLoading={refreshing} setIsLoading={setRefreshing} />;
-    }
-
+ 
+    const isValidObject = (obj) => {
+        return obj !== null && typeof obj === 'object' && !Array.isArray(obj);
+    };
     return (
         <SafeAreaView style={styles.container}>
             {/* <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -312,10 +308,10 @@ export default function Worksheets({ navigation }) {
             </Card> */}
             <Header showModal={showModal} navigation={navigation}/>
             {(!courses && loading) && <TestAd />}
-            {/* {!courses?  (!loadings?<ReadTextMessage messageText={"No worksheet materials for your selected levels"} />:<SkeletonLoader/>): */}
-            {(!courses || (courses && refreshing)) ? ((!loadings && !refreshing) ? <ReadTextMessage messageText={"No worksheet materials for your selected levels"} /> : <SkeletonLoader />) :
 
-                <>
+            {!isValidObject(courses) && <ReadTextMessage messageText={"No worksheet materials for your selected levels"} />}
+            {( isValidObject(courses) && Object.keys(courses).length > 0) && <>
+
                     <View>
                         <ScrollView
                             ref={scrollViewRef} refreshControl={
@@ -334,7 +330,7 @@ export default function Worksheets({ navigation }) {
                                 {/* Horizontally Scrollable Course Selection */}
                                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 20 }} ref={courseScrollViewRef}>
                                     <View style={{ flexDirection: 'row' }}>
-                                        {Object.keys(courses).map((course) => (
+                                        {isValidObject(courses) && Object.keys(courses).map((course) => (
                                             <TouchableOpacity
                                                 key={course}
                                                 onPress={() => handleCourseSelect(course)}
@@ -407,7 +403,12 @@ export default function Worksheets({ navigation }) {
                                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
 
                                     <FlatList
-                                        data={courses[selectedCourse]}
+                                        // data={courses[selectedCourse]}
+                                        data={
+                                            courses && selectedCourse in courses && Array.isArray(courses[selectedCourse])
+                                                ? courses[selectedCourse]
+                                                : [] // Use an empty array if any check fails
+                                        }
                                         renderItem={renderTopicItem}
                                         keyExtractor={(item) => item}
                                         numColumns={2}
@@ -434,7 +435,8 @@ export default function Worksheets({ navigation }) {
 
                                     <FlatList
                                         // data={courses[selectedCourse]}
-                                        data={Object.keys(courses)}
+                                        // data={Object.keys(courses)}
+                                        data={courses ? Object.keys(courses) : []}
                                         renderItem={renderSubjectItem}
                                         keyExtractor={(item) => item}
                                         numColumns={2} // Adjust the number of columns as needed

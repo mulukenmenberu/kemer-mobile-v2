@@ -103,7 +103,7 @@ export default function Saved({ navigation }) {
 
     //     getUserData();
     // }, []);
-    if (isLoading) return <Text>Loading....</Text>
+    // if (isLoading) return <Text>Loading....</Text>
     return (
         <SafeAreaView style={styles.container}>
             {/* <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -129,7 +129,7 @@ export default function Saved({ navigation }) {
 
             <TestAd />
             {/* <SkeletonLoader/> */}
-            <ScrollView
+           {isLoading? <SkeletonLoader/>: <ScrollView
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                 }
@@ -206,7 +206,7 @@ export default function Saved({ navigation }) {
                         </View>
                     </>}
 
-            </ScrollView>
+            </ScrollView>}
             <StatusBar backgroundColor="#f2f2f2" barStyle="dark-content" />
             <ExamModeModal visible={visible} setVisible={setVisible} showModal={showModal} hideModal={hideModal} navigation={navigation}/>
 
