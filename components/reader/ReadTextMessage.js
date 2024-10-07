@@ -1,11 +1,17 @@
 import React from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Dimensions , RefreshControl, ScrollView} from 'react-native';
 import { verticalScale } from '../../utils/Device';
 
-const ReadTextMessage = ({messageText}) => {
+const ReadTextMessage = ({ messageText, onRefresh, refreshing }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>{messageText}</Text>
+      <ScrollView 
+         refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
+        <Text style={styles.header}>{messageText}</Text>
+
+      </ScrollView>
     </View>
   );
 };
@@ -16,6 +22,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center', // Centers content vertically
     alignItems: 'center', // Centers content horizontally
     backgroundColor: 'white',
+    marginTop:"50%"
+    
   },
 
   header: {

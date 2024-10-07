@@ -20,7 +20,7 @@ const ExamModeModal = ({visible, setVisible, showModal, hideModal, navigation })
     //         setVisible(false);
     //     }
     // }
-    const containerStyle = { backgroundColor: 'white', padding: 20, marginTop: verticalScale(-70), width: '90%', alignSelf: 'center', borderRadius: moderateScale(15) };
+    const containerStyle = { backgroundColor: '#f5f5f5', padding: 20, marginTop: verticalScale(-70), width: '90%', alignSelf: 'center', borderRadius: moderateScale(15) };
     const dispatch = useDispatch();
     const { examMode, loadingg, errorr } = useSelector((state) => state.examMode);
     const addTextInput = () => {

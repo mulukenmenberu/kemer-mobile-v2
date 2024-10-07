@@ -307,9 +307,10 @@ export default function Worksheets({ navigation }) {
                 </View>
             </Card> */}
             <Header showModal={showModal} navigation={navigation}/>
+            {(loadings || refreshing) && <SkeletonLoader />}
             {(!courses && loading) && <TestAd />}
 
-            {!isValidObject(courses) && <ReadTextMessage messageText={"No worksheet materials for your selected levels"} />}
+            {(!isValidObject(courses) && !refreshing && !loadings) && <ReadTextMessage messageText={"No worksheet materials for your selected levels"} onRefresh={onRefresh} refreshing={refreshing} />}
             {( isValidObject(courses) && Object.keys(courses).length > 0) && <>
 
                     <View>
