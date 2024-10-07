@@ -14,6 +14,8 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import ReadTextMessage from './reader/ReadTextMessage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SkeletonLoader from '../utils/SkeletonLoader';
+import ExamModeModal from '../utils/ExamModeModal';
+import Header from '../utils/Header';
 
 export default function Saved({ navigation }) {
     const { width, height } = Dimensions.get('screen')
@@ -24,9 +26,17 @@ export default function Saved({ navigation }) {
     const [isFavorite, setIsFavorite] = useState([]);
     const [fullName, setFullName] = useState('');
     const [emailorPhone, setEmailorPhone] = useState('');
+    const [exam_loaddr, setExamLoader] = useState(false);
 
     const dispatch = useDispatch();
     const { packagesSaved, loading: packagesLoading, error: packagesError } = useSelector((state) => state.question_packages);
+    const [visible, setVisible] = useState(false);
+    const showModal = () => setVisible(true);
+    const hideModal = () => {
+        if (!exam_loaddr) {
+            setVisible(false);
+        }
+    }
 
     const checkFavoriteStatus = (package_id) => {
         return isFavorite.includes(package_id)
@@ -79,25 +89,25 @@ export default function Saved({ navigation }) {
         setRefreshing(true);
         // fetchData().then(() => setRefreshing(false)); // Refresh data on pull
     };
-    useEffect(() => {
-        const getUserData = async () => {
-            try {
-                const userData = await AsyncStorage.getItem('userInformation') || {};
-                const userData2 = JSON.parse(userData);
-                setFullName(userData2.fullName);
-                setEmailorPhone(userData2.emailorPhone);
-            } catch (error) {
-                console.error('Failed to fetch favorite status', error);
-            }
-        };
+    // useEffect(() => {
+    //     const getUserData = async () => {
+    //         try {
+    //             const userData = await AsyncStorage.getItem('userInformation') || {};
+    //             const userData2 = JSON.parse(userData);
+    //             setFullName(userData2.fullName);
+    //             setEmailorPhone(userData2.emailorPhone);
+    //         } catch (error) {
+    //             console.error('Failed to fetch favorite status', error);
+    //         }
+    //     };
 
-        getUserData();
-    }, []);
+    //     getUserData();
+    // }, []);
     if (isLoading) return <Text>Loading....</Text>
     return (
         <SafeAreaView style={styles.container}>
-            <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
-                <MaterialCommunityIcons name="menu-open" size={24} color="#222" />
+            {/* <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
+                <MaterialCommunityIcons name="menu-open" size={24} color="#222" onPress={showModal}/>
                 <Ionicons name="notifications-outline" size={moderateScale(24)} color="#222" />
 
             </View>
@@ -114,7 +124,9 @@ export default function Saved({ navigation }) {
                         <Text style={{ color: '#fff', paddingRight: horizontalScale(10) }}>{selectedInterests.join(' - ')}</Text>
                     </View>
                 </View>
-            </Card>
+            </Card> */}    
+             <Header showModal={showModal} navigation={navigation}/>
+
             <TestAd />
             {/* <SkeletonLoader/> */}
             <ScrollView
@@ -193,15 +205,18 @@ export default function Saved({ navigation }) {
                             }
                         </View>
                     </>}
+
             </ScrollView>
             <StatusBar backgroundColor="#f2f2f2" barStyle="dark-content" />
+            <ExamModeModal visible={visible} setVisible={setVisible} showModal={showModal} hideModal={hideModal} navigation={navigation}/>
+
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-
+        flex:1,
     },
 
 });

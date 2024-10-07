@@ -30,6 +30,8 @@ import { fetchSubjects } from '../redux/reducers/notesSlice';
 import SkeletonLoader from '../utils/SkeletonLoader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import ExamModeModal from '../utils/ExamModeModal';
+import Header from '../utils/Header';
 
 const initialCourses = {
     Math_Grade_9: ['Algebra', 'Geometry', 'Calculus', 'Statistics'],
@@ -56,6 +58,7 @@ const initialCourses = {
 export default function Notes({ navigation }) {
     const [courses, setCourses] = useState({});
 
+    const [exam_loaddr, setExamLoader] = useState(false);
 
     const { width, height } = Dimensions.get('screen');
     const [selectedInterests, setSelectedInterests] = useState([]);
@@ -80,6 +83,15 @@ export default function Notes({ navigation }) {
 
     const dispatch = useDispatch();
 
+
+    const [visible, setVisible] = useState(false);
+    const showModal = () => setVisible(true);
+    const hideModal = () => {
+        if (!exam_loaddr) {
+            setVisible(false);
+        }
+    }
+
     const { subjects, loadings, errors } = useSelector((state) => state.subjects);
 
     useEffect(() => {
@@ -103,7 +115,7 @@ export default function Notes({ navigation }) {
             dispatch(fetchSubjects(levels)).then((response) => {
                 setCourses(response.payload)
                 setRefreshing(false)
-                if(response.meta.requestStatus=='rejected'){
+                if (response.meta.requestStatus == 'rejected') {
                     setCustomError(true)
                 }
             })
@@ -257,29 +269,29 @@ export default function Notes({ navigation }) {
         setRefreshing(true);
     };
 
-    useEffect(() => {
-        const getUserData = async () => {
-            try {
-                const userData = await AsyncStorage.getItem('userInformation') || {};
-                const userData2 = JSON.parse(userData);
-                setFullName(userData2.fullName);
-                setEmailorPhone(userData2.emailorPhone);
-            } catch (error) {
-                console.error('Failed to fetch favorite status', error);
-            }
-        };
+    // useEffect(() => {
+    //     const getUserData = async () => {
+    //         try {
+    //             const userData = await AsyncStorage.getItem('userInformation') || {};
+    //             const userData2 = JSON.parse(userData);
+    //             setFullName(userData2.fullName);
+    //             setEmailorPhone(userData2.emailorPhone);
+    //         } catch (error) {
+    //             console.error('Failed to fetch favorite status', error);
+    //         }
+    //     };
 
-        getUserData();
-    }, []);
+    //     getUserData();
+    // }, []);
 
     if (customError) {
-        return <NoInternetScreen isLoading={refreshing} setIsLoading={setRefreshing} />;
+        // return <NoInternetScreen isLoading={refreshing} setIsLoading={setRefreshing} />;
     }
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
-                <MaterialCommunityIcons name="menu-open" size={24} color="#222" />
+            {/* <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
+                <MaterialCommunityIcons name="menu-open" size={24} color="#222" onPress={showModal} />
                 <Ionicons name="notifications-outline" size={moderateScale(24)} color="#222" />
 
             </View>
@@ -296,7 +308,9 @@ export default function Notes({ navigation }) {
                         <Text style={{ color: '#fff', paddingRight: horizontalScale(10) }}>{selectedInterests.join(' - ')}</Text>
                     </View>
                 </View>
-            </Card>
+            </Card> */}
+            <Header showModal={showModal} navigation={navigation}/>
+
             {(!courses && loading) && <TestAd />}
             {(!courses || (courses && refreshing)) ? ((!loadings && !refreshing) ? <ReadTextMessage messageText={"No reading materials for your selected levels"} /> : <SkeletonLoader />) :
                 <>
@@ -431,6 +445,8 @@ export default function Notes({ navigation }) {
                         </View>
                     </Modal>
                 </>}
+            <ExamModeModal visible={visible} setVisible={setVisible} showModal={showModal} hideModal={hideModal} navigation={navigation} />
+
         </SafeAreaView>
     );
 }

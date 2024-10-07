@@ -30,6 +30,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { rootURL } from '../config/baseApi';
+import ExamModeModal from '../utils/ExamModeModal';
+import Header from '../utils/Header';
 
 
 export default function Settings({ navigation }) {
@@ -45,6 +47,16 @@ export default function Settings({ navigation }) {
   const [deviceId, setDeviceId] = useState('');
   const [usernameerror, setUsernameError] = useState('');
   const [savingUser, setSavingUser] = useState(false);
+  const [exam_loaddr, setExamLoader] = useState(false);
+
+
+  const [visible, setVisible] = useState(false);
+  const showModal = () => setVisible(true);
+  const hideModal = () => {
+      if (!exam_loaddr) {
+          setVisible(false);
+      }
+  }
 
   const toggleInterest = (interest) => {
     // Step 1: Update the selected interests state
@@ -223,25 +235,7 @@ export default function Settings({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
-        <MaterialCommunityIcons name="menu-open" size={24} color="#222" />
-        <Ionicons name="notifications-outline" size={moderateScale(24)} color="#222" />
-
-      </View>
-      <Card style={{ marginTop: verticalScale(8), marginBottom: verticalScale(20), alignSelf: 'center', height: verticalScale(80), width: width - 20, backgroundColor: '#5E5CE6', justifyContent: 'center' }} onPress={() => navigation.navigate('Quiz')}>
-        <View style={{ marginLeft: horizontalScale(10), marginRight: verticalScale(10), flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-          <View>
-            <Image source={require('../assets/avatar.png')} style={{ width: horizontalScale(50), height: verticalScale(50), borderRadius: moderateScale(50 / 2) }} />
-          </View>
-          <View style={{ marginLeft: horizontalScale(20) }}>
-            <View style={{ flexDirection: 'row' }}>
-              <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: moderateScale(19) }}>Welcome {fullName}</Text>
-              <AntDesign name="edit" size={moderateScale(24)} color="white" />
-            </View>
-            <Text style={{ color: '#fff', paddingRight: horizontalScale(10) }}>{selectedInterests.join(' - ')}</Text>
-          </View>
-        </View>
-      </Card>
+     <Header showModal={showModal} navigation={navigation}/>
       {/* </ImageBackground> */}
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -356,6 +350,8 @@ export default function Settings({ navigation }) {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <ExamModeModal visible={visible} setVisible={setVisible} showModal={showModal} hideModal={hideModal} navigation={navigation}/>
+
       <StatusBar backgroundColor="#F2F2F2" barStyle="dark-content" />
     </SafeAreaView>
   );
