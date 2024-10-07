@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center', // Centers content vertically
     alignItems: 'center', // Centers content horizontally
     backgroundColor: 'white',
-    marginTop:"50%"
+    // marginTop:"10%",
     
   },
 
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#dfdfdf',
     textAlign: 'center', // Centers text within the Text component
-    marginTop: verticalScale(10)
+    marginTop: "50%"
   },
 });
 

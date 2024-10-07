@@ -308,7 +308,7 @@ export default function Worksheets({ navigation }) {
             </Card> */}
             <Header showModal={showModal} navigation={navigation}/>
             {(loadings || refreshing) && <SkeletonLoader />}
-            {(!courses && loading) && <TestAd />}
+            {(!isValidObject(courses) && !refreshing && !loadings) && <TestAd />}
 
             {(!isValidObject(courses) && !refreshing && !loadings) && <ReadTextMessage messageText={"No worksheet materials for your selected levels"} onRefresh={onRefresh} refreshing={refreshing} />}
             {( isValidObject(courses) && Object.keys(courses).length > 0) && <>
@@ -387,7 +387,7 @@ export default function Worksheets({ navigation }) {
                             >
                                 {/* {isloading && <SkeletonLoaderReader />} */}
                                 {(changePage > 0 && !isloading) && <ReadWorksheet selectedTopic={selectedTopic} selectedCourse={selectedCourse} />}
-                                {(changePage <= 0 || courseSelected <= 0) && <ReadTextMessage messageText={courseSelected <= 0 ? 'Please Select a Subject' : 'Please Select a Topic'} />}
+                                {(changePage <= 0 || courseSelected <= 0) && <ReadTextMessage messageText={courseSelected <= 0 ? 'Please Select a Subject' : 'Please Select a Topic'} onRefresh={onRefresh} refreshing={refreshing}/>}
                             </ScrollView>
                         </ScrollView>
                     </View>

@@ -47,7 +47,7 @@ export default function Header({ showModal, navigation }) {
                 setFullName(userDataa.fullName);
                 setUsername(userDataa.username);
             } catch (error) {
-                console.error('Failed to fetch user data', error);
+                // console.error('Failed to fetch user data', error);
             }
         };
 
@@ -156,7 +156,6 @@ export default function Header({ showModal, navigation }) {
                     backgroundColor: '#5E5CE6',
                     justifyContent: 'center'
                 }}
-                // onPress={() => navigation.navigate('Quiz')}
             >
                 <View style={{ marginLeft: horizontalScale(10), marginRight: verticalScale(10), flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                     <View>
