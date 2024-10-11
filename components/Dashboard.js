@@ -35,9 +35,7 @@ export default function Dashboard({ navigation }) {
     const [exam_loaddr, setExamLoader] = useState(false);
     const [showPackages, setShowPackages] = useState(false);
 
-    const [fullName, setFullName] = useState('');
-    const [emailorPhone, setEmailorPhone] = useState('');
-
+ 
     const [visible, setVisible] = useState(false);
     const showModal = () => setVisible(true);
     const hideModal = () => {
@@ -149,6 +147,10 @@ const renderPackagesonModal = ()=>{
     ? [courses.find(course => course.course_id === active), ...courses.filter(course => course.course_id !== active)] 
     : courses;
 
+    const extractedPackages = courses.reduce((acc, course) => {
+        return acc.concat(course.packages); // Concatenate packages from each course
+    }, []);
+
     return (
 
         <SafeAreaView style={styles.container}>
@@ -168,13 +170,13 @@ const renderPackagesonModal = ()=>{
                             <Entypo name="newsletter" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
                             <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: moderateScale(35) }}>{courses.length}</Text>
                             <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>Subjects (course groups) </Text>
-                            <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>in your selection</Text>
+                            <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>in your level</Text>
                         </Pressable>
                         <Pressable style={{ padding: 10, borderRadius: moderateScale(16), backgroundColor: '#07beb8', height: verticalScale(130), width: horizontalScale(180) }} onPress={()=>renderPackagesonModal()}>
                             <Ionicons name="alarm" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
-                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: 35 }}>120+</Text>
-                            <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>Question Packages</Text>
-                            <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>in your selected levs</Text>
+                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: 35 }}>{extractedPackages.length}+</Text>
+                            <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}> Packages in your level</Text>
+                            {/* <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>in your selected levs</Text> */}
                         </Pressable>
                     </View>
                     <View style={{ marginTop: verticalScale(10), flexDirection: 'row', justifyContent: 'space-evenly' }}>
@@ -188,7 +190,7 @@ const renderPackagesonModal = ()=>{
                             width: horizontalScale(180)
                         }} onPress={() => Alert.alert('Select a course (subject) & a package under the subject to get questions list')}>
                             <FontAwesome name="sticky-note" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
-                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: moderateScale(35) }}>130+</Text>
+                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: moderateScale(35) }}>{extractedPackages.length *100}+</Text>
                             <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>Total Questions in you level</Text>
                         </Pressable>
                     </View>

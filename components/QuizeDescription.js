@@ -8,6 +8,7 @@ import SkeletonLoader from '../utils/SkeletonLoader';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TestAd } from '../TestAd';
+import { moderateScale } from '../utils/Device';
 
 const QuizeDescription = ({ route, navigation }) => {
   const dispatch = useDispatch();
@@ -149,8 +150,8 @@ const QuizeDescription = ({ route, navigation }) => {
       {uniqueChapters.length <= 1 && <TouchableOpacity style={styles.backIconContainer} onPress={() => navigation.navigate('Tabs')}>
         <MaterialCommunityIcons name="arrow-left" color={"#333"} size={30} />
       </TouchableOpacity>}
-      {uniqueChapters.length > 1 && <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingLeft:10, paddingRight:10 }}>
-        <TouchableOpacity  onPress={() => navigation.navigate('Tabs')}>
+      {uniqueChapters.length > 1 && <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingLeft: 10, paddingRight: 10 }}>
+        <TouchableOpacity onPress={() => navigation.navigate('Tabs')}>
           <MaterialCommunityIcons name="arrow-left" color={"#333"} size={30} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => setModalVisible(true)}>
@@ -254,14 +255,14 @@ const QuizeDescription = ({ route, navigation }) => {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Select Chapters</Text>
+            <Text style={[styles.modalTitle, styles.tagheader]}>Select Chapters</Text>
             {uniqueChapters.map((chapter, index) => (
               <TouchableOpacity
                 key={index}
-                style={[styles.chapterButton, selectedChapters.includes(chapter) && styles.selectedChapterButton]}
+                style={[styles.chapterButton, selectedChapters.includes(chapter) && styles.selectedChapterButton, , index % 2 === 0 ? styles.evenCard : styles.oddCard]}
                 onPress={() => toggleChapterSelection(chapter)}
               >
-                <Text style={[styles.chapterButtonText, selectedChapters.includes(chapter) && styles.selectedText]}>{chapter}</Text>
+                <Text style={[styles.chapterButtonText, selectedChapters.includes(chapter) && styles.selectedText]}>{index+1}. {chapter}</Text>
               </TouchableOpacity>
             ))}
             <TouchableOpacity
@@ -423,7 +424,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginVertical: 5,
     width: '100%',
-    alignItems: 'center',
+    // alignItems: 'center',
   },
   selectedChapterButton: {
     backgroundColor: '#5E5CE6',
@@ -433,18 +434,35 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
-  selectedText:{
-    color:'#fff'
+  selectedText: {
+    color: '#fff'
   },
   closeButton: {
     marginTop: 15,
     padding: 10,
-    backgroundColor: '#5E5CE6',
+    backgroundColor: '#FF6347',
     borderRadius: 8,
   },
   closeButtonText: {
     color: '#fff',
     fontSize: 16,
+  },
+  tagheader: {
+    color: '#fff',
+    fontSize: moderateScale(18),
+    backgroundColor: '#FF6347',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    width: "100%",
+    textAlign: 'center',
+    overflow: 'hidden',
+  },
+  evenCard: {
+    backgroundColor: '#f0f0f0', // Light gray for even rows
+  },
+  oddCard: {
+    backgroundColor: '#ffffff', // White for odd rows
   },
 });
 
