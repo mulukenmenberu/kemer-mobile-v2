@@ -146,10 +146,10 @@ const QuizeDescription = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {uniqueChapters.length <= 0 && <TouchableOpacity style={styles.backIconContainer} onPress={() => navigation.navigate('Tabs')}>
+      {uniqueChapters.length <= 1 && <TouchableOpacity style={styles.backIconContainer} onPress={() => navigation.navigate('Tabs')}>
         <MaterialCommunityIcons name="arrow-left" color={"#333"} size={30} />
       </TouchableOpacity>}
-      {uniqueChapters.length > 0 && <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingLeft:10, paddingRight:10 }}>
+      {uniqueChapters.length > 1 && <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingLeft:10, paddingRight:10 }}>
         <TouchableOpacity  onPress={() => navigation.navigate('Tabs')}>
           <MaterialCommunityIcons name="arrow-left" color={"#333"} size={30} />
         </TouchableOpacity>

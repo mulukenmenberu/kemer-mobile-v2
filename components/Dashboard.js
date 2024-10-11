@@ -1,6 +1,6 @@
 // import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { Image, StatusBar, TextInput, StyleSheet, Text, View, Platform, StatusBar as stbar, Dimensions, SafeAreaView, ImageBackground, TouchableOpacity, ScrollView, RefreshControl, Alert } from 'react-native';
+import { Image, StatusBar, TextInput, StyleSheet, Text, View, Platform, StatusBar as stbar, Dimensions, SafeAreaView, ImageBackground, TouchableOpacity, ScrollView, RefreshControl, Alert, Pressable } from 'react-native';
 import { Card } from 'react-native-paper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -22,6 +22,7 @@ import { fetchExamMode } from '../redux/reducers/examModeSlice';
 import { rootURL } from '../config/baseApi';
 import ExamModeModal from '../utils/ExamModeModal';
 import Header from '../utils/Header';
+import DashBoardCardsModal from '../utils/DashBoardCardsModal';
 export default function Dashboard({ navigation }) {
     const { width, height } = Dimensions.get('screen')
     const [active, setActive] = useState(0)
@@ -43,6 +44,13 @@ export default function Dashboard({ navigation }) {
         }
     }
 
+    const [visibleCourses, setVisibleCourses] = useState(false);
+    const showCoursesModal = () => setVisibleCourses(true);
+    const hideCoursesModal = () => {
+        // if (!exam_loaddr) {
+            setVisibleCourses(false);
+        // }
+    }
 
     const dispatch = useDispatch();
     const { courses, loading, error } = useSelector((state) => state.courses);
@@ -109,20 +117,6 @@ export default function Dashboard({ navigation }) {
     };
 
 
-    // useEffect(() => {
-    //     const getUserData = async () => {
-    //         try {
-    //             const userData = await AsyncStorage.getItem('userInformation') || {};
-    //             const userDataa = JSON.parse(userData);
-    //             setFullName(userDataa.fullName);
-    //             setEmailorPhone(userDataa.emailorPhone);
-    //         } catch (error) {
-    //             console.error('Failed to fetch favorite status', error);
-    //         }
-    //     };
-
-    //     getUserData();
-    // }, []);
 
     if (loading || isLoading) {
         return <SkeletonLoader />
@@ -135,35 +129,8 @@ export default function Dashboard({ navigation }) {
 
         <SafeAreaView style={styles.container}>
 
-            {/* <View style={{
-                marginLeft: horizontalScale(10), marginTop: verticalScale(10), marginRight: horizontalScale(10),
-                flexDirection: 'row', justifyContent: 'space-between'
-            }}>
-                <MaterialCommunityIcons name="menu-open" size={moderateScale(24)} color="#222" onPress={showModal} />
-                <Ionicons name="notifications-outline" size={moderateScale(24)} color="#222" />
-            </View>
-            <Card style={{
-                marginTop: verticalScale(8), marginBottom: horizontalScale(20), alignSelf: 'center',
-                height: verticalScale(80), width: width - 20, backgroundColor: '#5E5CE6', justifyContent: 'center'
-            }} >
-                <View style={{ marginLeft: horizontalScale(10), marginRight: horizontalScale(10), flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-
-                    <View>
-                        <Image source={require('../assets/avatar.png')} style={{
-                            width: horizontalScale(50),
-                            height: verticalScale(50), borderRadius: moderateScale(50 / 2)
-                        }} />
-                    </View>
-                    <View style={{ marginLeft: horizontalScale(20) }}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: moderateScale(19) }}>Welcome {fullName}</Text>
-                            <AntDesign name="edit" size={moderateScale(24)} color="#fff" />
-                        </View>
-                        <Text style={{ color: '#fff', paddingRight: 10 }}>{selectedInterests.join(' - ')}</Text>
-                    </View>
-                </View>
-            </Card> */}
-                 <Header showModal={showModal} navigation={navigation}/>
+          
+            <Header showModal={showModal} navigation={navigation} />
 
             <TestAd />
             <ScrollView
@@ -173,31 +140,33 @@ export default function Dashboard({ navigation }) {
             >
                 <View>
                     <View style={{ marginTop: verticalScale(10), flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                        <View style={{ padding: moderateScale(10), borderRadius: moderateScale(16), backgroundColor: '#6977ed', height: verticalScale(130), width: horizontalScale(180) }}>
+                        <Pressable style={{ padding: moderateScale(10), borderRadius: moderateScale(16), backgroundColor: '#6977ed', height: verticalScale(130), width: horizontalScale(180) }} onPress={showCoursesModal}>
                             <Entypo name="newsletter" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
-                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: moderateScale(35) }}>3</Text>
-                            <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>Recently Posted Items</Text>
-                        </View>
+                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: moderateScale(35) }}>{courses.length}</Text>
+                            <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>Subjects (course groups) </Text>
+                            <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>in your selection</Text>
+                        </Pressable>
                         <View style={{ padding: 10, borderRadius: moderateScale(16), backgroundColor: '#07beb8', height: verticalScale(130), width: horizontalScale(180) }}>
                             <Ionicons name="alarm" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
-                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: 35 }}>120</Text>
-                            <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>Most Visited Items</Text>
+                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: 35 }}>120+</Text>
+                            <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>Question Packages</Text>
+                            <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>in your selected levs</Text>
                         </View>
                     </View>
                     <View style={{ marginTop: verticalScale(10), flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                        <View style={{ padding: moderateScale(10), borderRadius: moderateScale(16), backgroundColor: '#9013fe', height: verticalScale(130), width: horizontalScale(180) }}>
+                        <Pressable style={{ padding: moderateScale(10), borderRadius: moderateScale(16), backgroundColor: '#9013fe', height: verticalScale(130), width: horizontalScale(180) }} onPress={() => navigation.navigate('Saved')}>
                             <MaterialIcons name="category" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
-                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: moderateScale(35) }}>7</Text>
-                            <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>Your Saved Items</Text>
-                        </View>
-                        <View style={{
+                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: moderateScale(35) }}>{isFavorite.length}</Text>
+                            <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>Your Saved Package {isFavorite.length > 1 ? 's' : ''}</Text>
+                        </Pressable>
+                        <Pressable style={{
                             padding: moderateScale(10), borderRadius: moderateScale(16), backgroundColor: '#50e3c2', height: verticalScale(130),
                             width: horizontalScale(180)
-                        }} >
+                        }} onPress={() => Alert.alert('Select a course (subject) & a package under the subject to get questions list')}>
                             <FontAwesome name="sticky-note" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
-                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: moderateScale(35) }}>13</Text>
-                            <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>Active Items</Text>
-                        </View>
+                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: moderateScale(35) }}>130+</Text>
+                            <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>Total Questions in you level</Text>
+                        </Pressable>
                     </View>
 
                 </View>
@@ -279,7 +248,10 @@ export default function Dashboard({ navigation }) {
                 </View>
                 <View style={{ height: verticalScale(100), marginBottom: verticalScale(20) }} />
             </ScrollView>
-          <ExamModeModal visible={visible} setVisible={setVisible} showModal={showModal} hideModal={hideModal} navigation={navigation}/>
+            <ExamModeModal visible={visible} setVisible={setVisible} showModal={showModal} hideModal={hideModal} navigation={navigation} />
+            <DashBoardCardsModal visible={visibleCourses} setVisible={setVisibleCourses} showModal={showCoursesModal} hideModal={hideCoursesModal} navigation={navigation} courses={courses} setActive={setActive}/>
+
+
             <StatusBar backgroundColor="#F2F2F2" barStyle="dark-content" />
         </SafeAreaView>
     );
