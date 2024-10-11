@@ -28,10 +28,12 @@ export default function Dashboard({ navigation }) {
     const [active, setActive] = useState(0)
     const [isLoading, setIsLoading] = useState(false);
     const [isFavorite, setIsFavorite] = useState([]);
+    const [packageData, setPackageData] = useState([]);
     const [refreshing, setRefreshing] = useState(false); // State to manage refreshing
     const [selectedInterests, setSelectedInterests] = useState([]);
     const [refresh, setRefresh] = useState(true);
     const [exam_loaddr, setExamLoader] = useState(false);
+    const [showPackages, setShowPackages] = useState(false);
 
     const [fullName, setFullName] = useState('');
     const [emailorPhone, setEmailorPhone] = useState('');
@@ -49,6 +51,7 @@ export default function Dashboard({ navigation }) {
     const hideCoursesModal = () => {
         // if (!exam_loaddr) {
             setVisibleCourses(false);
+            setShowPackages(false);
         // }
     }
 
@@ -65,23 +68,36 @@ export default function Dashboard({ navigation }) {
 
             dispatch(fetchCourses(interestsArray)).then((response) => {
                 setActive(response.payload[0].course_id)
+                setPackageData(response.payload[0].packages)
+             
+                
+
                 setRefreshing(false)
             })
         });
     }, [refreshing]);
 
+    const getPackagesByCourseId = (courseId) => {
+        const course = courses.find(course => course.course_id === courseId);
+        return course ? course.packages : []; // Return packages or an empty array if not found
+    };
+
     useEffect(() => {
         if (active !== 0) {
             setIsLoading(true);
-
-            dispatch(fetchQuestionPackages(active)).then((response) => {
-                // console.log(packages)
+            const packages = getPackagesByCourseId(active);
+            setPackageData(packages)
+            // console.log(packages)
+            setIsLoading(false);
+            /*dispatch(fetchQuestionPackages(active)).then((response) => {
+                // console.log(packages) 
                 setIsLoading(false);
             }).catch(() => {
                 setIsLoading(false);
             });
+            */
         }
-    }, [active, dispatch,]);
+    }, [active]);
 
 
     useEffect(() => {
@@ -116,7 +132,10 @@ export default function Dashboard({ navigation }) {
 
     };
 
-
+const renderPackagesonModal = ()=>{
+    showCoursesModal()
+    setShowPackages(true)
+}
 
     if (loading || isLoading) {
         return <SkeletonLoader />
@@ -125,6 +144,11 @@ export default function Dashboard({ navigation }) {
     if (error) {
         return <NoInternetScreen isLoading={isLoading} setIsLoading={setIsLoading} />
     }
+    // console.log(courses)
+    const updatedCourses = active > 0 
+    ? [courses.find(course => course.course_id === active), ...courses.filter(course => course.course_id !== active)] 
+    : courses;
+
     return (
 
         <SafeAreaView style={styles.container}>
@@ -146,12 +170,12 @@ export default function Dashboard({ navigation }) {
                             <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>Subjects (course groups) </Text>
                             <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>in your selection</Text>
                         </Pressable>
-                        <View style={{ padding: 10, borderRadius: moderateScale(16), backgroundColor: '#07beb8', height: verticalScale(130), width: horizontalScale(180) }}>
+                        <Pressable style={{ padding: 10, borderRadius: moderateScale(16), backgroundColor: '#07beb8', height: verticalScale(130), width: horizontalScale(180) }} onPress={()=>renderPackagesonModal()}>
                             <Ionicons name="alarm" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
                             <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: 35 }}>120+</Text>
                             <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>Question Packages</Text>
                             <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>in your selected levs</Text>
-                        </View>
+                        </Pressable>
                     </View>
                     <View style={{ marginTop: verticalScale(10), flexDirection: 'row', justifyContent: 'space-evenly' }}>
                         <Pressable style={{ padding: moderateScale(10), borderRadius: moderateScale(16), backgroundColor: '#9013fe', height: verticalScale(130), width: horizontalScale(180) }} onPress={() => navigation.navigate('Saved')}>
@@ -175,7 +199,7 @@ export default function Dashboard({ navigation }) {
                     <ScrollView
                         horizontal
                         showsHorizontalScrollIndicator={false}>
-                        {courses.map((course) => (
+                        {updatedCourses.map((course) => (
                             <Text key={course.course_id} onPress={() => setActive(course.course_id)} style={{ margin: moderateScale(20), fontWeight: active == course.course_id ? 'bold' : '', color: active == course.course_id ? '#5E5CE6' : '#CBD1DF' }}>{course.course_name}</Text>
                         ))}
                     </ScrollView>
@@ -187,7 +211,7 @@ export default function Dashboard({ navigation }) {
                             <Text>Loading...</Text>
                         </View>
                     ) : (
-                        packages.map((item) => (
+                        packageData.map((item) => (
                             <TouchableOpacity
                                 key={item.package_id}
                                 style={{
@@ -249,7 +273,7 @@ export default function Dashboard({ navigation }) {
                 <View style={{ height: verticalScale(100), marginBottom: verticalScale(20) }} />
             </ScrollView>
             <ExamModeModal visible={visible} setVisible={setVisible} showModal={showModal} hideModal={hideModal} navigation={navigation} />
-            <DashBoardCardsModal visible={visibleCourses} setVisible={setVisibleCourses} showModal={showCoursesModal} hideModal={hideCoursesModal} navigation={navigation} courses={courses} setActive={setActive}/>
+            <DashBoardCardsModal visible={visibleCourses}  showModal={showCoursesModal} hideModal={hideCoursesModal} navigation={navigation} courses={courses} setActive={setActive}  showPackages={showPackages}/>
 
 
             <StatusBar backgroundColor="#F2F2F2" barStyle="dark-content" />

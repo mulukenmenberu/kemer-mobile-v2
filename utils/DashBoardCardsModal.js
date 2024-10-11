@@ -1,40 +1,65 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { horizontalScale, moderateScale, verticalScale } from '../utils/Device';
 import { Modal } from 'react-native-paper';
 
-const DashBoardCardsModal = ({ visible, setVisible, hideModal, navigation, courses, setActive }) => {
+const DashBoardCardsModal = ({ visible, hideModal, navigation, courses, setActive, showPackages }) => {
 
-    const containerStyle = { 
-        backgroundColor: '#f5f5f5', 
-        padding: 20, 
-        marginTop: verticalScale(-70), 
-        width: '90%', 
-        alignSelf: 'center', 
-        borderRadius: moderateScale(15) 
+    const containerStyle = {
+        backgroundColor: '#f5f5f5',
+        padding: 20,
+        marginTop: verticalScale(-70),
+        width: '90%',
+        height: '60%',
+        alignSelf: 'center',
+        borderRadius: moderateScale(15)
     };
 
     const setSelection = (course_id) => {
-        setVisible(false);
+        // setVisible(false);
+        hideModal()
         setActive(course_id);
     }
+    const openQuizPage = (package_id, package_name, tags) => {
+        navigation.navigate('QuizeDescription', {
+            package_id: package_id,
+            package_name: package_name,
+            tags: tags,
+        })
+    }
+    const extractedPackages = courses.reduce((acc, course) => {
+        return acc.concat(course.packages); // Concatenate packages from each course
+    }, []);
 
     return (
         <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
-            <Text style={styles.tag}>{"Select Courses to get list of question packages"}</Text>
-          
+            {!showPackages &&<Text style={styles.tag}>{"Select Courses to get list of question packages"}</Text>}
+            {showPackages &&<Text style={styles.tag}>{"Select a package to get list of questions"}</Text>}
 
-            <View style={styles.cardContainer}>
-                {courses.map((course) => (
-                    <TouchableOpacity 
-                        key={course.course_id} 
-                        onPress={() => setSelection(course.course_id)} 
-                        style={styles.card}
-                    >
-                        <Text style={styles.cardTitle}>{course.course_name}</Text>
-                    </TouchableOpacity>
-                ))}
-            </View>
+            <ScrollView>
+                {showPackages && <View style={styles.cardContainer}>
+                    {extractedPackages.map((course, index) => (
+                        <TouchableOpacity
+                            key={course.package_id}
+                            onPress={() => openQuizPage(course.package_id, course.package_name, course.tags)}
+                            style={styles.card}
+                        >
+                            <Text style={styles.cardTitle}>{index+1}. {course.package_name}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>}
+                {!showPackages && <View style={styles.cardContainer}>
+                    {courses.map((course, index) => (
+                        <TouchableOpacity
+                            key={course.course_id}
+                            onPress={() => setSelection(course.course_id)}
+                            style={styles.card}
+                        >
+                            <Text style={styles.cardTitle}>{index+1}. {course.course_name}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>}
+            </ScrollView>
         </Modal>
     );
 };
@@ -45,7 +70,7 @@ const styles = StyleSheet.create({
     },
     tag: {
         color: '#fff',
-        fontSize: 10,
+        fontSize: moderateScale(18),
         backgroundColor: '#FF6347',
         paddingVertical: 5,
         paddingHorizontal: 10,
@@ -73,14 +98,14 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         marginVertical: 5,
         width: '100%',
-        alignItems: 'center',
+        // alignItems: 'center',
     },
     cardTitle: {
         color: '#fff',
         fontSize: moderateScale(16),
         fontWeight: 'bold',
-        textAlign: 'center',
-        color:'#222'
+        textAlign: 'left',
+        color: '#222'
     },
 });
 
