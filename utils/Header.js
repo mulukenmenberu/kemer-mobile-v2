@@ -74,8 +74,12 @@ export default function Header({ showModal, navigation }) {
             try {
                 const response = await axios.get(`${rootURL}notifications/get_notifications.php?username=${username}`);
                 setNotifications(response.data.data); // Assuming the API response contains a "notifications" array
+                if(!response.data.data || response.data.data.length<=0){
+                    setError('No notifications found')
+                }
             } catch (err) {
                 setError('Failed to fetch notifications');
+                console.log(err)
             } finally {
                 setLoading(false); // Stop loading
             }
