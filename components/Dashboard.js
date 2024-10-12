@@ -36,13 +36,13 @@ export default function Dashboard({ navigation }) {
     const [showPackages, setShowPackages] = useState(false);
 
  
-    const [visible, setVisible] = useState(false);
-    const showModal = () => setVisible(true);
-    const hideModal = () => {
-        if (!exam_loaddr) {
-            setVisible(false);
-        }
-    }
+    // const [visible, setVisible] = useState(false);
+    // const showModal = () => setVisible(true);
+    // const hideModal = () => {
+    //     if (!exam_loaddr) {
+    //         setVisible(false);
+    //     }
+    // }
 
     const [visibleCourses, setVisibleCourses] = useState(false);
     const showCoursesModal = () => setVisibleCourses(true);
@@ -164,9 +164,9 @@ const renderPackagesonModal = ()=>{
         return <NoInternetScreen isLoading={isLoading} setIsLoading={setIsLoading} />
     }
     // console.log(courses)
-    const updatedCourses = active > 0 
-    ? [courses.find(course => course.course_id === active), ...courses.filter(course => course.course_id !== active)] 
-    : courses;
+    // const updatedCourses = active > 0 
+    // ? [courses.find(course => course.course_id === active), ...courses.filter(course => course.course_id !== active)] 
+    // : courses;
 
     const extractedPackages = courses.reduce((acc, course) => {
         return acc.concat(course.packages); // Concatenate packages from each course
@@ -177,7 +177,8 @@ const renderPackagesonModal = ()=>{
         <SafeAreaView style={styles.container}>
 
           
-            <Header showModal={showModal} navigation={navigation} />
+            {/* <Header showModal={showModal} navigation={navigation} courses={courses}/> */}
+            <Header  navigation={navigation} courses={courses}/>
 
             <TestAd />
             <ScrollView
@@ -222,7 +223,7 @@ const renderPackagesonModal = ()=>{
                     <ScrollView
                         horizontal
                         showsHorizontalScrollIndicator={false}>
-                        {updatedCourses.map((course) => (
+                        {courses.map((course) => (
                             <Text key={course.course_id} onPress={() => setActive(course.course_id)} style={{ margin: moderateScale(20), fontWeight: active == course.course_id ? 'bold' : '', color: active == course.course_id ? '#5E5CE6' : '#CBD1DF' }}>{course.course_name}</Text>
                         ))}
                     </ScrollView>
@@ -295,7 +296,7 @@ const renderPackagesonModal = ()=>{
                 </View>
                 <View style={{ height: verticalScale(100), marginBottom: verticalScale(20) }} />
             </ScrollView>
-            <ExamModeModal visible={visible} setVisible={setVisible} showModal={showModal} hideModal={hideModal} navigation={navigation} />
+            {/* <ExamModeModal visible={visible} setVisible={setVisible} showModal={showModal} hideModal={hideModal} navigation={navigation} /> */}
             <DashBoardCardsModal visible={visibleCourses}  showModal={showCoursesModal} hideModal={hideCoursesModal} navigation={navigation} courses={courses} setActive={setActive}  showPackages={showPackages}/>
 
 
