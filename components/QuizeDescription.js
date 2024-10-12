@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, StatusBar, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, StatusBar, Alert, Modal } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { fetchQuestions } from '../redux/reducers/questionsSlice';
 import NoInternetScreen from '../utils/NoInternetScreen';
@@ -8,58 +8,54 @@ import SkeletonLoader from '../utils/SkeletonLoader';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TestAd } from '../TestAd';
+import { moderateScale } from '../utils/Device';
 
 const QuizeDescription = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const { questions, loading, error } = useSelector((state) => state.questions);
   const [selectedOptions, setSelectedOptions] = useState([]);
-  // const [descriptionManagers, setDescriptionManagers] = useState([]);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [wrongAnswers, setWrongAnswers] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
   const [refresh, setRefresh] = useState(0);
   const [progressObj, setProgressObj] = useState({});
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // To track the current question
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+
+  // Modal State
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedChapters, setSelectedChapters] = useState([]);
 
   const { package_id, package_name, tags } = route.params;
-let descriptionManagers = []
+
+  let descriptionManagers = [];
+
   const storeAnsweredToAsyncStorage = async (question_id, optionIndex) => {
     try {
       const storedData = JSON.parse(await AsyncStorage.getItem(`${package_id}_${package_name}`)) || {};
-      storedData[question_id] = optionIndex;  // Store selected option
+      storedData[question_id] = optionIndex;
       await AsyncStorage.setItem(`${package_id}_${package_name}`, JSON.stringify(storedData));
     } catch (error) {
       console.error("Error storing the quiz progress", error);
     }
   };
 
-  // Load stored progress from AsyncStorage and mark the options
   const loadStoredProgress = async () => {
     try {
       const storedData = JSON.parse(await AsyncStorage.getItem(`${package_id}_${package_name}`));
-      setProgressObj(storedData)
-      /* if (storedData) {
-         console.log(storedData, 'sss')
-         const updatedSelections = Array(questions.length).fill(null);
-         for (let [questionIndex, optionIndex] of Object.entries(storedData)) {
-           updatedSelections[questionIndex] = [parseInt(optionIndex)];
-         }
-         setSelectedOptions(updatedSelections);
-       }*/
+      setProgressObj(storedData);
     } catch (error) {
       console.error("Error loading stored quiz progress", error);
     }
   };
 
   useEffect(() => {
-    dispatch(fetchQuestions(package_id)); // Fetch questions for the received package_id
+    dispatch(fetchQuestions(package_id));
   }, [dispatch, package_id]);
 
   useEffect(() => {
     if (questions && questions.length > 0) {
       setSelectedOptions(Array(questions.length).fill(null));
-      loadStoredProgress(); // Load progress when questions are loaded
-
+      loadStoredProgress();
     }
   }, [questions]);
 
@@ -80,12 +76,10 @@ let descriptionManagers = []
     try {
       const savedPackages = JSON.parse(await AsyncStorage.getItem('savedPackages')) || [];
       if (isFavorite) {
-        // Remove from favorites
         const updatedPackages = savedPackages.filter(id => id !== package_id);
         await AsyncStorage.setItem('savedPackages', JSON.stringify(updatedPackages));
         setIsFavorite(false);
       } else {
-        // Add to favorites
         savedPackages.push(package_id);
         await AsyncStorage.setItem('savedPackages', JSON.stringify(savedPackages));
         setIsFavorite(true);
@@ -98,57 +92,72 @@ let descriptionManagers = []
   const selectOption = (questionIndex, optionIndex, question_id) => {
     const updatedSelections = [...selectedOptions];
 
-    // Initialize the selected options array for the current question if not already done
     if (!updatedSelections[questionIndex]) {
       updatedSelections[questionIndex] = [];
     }
 
-    // Check if the option is already selected
     const isAlreadySelected = updatedSelections[questionIndex].includes(optionIndex);
 
     if (isAlreadySelected) {
-      // If the option is already selected, remove it
       updatedSelections[questionIndex] = updatedSelections[questionIndex].filter(
         (selectedOptionIndex) => selectedOptionIndex !== optionIndex
       );
     } else {
-      // Otherwise, add the option
       updatedSelections[questionIndex].push(optionIndex);
     }
 
     setSelectedOptions(updatedSelections);
-    storeAnsweredToAsyncStorage(question_id, optionIndex); // Store the progress
-
+    storeAnsweredToAsyncStorage(question_id, optionIndex);
   };
 
-  const goToNextQuestion = () => {
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setRefresh(refresh + 1)
-    }
 
+
+  if (loading) return <SkeletonLoader />;
+  if (error) return <NoInternetScreen />;
+
+  // const currentQuestion = questions[currentQuestionIndex];
+  const uniqueChapters = [...new Set(questions.map(question => question.chapter))];
+
+  // Function to toggle chapter selection
+  const toggleChapterSelection = (chapter) => {
+    setSelectedChapters(prev =>
+      prev.includes(chapter) ? prev.filter(c => c !== chapter) : [...prev, chapter]
+    );
+  };
+
+  // Filter questions based on selected chapters
+  const filteredQuestions = selectedChapters.length > 0
+    ? questions.filter(question => selectedChapters.includes(question.chapter))
+    : questions;
+  const currentQuestion = filteredQuestions[currentQuestionIndex];
+
+  const goToNextQuestion = () => {
+    if (currentQuestionIndex < filteredQuestions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setRefresh(refresh + 1);
+    }
   };
 
   const goToPreviousQuestion = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
-      setRefresh(refresh - 1)
-
+      setRefresh(refresh - 1);
     }
   };
-  useEffect(() => {
 
-  }, [refresh])
-  if (loading) return <SkeletonLoader />;
-  if (error) return <NoInternetScreen />;
-
-  const currentQuestion = questions[currentQuestionIndex];
-// console.log(package_id)
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity style={styles.backIconContainer} onPress={() => navigation.navigate('Tabs')}>
+      {uniqueChapters.length <= 1 && <TouchableOpacity style={styles.backIconContainer} onPress={() => navigation.navigate('Tabs')}>
         <MaterialCommunityIcons name="arrow-left" color={"#333"} size={30} />
-      </TouchableOpacity>
+      </TouchableOpacity>}
+      {uniqueChapters.length > 1 && <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingLeft: 10, paddingRight: 10 }}>
+        <TouchableOpacity onPress={() => navigation.navigate('Tabs')}>
+          <MaterialCommunityIcons name="arrow-left" color={"#333"} size={30} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
+          <MaterialCommunityIcons name="filter-variant-minus" color={"#333"} size={30} />
+        </TouchableOpacity>
+      </View>}
 
       <View style={styles.fixedHeader}>
         <View>
@@ -163,7 +172,7 @@ let descriptionManagers = []
         <View>
           <Text style={styles.statsText}></Text>
           <Text style={styles.statsTextTotal}>Type: Multiple Choice</Text>
-          <Text style={styles.statsTextTotal}>Total Questions: {questions.length}</Text>
+          <Text style={styles.statsTextTotal}>Total Questions: {filteredQuestions.length}</Text>
         </View>
       </View>
 
@@ -178,33 +187,23 @@ let descriptionManagers = []
               const isCorrect = optionText.endsWith('**');
               const option = { text: optionText.replace('**', ''), correct: isCorrect };
               const isSelected = selectedOptions[currentQuestionIndex]?.includes(optionIndex);
-              // const isStored = currentQuestionIndex //d = {"0": 3, "1": 3}
-              // const isStored = progressObj.hasOwnProperty(currentQuestion.question_id);
               const isStored = progressObj?.hasOwnProperty(currentQuestion.question_id) || false;
               if (isStored || (isCorrect && isSelected)) {
-                descriptionManagers.push(currentQuestion.question_id)
-                // setDescriptionManagers((prevDescriptionManagers) => [...prevDescriptionManagers, currentQuestion.question_id]);
-
+                descriptionManagers.push(currentQuestion.question_id);
               }
               return (
                 <TouchableOpacity
                   key={optionIndex}
                   style={[
                     styles.optionButton,
-                    // isSelected && (isCorrect ? styles.correctOption : styles.wrongOption),
-                    (isSelected || isStored)
-                      ? (isCorrect ? styles.correctOption : styles.wrongOption)
-                      : null
+                    (isSelected || isStored) ? (isCorrect ? styles.correctOption : styles.wrongOption) : null
                   ]}
                   onPress={() => selectOption(currentQuestionIndex, optionIndex, currentQuestion.question_id)}
                 >
                   <Text
                     style={[
                       styles.optionText,
-                      // isSelected && (isCorrect ? styles.correctOptionText : styles.wrongOptionText),
-                      (isSelected || isStored)
-                        ? (isCorrect ? styles.correctOption : styles.wrongOption)
-                        : null
+                      (isSelected || isStored) ? (isCorrect ? styles.correctOption : styles.wrongOption) : null
                     ]}
                   >
                     {option.text}
@@ -223,31 +222,58 @@ let descriptionManagers = []
           </View>
         )}
         {descriptionManagers?.includes(`${currentQuestion?.question_id}`) ? (
-          (currentQuestion?.answer_description !==null && currentQuestion?.answer_description !='') && (
-          <View style={{ justifyContent: 'center', alignItems: 'center', padding: 10, backgroundColor: '#f5f5f5', borderRadius: 5 }}>
-            <Text style={{ alignSelf: 'left', fontWeight: 'bold', color: '#222' }}>Description</Text>
-            <Text style={{ fontFamily: 'monospace', padding: 10, borderRadius: 5, color: '#222' }}>{currentQuestion?.answer_description}</Text>
-          </View>)) : ''}
+          (currentQuestion?.answer_description !== null && currentQuestion?.answer_description !== '') && (
+            <View style={{ justifyContent: 'center', alignItems: 'center', padding: 10, backgroundColor: '#f5f5f5', borderRadius: 5 }}>
+              <Text style={{ alignSelf: 'left', fontWeight: 'bold', color: '#222' }}>Description</Text>
+              <Text style={{ fontFamily: 'monospace', padding: 10, borderRadius: 5, color: '#222' }}>{currentQuestion?.answer_description}</Text>
+            </View>
+          )) : ''}
       </ScrollView>
-
 
       <View style={styles.navigationButtonsContainer}>
         <TouchableOpacity
           style={[styles.navigationButton, currentQuestionIndex === 0 && styles.disabledButton]}
           onPress={goToPreviousQuestion}
-        // disabled={currentQuestionIndex === 0}
         >
           <Text style={styles.navigationButtonText}>Previous</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.navigationButton, currentQuestionIndex === questions.length - 1 && styles.disabledButton]}
+          style={[styles.navigationButton, currentQuestionIndex === filteredQuestions.length - 1 && styles.disabledButton]}
           onPress={goToNextQuestion}
-        // disabled={currentQuestionIndex === questions.length - 1}
         >
           <Text style={styles.navigationButtonText}>Next</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Modal for Chapter Filtering */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={[styles.modalTitle, styles.tagheader]}>Select Chapters</Text>
+            {uniqueChapters.map((chapter, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[styles.chapterButton, selectedChapters.includes(chapter) && styles.selectedChapterButton, , index % 2 === 0 ? styles.evenCard : styles.oddCard]}
+                onPress={() => toggleChapterSelection(chapter)}
+              >
+                <Text style={[styles.chapterButtonText, selectedChapters.includes(chapter) && styles.selectedText]}>{index+1}. {chapter}</Text>
+              </TouchableOpacity>
+            ))}
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       <StatusBar backgroundColor="#f2f2f2" barStyle="dark-content" />
     </SafeAreaView>
@@ -282,7 +308,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 8,
     textAlign: 'center',
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   heartIcon: {
     padding: 10,
@@ -371,6 +397,72 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     textAlign: 'center',
+  },
+  // Modal Styles
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  chapterButton: {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    marginVertical: 5,
+    width: '100%',
+    // alignItems: 'center',
+  },
+  selectedChapterButton: {
+    backgroundColor: '#5E5CE6',
+    borderColor: '#5E5CE6',
+  },
+  chapterButtonText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  selectedText: {
+    color: '#fff'
+  },
+  closeButton: {
+    marginTop: 15,
+    padding: 10,
+    backgroundColor: '#FF6347',
+    borderRadius: 8,
+  },
+  closeButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  tagheader: {
+    color: '#fff',
+    fontSize: moderateScale(18),
+    backgroundColor: '#FF6347',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    width: "100%",
+    textAlign: 'center',
+    overflow: 'hidden',
+  },
+  evenCard: {
+    backgroundColor: '#f0f0f0', // Light gray for even rows
+  },
+  oddCard: {
+    backgroundColor: '#ffffff', // White for odd rows
   },
 });
 

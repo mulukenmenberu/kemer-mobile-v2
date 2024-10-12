@@ -30,6 +30,8 @@ import SkeletonLoader from '../utils/SkeletonLoader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ReadWorksheet from './reader/ReadWorksheet';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import ExamModeModal from '../utils/ExamModeModal';
+import Header from '../utils/Header';
 
 const initialCourses = {
     Math_Grade_9: ['Algebra', 'Geometry', 'Calculus', 'Statistics'],
@@ -69,7 +71,6 @@ export default function Worksheets({ navigation }) {
     const [isloading, setIsLoadingG] = useState(false);
     const [isModalVisible, setModalVisible] = useState(false);
     const [isModalSubjectVisible, setModalSubjectVisible] = useState(false);
-    const [customError, setCustomError] = useState(false);
 
     const scrollViewRef = useRef(null);
     const courseScrollViewRef = useRef(null);
@@ -77,13 +78,22 @@ export default function Worksheets({ navigation }) {
 
     const [fullName, setFullName] = useState('');
     const [emailorPhone, setEmailorPhone] = useState('');
+    const [exam_loaddr, setExamLoader] = useState(false);
 
     const dispatch = useDispatch();
 
     const { subjects, loadings, errors } = useSelector((state) => state.worksheets);
 
+    const [visible, setVisible] = useState(false);
+    const showModal = () => setVisible(true);
+    const hideModal = () => {
+        if (!exam_loaddr) {
+            setVisible(false);
+        }
+    }
+
+
     useEffect(() => {
-        setCustomError(false)
 
         readData('interestList').then((data) => {
 
@@ -104,9 +114,7 @@ export default function Worksheets({ navigation }) {
                 setCourses(response.payload)
                 setRefreshing(false)
                 // console.log(response)
-                if(response.meta.requestStatus=='rejected'){
-                    setCustomError(true)
-                }
+             
             })
         });
     }, [refreshing]);
@@ -258,29 +266,29 @@ export default function Worksheets({ navigation }) {
         setRefreshing(true);
     };
 
-    useEffect(() => {
-        const getUserData = async () => {
-            try {
-                const userData = await AsyncStorage.getItem('userInformation') || {};
-                const userData2 = JSON.parse(userData);
-                setFullName(userData2.fullName);
-                setEmailorPhone(userData2.emailorPhone);
-            } catch (error) {
-                console.error('Failed to fetch favorite status', error);
-            }
-        };
+    // useEffect(() => {
+    //     const getUserData = async () => {
+    //         try {
+    //             const userData = await AsyncStorage.getItem('userInformation') || {};
+    //             const userData2 = JSON.parse(userData);
+    //             setFullName(userData2.fullName);
+    //             setEmailorPhone(userData2.emailorPhone);
+    //         } catch (error) {
+    //             console.error('Failed to fetch favorite status', error);
+    //         }
+    //     };
 
-        getUserData();
-    }, []);
+    //     getUserData();
+    // }, []);
 
-    if (customError) {
-        return <NoInternetScreen isLoading={refreshing} setIsLoading={setRefreshing} />;
-    }
-
+ 
+    const isValidObject = (obj) => {
+        return obj !== null && typeof obj === 'object' && !Array.isArray(obj);
+    };
     return (
         <SafeAreaView style={styles.container}>
-            <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
-                <MaterialCommunityIcons name="menu-open" size={24} color="#222" />
+            {/* <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
+                <MaterialCommunityIcons name="menu-open" size={24} color="#222"  onPress={showModal}/>
                 <Ionicons name="notifications-outline" size={moderateScale(24)} color="#222" />
 
             </View>
@@ -297,12 +305,14 @@ export default function Worksheets({ navigation }) {
                         <Text style={{ color: '#fff', paddingRight: horizontalScale(10) }}>{selectedInterests.join(' - ')}</Text>
                     </View>
                 </View>
-            </Card>
-            {(!courses && loading) && <TestAd />}
-            {/* {!courses?  (!loadings?<ReadTextMessage messageText={"No worksheet materials for your selected levels"} />:<SkeletonLoader/>): */}
-            {(!courses || (courses && refreshing)) ? ((!loadings && !refreshing) ? <ReadTextMessage messageText={"No worksheet materials for your selected levels"} /> : <SkeletonLoader />) :
+            </Card> */}
+            <Header showModal={showModal} navigation={navigation}/>
+            {(loadings || refreshing) && <SkeletonLoader />}
+            {(!isValidObject(courses) && !refreshing && !loadings) && <TestAd />}
 
-                <>
+            {(!isValidObject(courses) && !refreshing && !loadings) && <ReadTextMessage messageText={"No worksheet materials for your selected levels"} onRefresh={onRefresh} refreshing={refreshing} />}
+            {( isValidObject(courses) && Object.keys(courses).length > 0) && <>
+
                     <View>
                         <ScrollView
                             ref={scrollViewRef} refreshControl={
@@ -321,7 +331,7 @@ export default function Worksheets({ navigation }) {
                                 {/* Horizontally Scrollable Course Selection */}
                                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 20 }} ref={courseScrollViewRef}>
                                     <View style={{ flexDirection: 'row' }}>
-                                        {Object.keys(courses).map((course) => (
+                                        {isValidObject(courses) && Object.keys(courses).map((course) => (
                                             <TouchableOpacity
                                                 key={course}
                                                 onPress={() => handleCourseSelect(course)}
@@ -377,7 +387,7 @@ export default function Worksheets({ navigation }) {
                             >
                                 {/* {isloading && <SkeletonLoaderReader />} */}
                                 {(changePage > 0 && !isloading) && <ReadWorksheet selectedTopic={selectedTopic} selectedCourse={selectedCourse} />}
-                                {(changePage <= 0 || courseSelected <= 0) && <ReadTextMessage messageText={courseSelected <= 0 ? 'Please Select a Subject' : 'Please Select a Topic'} />}
+                                {(changePage <= 0 || courseSelected <= 0) && <ReadTextMessage messageText={courseSelected <= 0 ? 'Please Select a Subject' : 'Please Select a Topic'} onRefresh={onRefresh} refreshing={refreshing}/>}
                             </ScrollView>
                         </ScrollView>
                     </View>
@@ -394,7 +404,12 @@ export default function Worksheets({ navigation }) {
                                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
 
                                     <FlatList
-                                        data={courses[selectedCourse]}
+                                        // data={courses[selectedCourse]}
+                                        data={
+                                            courses && selectedCourse in courses && Array.isArray(courses[selectedCourse])
+                                                ? courses[selectedCourse]
+                                                : [] // Use an empty array if any check fails
+                                        }
                                         renderItem={renderTopicItem}
                                         keyExtractor={(item) => item}
                                         numColumns={2}
@@ -421,7 +436,8 @@ export default function Worksheets({ navigation }) {
 
                                     <FlatList
                                         // data={courses[selectedCourse]}
-                                        data={Object.keys(courses)}
+                                        // data={Object.keys(courses)}
+                                        data={courses ? Object.keys(courses) : []}
                                         renderItem={renderSubjectItem}
                                         keyExtractor={(item) => item}
                                         numColumns={2} // Adjust the number of columns as needed
@@ -434,6 +450,8 @@ export default function Worksheets({ navigation }) {
                         </View>
                     </Modal>
                 </>}
+            <ExamModeModal visible={visible} setVisible={setVisible} showModal={showModal} hideModal={hideModal} navigation={navigation} />
+
         </SafeAreaView>
     );
 }

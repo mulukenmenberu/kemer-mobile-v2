@@ -30,6 +30,8 @@ import { fetchSubjects } from '../redux/reducers/notesSlice';
 import SkeletonLoader from '../utils/SkeletonLoader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import ExamModeModal from '../utils/ExamModeModal';
+import Header from '../utils/Header';
 
 const initialCourses = {
     Math_Grade_9: ['Algebra', 'Geometry', 'Calculus', 'Statistics'],
@@ -56,6 +58,7 @@ const initialCourses = {
 export default function Notes({ navigation }) {
     const [courses, setCourses] = useState({});
 
+    const [exam_loaddr, setExamLoader] = useState(false);
 
     const { width, height } = Dimensions.get('screen');
     const [selectedInterests, setSelectedInterests] = useState([]);
@@ -74,16 +77,20 @@ export default function Notes({ navigation }) {
     const courseScrollViewRef = useRef(null);
     const topicScrollViewRef = useRef(null);
 
-    const [fullName, setFullName] = useState('');
-    const [emailorPhone, setEmailorPhone] = useState('');
-    const [customError, setCustomError] = useState(false);
-
     const dispatch = useDispatch();
+
+
+    const [visible, setVisible] = useState(false);
+    const showModal = () => setVisible(true);
+    const hideModal = () => {
+        if (!exam_loaddr) {
+            setVisible(false);
+        }
+    }
 
     const { subjects, loadings, errors } = useSelector((state) => state.subjects);
 
     useEffect(() => {
-        setCustomError(false)
 
         readData('interestList').then((data) => {
 
@@ -103,9 +110,7 @@ export default function Notes({ navigation }) {
             dispatch(fetchSubjects(levels)).then((response) => {
                 setCourses(response.payload)
                 setRefreshing(false)
-                if(response.meta.requestStatus=='rejected'){
-                    setCustomError(true)
-                }
+
             })
         });
     }, [refreshing]);
@@ -161,13 +166,11 @@ export default function Notes({ navigation }) {
             topicScrollViewRef.current.scrollTo({ x: 0, animated: true });
         }
 
-        // setTimeout(() => {
         setIsLoadingG(false);
         setChangePage(changePage + 1);
         if (scrollViewRef.current) {
             scrollViewRef.current.scrollTo({ y: verticalScale(235), animated: true });
         }
-        // }, 5000);
     };
 
     const handleTopicSelectFromModal = (topic) => {
@@ -243,7 +246,6 @@ export default function Notes({ navigation }) {
         backgroundColor: Colors.lighter,
     };
 
-    const { news, loading, error } = useSelector((state) => state.news);
 
     useEffect(() => {
         readData('interestList').then((data) => {
@@ -257,180 +259,157 @@ export default function Notes({ navigation }) {
         setRefreshing(true);
     };
 
-    useEffect(() => {
-        const getUserData = async () => {
-            try {
-                const userData = await AsyncStorage.getItem('userInformation') || {};
-                const userData2 = JSON.parse(userData);
-                setFullName(userData2.fullName);
-                setEmailorPhone(userData2.emailorPhone);
-            } catch (error) {
-                console.error('Failed to fetch favorite status', error);
-            }
-        };
-
-        getUserData();
-    }, []);
-
-    if (customError) {
-        return <NoInternetScreen isLoading={refreshing} setIsLoading={setRefreshing} />;
-    }
-
+    const isValidObject = (obj) => {
+        return obj !== null && typeof obj === 'object' && !Array.isArray(obj);
+    };
     return (
         <SafeAreaView style={styles.container}>
-            <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
-                <MaterialCommunityIcons name="menu-open" size={24} color="#222" />
-                <Ionicons name="notifications-outline" size={moderateScale(24)} color="#222" />
 
-            </View>
-            <Card style={{ marginTop: verticalScale(8), marginBottom: verticalScale(20), alignSelf: 'center', height: verticalScale(80), width: width - 20, backgroundColor: '#5E5CE6', justifyContent: 'center' }} onPress={() => navigation.navigate('Quiz')}>
-                <View style={{ marginLeft: horizontalScale(10), marginRight: verticalScale(10), flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-                    <View>
-                        <Image source={require('../assets/avatar.png')} style={{ width: horizontalScale(50), height: verticalScale(50), borderRadius: moderateScale(50 / 2) }} />
-                    </View>
-                    <View style={{ marginLeft: horizontalScale(20) }}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: moderateScale(19) }}>Welcome {fullName}</Text>
-                            <AntDesign name="edit" size={moderateScale(24)} color="white" />
-                        </View>
-                        <Text style={{ color: '#fff', paddingRight: horizontalScale(10) }}>{selectedInterests.join(' - ')}</Text>
-                    </View>
-                </View>
-            </Card>
-            {(!courses && loading) && <TestAd />}
-            {(!courses || (courses && refreshing)) ? ((!loadings && !refreshing) ? <ReadTextMessage messageText={"No reading materials for your selected levels"} /> : <SkeletonLoader />) :
-                <>
-                    <View>
-                        <ScrollView
-                            ref={scrollViewRef} refreshControl={
-                                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                            }>
-                            <TestAd />
-                            <ScrollView contentContainerStyle={{ padding: 20 }}>
-                                {/* <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>Select a Subject</Text> */}
+            <Header showModal={showModal} navigation={navigation} />
+            {(loadings || refreshing) && <SkeletonLoader />}
+            {(!isValidObject(courses) && !refreshing && !loadings) && <TestAd />}
+            {(!isValidObject(courses) && !refreshing && !loadings) && <ReadTextMessage messageText={"No reading materials for your selected levels"} onRefresh={onRefresh} refreshing={refreshing} />}
+           {( isValidObject(courses) && Object.keys(courses).length > 0) && 
+           <>
+                <View>
+                    <ScrollView
+                        ref={scrollViewRef} refreshControl={
+                            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                        }>
+                        <TestAd />
+                        <ScrollView contentContainerStyle={{ padding: 20 }}>
+                            {/* <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>Select a Subject</Text> */}
 
-                                <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                                    <Text style={{ color: '#222', fontSize: moderateScale(17), fontWeight: 'bold', marginBottom: 10 }}>Select a Subject  </Text>
-                                    <FontAwesome name="th-list" size={moderateScale(24)} onPress={() => setModalSubjectVisible(true)} color="black" />
+                            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <Text style={{ color: '#222', fontSize: moderateScale(17), fontWeight: 'bold', marginBottom: 10 }}>Select a Subject  </Text>
+                                <FontAwesome name="th-list" size={moderateScale(24)} onPress={() => setModalSubjectVisible(true)} color="black" />
 
+                            </View>
+
+                            {/* Horizontally Scrollable Course Selection */}
+                            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 20 }} ref={courseScrollViewRef}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    {isValidObject(courses) && Object.keys(courses).map((course) => (
+                                        <TouchableOpacity
+                                            key={course}
+                                            onPress={() => handleCourseSelect(course)}
+                                            style={{
+                                                paddingVertical: 10,
+                                                paddingHorizontal: 20,
+                                                backgroundColor: selectedCourse === course ? '#3ac569' : '#2e78f0',
+                                                borderRadius: 10,
+                                                marginHorizontal: 5,
+                                                elevation: 3,
+                                            }}
+                                        >
+                                            <Text style={{ color: '#fff', fontSize: 16 }}>{course.replace(/_/g, ' ')}</Text>
+                                        </TouchableOpacity>
+                                    ))}
                                 </View>
+                            </ScrollView>
 
-                                {/* Horizontally Scrollable Course Selection */}
-                                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 20 }} ref={courseScrollViewRef}>
-                                    <View style={{ flexDirection: 'row' }}>
-                                        {Object.keys(courses).map((course) => (
-                                            <TouchableOpacity
-                                                key={course}
-                                                onPress={() => handleCourseSelect(course)}
-                                                style={{
-                                                    paddingVertical: 10,
-                                                    paddingHorizontal: 20,
-                                                    backgroundColor: selectedCourse === course ? '#3ac569' : '#2e78f0',
-                                                    borderRadius: 10,
-                                                    marginHorizontal: 5,
-                                                    elevation: 3,
-                                                }}
-                                            >
-                                                <Text style={{ color: '#fff', fontSize: 16 }}>{course.replace(/_/g, ' ')}</Text>
-                                            </TouchableOpacity>
-                                        ))}
+                            {/* Horizontally Scrollable Topic Selection */}
+                            {selectedCourse && (
+                                <View style={{ width: '100%', marginTop: verticalScale(10) }}>
+                                    <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                                        <Text style={{ color: '#222', fontSize: moderateScale(17), fontWeight: 'bold', marginBottom: 10 }}>Select a Topic  </Text>
+                                        <FontAwesome name="th-list" size={moderateScale(24)} onPress={() => setModalVisible(true)} color="black" />
+
                                     </View>
-                                </ScrollView>
-
-                                {/* Horizontally Scrollable Topic Selection */}
-                                {selectedCourse && (
-                                    <View style={{ width: '100%', marginTop: verticalScale(10) }}>
-                                        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                                            <Text style={{ color: '#222', fontSize: moderateScale(17), fontWeight: 'bold', marginBottom: 10 }}>Select a Topic  </Text>
-                                            <FontAwesome name="th-list" size={moderateScale(24)} onPress={() => setModalVisible(true)} color="black" />
-
+                                    <ScrollView horizontal showsHorizontalScrollIndicator={false} ref={topicScrollViewRef}>
+                                        <View style={{ flexDirection: 'row' }}>
+                                            {courses[selectedCourse].map((topic) => (
+                                                <TouchableOpacity
+                                                    key={topic}
+                                                    onPress={() => handleTopicSelect(topic)}
+                                                    style={{
+                                                        paddingVertical: 8,
+                                                        paddingHorizontal: 15,
+                                                        backgroundColor: selectedTopic === topic ? '#3ac569' : '#2e78f0',
+                                                        borderRadius: 10,
+                                                        marginHorizontal: 5,
+                                                        elevation: 3,
+                                                    }}
+                                                >
+                                                    <Text style={{ color: '#fff', fontSize: 14 }}>{topic}</Text>
+                                                </TouchableOpacity>
+                                            ))}
                                         </View>
-                                        <ScrollView horizontal showsHorizontalScrollIndicator={false} ref={topicScrollViewRef}>
-                                            <View style={{ flexDirection: 'row' }}>
-                                                {courses[selectedCourse].map((topic) => (
-                                                    <TouchableOpacity
-                                                        key={topic}
-                                                        onPress={() => handleTopicSelect(topic)}
-                                                        style={{
-                                                            paddingVertical: 8,
-                                                            paddingHorizontal: 15,
-                                                            backgroundColor: selectedTopic === topic ? '#3ac569' : '#2e78f0',
-                                                            borderRadius: 10,
-                                                            marginHorizontal: 5,
-                                                            elevation: 3,
-                                                        }}
-                                                    >
-                                                        <Text style={{ color: '#fff', fontSize: 14 }}>{topic}</Text>
-                                                    </TouchableOpacity>
-                                                ))}
-                                            </View>
-                                        </ScrollView>
-                                    </View>
-                                )}
-                            </ScrollView>
-                            <ScrollView
-                                contentInsetAdjustmentBehavior="automatic"
-                                style={backgroundStyle}
-                            >
-                                {/* {isloading && <SkeletonLoaderReader />} */}
-                                {(changePage > 0 && !isloading) && <ReadText selectedTopic={selectedTopic} selectedCourse={selectedCourse} />}
-                                {(changePage <= 0 || courseSelected <= 0) && <ReadTextMessage messageText={courseSelected <= 0 ? 'Please Select a Subject' : 'Please Select a Topic'} />}
-                            </ScrollView>
+                                    </ScrollView>
+                                </View>
+                            )}
                         </ScrollView>
+                        <ScrollView
+                            contentInsetAdjustmentBehavior="automatic"
+                            style={backgroundStyle}
+                        >
+                            {/* {isloading && <SkeletonLoaderReader />} */}
+                            {(changePage > 0 && !isloading) && <ReadText selectedTopic={selectedTopic} selectedCourse={selectedCourse} />}
+                            {(changePage <= 0 || courseSelected <= 0) && <ReadTextMessage messageText={courseSelected <= 0 ? 'Please Select a Subject' : 'Please Select a Topic'} />}
+                        </ScrollView>
+                    </ScrollView>
+                </View>
+
+                {/* Modal to select topic from grid */}
+                <Modal
+                    visible={isModalVisible}
+                    animationType="slide"
+                    transparent={true}
+                    onRequestClose={() => setModalVisible(false)}
+                >
+                    <View style={styles.modalContainer}>
+                        <View style={styles.modalContent}>
+                            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+
+                                <FlatList
+                                    // data={courses[selectedCourse]}
+                                    data={
+                                        courses && selectedCourse in courses && Array.isArray(courses[selectedCourse])
+                                            ? courses[selectedCourse]
+                                            : [] // Use an empty array if any check fails
+                                    }
+                                    renderItem={renderTopicItem}
+                                    keyExtractor={(item) => item}
+                                    numColumns={2}
+                                    columnWrapperStyle={{ justifyContent: 'space-between' }}
+                                />
+                            </ScrollView>
+                            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
+                                <Text style={styles.closeButtonText}>Close</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
+                </Modal>
 
-                    {/* Modal to select topic from grid */}
-                    <Modal
-                        visible={isModalVisible}
-                        animationType="slide"
-                        transparent={true}
-                        onRequestClose={() => setModalVisible(false)}
-                    >
-                        <View style={styles.modalContainer}>
-                            <View style={styles.modalContent}>
-                                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                {/* Modal to select topic from grid */}
+                <Modal
+                    visible={isModalSubjectVisible}
+                    animationType="slide"
+                    transparent={true}
+                    onRequestClose={() => setModalSubjectVisible(false)}
+                >
+                    <View style={styles.modalContainer}>
+                        <View style={styles.modalContent}>
+                            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
 
-                                    <FlatList
-                                        data={courses[selectedCourse]}
-                                        renderItem={renderTopicItem}
-                                        keyExtractor={(item) => item}
-                                        numColumns={2}
-                                        columnWrapperStyle={{ justifyContent: 'space-between' }}
-                                    />
-                                </ScrollView>
-                                <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
-                                    <Text style={styles.closeButtonText}>Close</Text>
-                                </TouchableOpacity>
-                            </View>
+                                <FlatList
+                                    // data={courses[selectedCourse]}
+                                    // data={Object.keys(courses)}
+                                    data={courses ? Object.keys(courses) : []}
+                                    renderItem={renderSubjectItem}
+                                    keyExtractor={(item) => item}
+                                    numColumns={2} // Adjust the number of columns as needed
+                                />
+                            </ScrollView>
+                            <TouchableOpacity onPress={() => setModalSubjectVisible(false)} style={styles.closeButton}>
+                                <Text style={styles.closeButtonText}>Close</Text>
+                            </TouchableOpacity>
                         </View>
-                    </Modal>
+                    </View>
+                </Modal>
+            </>}
+            <ExamModeModal visible={visible} setVisible={setVisible} showModal={showModal} hideModal={hideModal} navigation={navigation} />
 
-                    {/* Modal to select topic from grid */}
-                    <Modal
-                        visible={isModalSubjectVisible}
-                        animationType="slide"
-                        transparent={true}
-                        onRequestClose={() => setModalSubjectVisible(false)}
-                    >
-                        <View style={styles.modalContainer}>
-                            <View style={styles.modalContent}>
-                                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-
-                                    <FlatList
-                                        // data={courses[selectedCourse]}
-                                        data={Object.keys(courses)}
-                                        renderItem={renderSubjectItem}
-                                        keyExtractor={(item) => item}
-                                        numColumns={2} // Adjust the number of columns as needed
-                                    />
-                                </ScrollView>
-                                <TouchableOpacity onPress={() => setModalSubjectVisible(false)} style={styles.closeButton}>
-                                    <Text style={styles.closeButtonText}>Close</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </Modal>
-                </>}
         </SafeAreaView>
     );
 }

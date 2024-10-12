@@ -8,6 +8,7 @@ import Notes from './Notes';
 import Saved from './Saved';
 import Settings from './Settings';
 import Worksheets from './Worksheets';
+
 const Tab = createBottomTabNavigator();
 
 export default Tabs = () => {
@@ -16,11 +17,14 @@ export default Tabs = () => {
       initialRouteName="home"
       screenOptions={{
         tabBarActiveTintColor: '#5E5CE6',
-        headerShown: false
-      }}
-      tabBarOptions={{
-        showLabel: true
-
+        headerShown: false,
+        tabBarShowLabel: true,
+        tabBarStyle: [
+          {
+            display: 'flex',
+          },
+          null,
+        ],
       }}
     >
       <Tab.Screen
@@ -50,7 +54,6 @@ export default Tabs = () => {
           tabBarLabel: 'Notes',
           tabBarIcon: ({ color, size }) => (
             <Feather name="book-open" color={color} size={size} />
-
           ),
         }}
       />
@@ -61,11 +64,9 @@ export default Tabs = () => {
           tabBarLabel: 'Worksheets',
           tabBarIcon: ({ color, size }) => (
             <Entypo name="pencil" color={color} size={size} />
-
           ),
         }}
       />
-           
       <Tab.Screen
         name="Settings"
         component={Settings}
@@ -78,4 +79,4 @@ export default Tabs = () => {
       />
     </Tab.Navigator>
   );
-}
+};
