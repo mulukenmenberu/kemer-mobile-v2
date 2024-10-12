@@ -178,7 +178,7 @@ const renderPackagesonModal = ()=>{
 
           
             {/* <Header showModal={showModal} navigation={navigation} courses={courses}/> */}
-            <Header  navigation={navigation} courses={courses}/>
+            <Header  navigation={navigation} />
 
             <TestAd />
             <ScrollView
@@ -210,7 +210,7 @@ const renderPackagesonModal = ()=>{
                         <Pressable style={{
                             padding: moderateScale(10), borderRadius: moderateScale(16), backgroundColor: '#50e3c2', height: verticalScale(130),
                             width: horizontalScale(180)
-                        }} onPress={() => Alert.alert('Select a course (subject) & a package under the subject to get questions list')}>
+                        }} onPress={() => renderPackagesonModal()}>
                             <FontAwesome name="sticky-note" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
                             <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: moderateScale(35) }}>{extractedPackages.length *100}+</Text>
                             <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>Total Questions in you level</Text>

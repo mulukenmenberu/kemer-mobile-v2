@@ -27,7 +27,7 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 import { fetchExamMode } from '../redux/reducers/examModeSlice';
 import { Modal } from 'react-native-paper';
 
-export default function Header({ navigation, courses }) {
+export default function Header({ navigation }) {
     const { width } = Dimensions.get('screen');
     const [selectedInterests, setSelectedInterests] = useState([]);
     const [fullName, setFullName] = useState('');
@@ -44,6 +44,7 @@ export default function Header({ navigation, courses }) {
     const [visible, setVisible] = useState(false);
     const [textInputs, setTextInputs] = useState([{ id: 1, value: '', hasError: false }]);
     const [exam_loaddr, setExamLoader] = useState(false);
+    const { courses } = useSelector((state) => state.courses);
 
 
     const [selectedCourses, setSelectedCourses] = useState([]);
@@ -176,8 +177,9 @@ export default function Header({ navigation, courses }) {
                 readData('interestList').then((data) => {
                     const interestsArray = Object.keys(data).filter((key) => data[key] === "selected");
                     const userNames = textInputs.map(item => item.value);
+                    // console.log(selectedCourses, userNames)
 
-                    dispatch(fetchExamMode({ interestsArray, userNames })).then((response) => {
+                    dispatch(fetchExamMode({ interestsArray, userNames, selectedCourses })).then((response) => {
                         navigation.navigate('ExamMode', {
                             package_id: 1,
                             question_data: response.payload,
