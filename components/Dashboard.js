@@ -55,26 +55,46 @@ export default function Dashboard({ navigation }) {
 
     const dispatch = useDispatch();
     const { courses, loading, error } = useSelector((state) => state.courses);
-    const { packages, loading: packagesLoading, error: packagesError } = useSelector((state) => state.question_packages);
 
-    useEffect(() => {
+   /* useEffect(() => {
         readData('interestList').then((data) => {
-
             const interestsArray = Object.keys(data)
                 .filter((key) => data[key] === "selected")
-            // .join(' - '); 
-
             dispatch(fetchCourses(interestsArray)).then((response) => {
                 setActive(response.payload[0].course_id)
                 setPackageData(response.payload[0].packages)
-             
-                
-
                 setRefreshing(false)
             })
         });
-    }, [refreshing]);
+    }, [refreshing]);*/
+    const fetchCoursesData = async () => {
+        // setRefreshing(true); // Set refreshing true to indicate loading state
+        const data = await readData('interestList');
+        const interestsArray = Object.keys(data).filter((key) => data[key] === "selected");
 
+        // Call the API only if interestsArray has values
+        if (interestsArray.length > 0) {
+            const response =  dispatch(fetchCourses(interestsArray)).then((res)=>{
+                if (res && res.payload.length > 0) {
+                    setActive(res.payload[0].course_id);
+                    setPackageData(res.payload[0].packages);
+                }
+            })
+            
+            
+        }
+        setRefreshing(false); // Set refreshing false once data is fetched
+    };
+    useEffect(() => {
+        fetchCoursesData();
+    }, []); // Run only once on mount
+    
+    // const onRefresh = () => {
+    //     // This function can now be used to trigger a manual refresh if necessary.
+    //     fetchCoursesData(); // Fetch again on manual refresh
+    // };
+
+    
     const getPackagesByCourseId = (courseId) => {
         const course = courses.find(course => course.course_id === courseId);
         return course ? course.packages : []; // Return packages or an empty array if not found
@@ -119,7 +139,7 @@ export default function Dashboard({ navigation }) {
         };
 
         checkFavoriteStatus();
-    }, []);
+    }, [refresh]);
 
     const checkFavoriteStatus = (package_id) => {
         return isFavorite.includes(package_id)
@@ -127,6 +147,7 @@ export default function Dashboard({ navigation }) {
     };
     const onRefresh = () => {
         setRefreshing(true);
+        fetchCoursesData()
 
     };
 

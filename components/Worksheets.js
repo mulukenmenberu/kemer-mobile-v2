@@ -92,8 +92,31 @@ export default function Worksheets({ navigation }) {
         }
     }
 
+    const fetchSubjectsData = async()=>{
+        const data = await readData('interestList');
+        const interestsArray = Object.keys(data)
+        .filter((key) => data[key] === "selected")
+        const levels = interestsArray.map(str =>
+            str.toLowerCase()            // Convert to lowercase
+                .replace(/,/g, '')        // Remove commas
+                .replace(/&/g, 'and')     // Replace & with 'and'
+                .replace(/\s+/g, '')      // Remove all spaces
+        ).join(',');
 
+
+        dispatch(fetchSubjects(levels)).then((response) => {
+            setCourses(response.payload)
+            setRefreshing(false)
+
+        })
+
+    }
     useEffect(() => {
+        fetchSubjectsData();
+    }, []); // Run only once on mount
+
+    
+   /* useEffect(() => {
 
         readData('interestList').then((data) => {
 
@@ -119,7 +142,7 @@ export default function Worksheets({ navigation }) {
         });
     }, [refreshing]);
 
-
+*/
     const reorderCoursesInPlace = (selectedCourse) => {
         // Reorder and update the state directly
         const selectedTopics = courses[selectedCourse];
@@ -264,6 +287,7 @@ export default function Worksheets({ navigation }) {
 
     const onRefresh = () => {
         setRefreshing(true);
+        fetchSubjectsData()
     };
 
     // useEffect(() => {

@@ -173,7 +173,11 @@ export default function Header({ showModal, navigation }) {
                             <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: moderateScale(19) }}>Welcome {fullName}</Text>
                             <AntDesign name="edit" size={moderateScale(24)} color="white" />
                         </View>
-                        <Text style={{ color: '#fff', paddingRight: horizontalScale(10) }}>{selectedInterests.join(' - ')}</Text>
+                        <View style={{width:"97%"}}>
+                        <Text numberOfLines={4} style={{ color: '#fff', paddingRight: horizontalScale(10) }}>{selectedInterests.join(' - ')}</Text>
+
+                        </View>
+                        {/* <Text style={{ color: '#fff', paddingRight: horizontalScale(10) }}>{selectedInterests.join(' - ')}</Text> */}
                     </View>
                 </View>
             </Card>
