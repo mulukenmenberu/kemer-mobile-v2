@@ -50,13 +50,13 @@ export default function Settings({ navigation }) {
   const [exam_loaddr, setExamLoader] = useState(false);
 
 
-  const [visible, setVisible] = useState(false);
-  const showModal = () => setVisible(true);
-  const hideModal = () => {
-      if (!exam_loaddr) {
-          setVisible(false);
-      }
-  }
+  // const [visible, setVisible] = useState(false);
+  // const showModal = () => setVisible(true);
+  // const hideModal = () => {
+  //     if (!exam_loaddr) {
+  //         setVisible(false);
+  //     }
+  // }
 
   const toggleInterest = (interest) => {
     // Step 1: Update the selected interests state
@@ -235,7 +235,7 @@ export default function Settings({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-     <Header showModal={showModal} navigation={navigation}/>
+     <Header  navigation={navigation}/>
       {/* </ImageBackground> */}
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -350,7 +350,7 @@ export default function Settings({ navigation }) {
           </TouchableOpacity>
         </View>
       </ScrollView>
-      <ExamModeModal visible={visible} setVisible={setVisible} showModal={showModal} hideModal={hideModal} navigation={navigation}/>
+      {/* <ExamModeModal visible={visible} setVisible={setVisible} showModal={showModal} hideModal={hideModal} navigation={navigation}/> */}
 
       <StatusBar backgroundColor="#F2F2F2" barStyle="dark-content" />
     </SafeAreaView>

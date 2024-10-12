@@ -30,13 +30,13 @@ export default function Saved({ navigation }) {
 
     const dispatch = useDispatch();
     const { packagesSaved, loading: packagesLoading, error: packagesError } = useSelector((state) => state.question_packages);
-    const [visible, setVisible] = useState(false);
-    const showModal = () => setVisible(true);
-    const hideModal = () => {
-        if (!exam_loaddr) {
-            setVisible(false);
-        }
-    }
+    // const [visible, setVisible] = useState(false);
+    // const showModal = () => setVisible(true);
+    // const hideModal = () => {
+    //     if (!exam_loaddr) {
+    //         setVisible(false);
+    //     }
+    // }
 
     const checkFavoriteStatus = (package_id) => {
         return isFavorite.includes(package_id)
@@ -125,7 +125,7 @@ export default function Saved({ navigation }) {
                     </View>
                 </View>
             </Card> */}    
-             <Header showModal={showModal} navigation={navigation}/>
+             <Header  navigation={navigation}/>
 
             <TestAd />
             {/* <SkeletonLoader/> */}
@@ -208,7 +208,7 @@ export default function Saved({ navigation }) {
 
             </ScrollView>}
             <StatusBar backgroundColor="#f2f2f2" barStyle="dark-content" />
-            <ExamModeModal visible={visible} setVisible={setVisible} showModal={showModal} hideModal={hideModal} navigation={navigation}/>
+            {/* <ExamModeModal visible={visible} setVisible={setVisible} showModal={showModal} hideModal={hideModal} navigation={navigation}/> */}
 
         </SafeAreaView>
     );

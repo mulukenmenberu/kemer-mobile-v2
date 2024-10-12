@@ -80,13 +80,13 @@ export default function Notes({ navigation }) {
     const dispatch = useDispatch();
 
 
-    const [visible, setVisible] = useState(false);
-    const showModal = () => setVisible(true);
-    const hideModal = () => {
-        if (!exam_loaddr) {
-            setVisible(false);
-        }
-    }
+    // const [visible, setVisible] = useState(false);
+    // const showModal = () => setVisible(true);
+    // const hideModal = () => {
+    //     if (!exam_loaddr) {
+    //         setVisible(false);
+    //     }
+    // }
 
     const { subjects, loadings, errors } = useSelector((state) => state.subjects);
 
@@ -289,7 +289,7 @@ export default function Notes({ navigation }) {
     return (
         <SafeAreaView style={styles.container}>
 
-            <Header showModal={showModal} navigation={navigation} />
+            <Header  navigation={navigation} />
             {(loadings || refreshing) && <SkeletonLoader />}
             {(!isValidObject(courses) && !refreshing && !loadings) && <TestAd />}
             {(!isValidObject(courses) && !refreshing && !loadings) && <ReadTextMessage messageText={"No reading materials for your selected levels"} onRefresh={onRefresh} refreshing={refreshing} />}
@@ -432,7 +432,7 @@ export default function Notes({ navigation }) {
                     </View>
                 </Modal>
             </>}
-            <ExamModeModal visible={visible} setVisible={setVisible} showModal={showModal} hideModal={hideModal} navigation={navigation} />
+            {/* <ExamModeModal visible={visible} setVisible={setVisible} showModal={showModal} hideModal={hideModal} navigation={navigation} /> */}
 
         </SafeAreaView>
     );

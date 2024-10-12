@@ -33,28 +33,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import ExamModeModal from '../utils/ExamModeModal';
 import Header from '../utils/Header';
 
-const initialCourses = {
-    Math_Grade_9: ['Algebra', 'Geometry', 'Calculus', 'Statistics'],
-    Chemistry_Grade_9: ['Organic Chemistry', 'Inorganic Chemistry', 'Physical Chemistry', 'Biochemistry'],
-    Biology_Grade_9: ['Genetics', 'Ecology', 'Cell Biology', 'Anatomy'],
-    Physics_Grade_9: ['Mechanics', 'Optics', 'Thermodynamics', 'Quantum Physics'],
-
-    Math_Grade_10: ['Algebra', 'Geometry', 'Calculus', 'Statistics'],
-    Chemistry_Grade_10: ['Organic Chemistry', 'Inorganic Chemistry', 'Physical Chemistry', 'Biochemistry'],
-    Biology_Grade_10: ['Genetics', 'Ecology', 'Cell Biology', 'Anatomy'],
-    Physics_Grade_10: ['Mechanics', 'Optics', 'Thermodynamics', 'Quantum Physics'],
-
-    Math_Grade_11: ['Algebra', 'Geometry', 'Calculus', 'Statistics'],
-    Chemistry_Grade_11: ['Organic Chemistry', 'Inorganic Chemistry', 'Physical Chemistry', 'Biochemistry'],
-    Biology_Grade_11: ['Genetics', 'Ecology', 'Cell Biology', 'Anatomy'],
-    Physics_Grade_11: ['Mechanics', 'Optics', 'Thermodynamics', 'Quantum Physics'],
-
-    Math_Grade_12: ['Algebra', 'Geometry', 'Calculus', 'Statistics'],
-    Chemistry_Grade_12: ['Organic Chemistry', 'Inorganic Chemistry', 'Physical Chemistry', 'Biochemistry'],
-    Biology_Grade_12: ['Genetics', 'Ecology', 'Cell Biology', 'Anatomy'],
-    Physics_Grade_12: ['Mechanics', 'Optics', 'Thermodynamics', 'Quantum Physics'],
-};
-
 export default function Worksheets({ navigation }) {
     const [courses, setCourses] = useState({});
 
@@ -84,13 +62,13 @@ export default function Worksheets({ navigation }) {
 
     const { subjects, loadings, errors } = useSelector((state) => state.worksheets);
 
-    const [visible, setVisible] = useState(false);
-    const showModal = () => setVisible(true);
-    const hideModal = () => {
-        if (!exam_loaddr) {
-            setVisible(false);
-        }
-    }
+    // const [visible, setVisible] = useState(false);
+    // const showModal = () => setVisible(true);
+    // const hideModal = () => {
+    //     if (!exam_loaddr) {
+    //         setVisible(false);
+    //     }
+    // }
 
     const fetchSubjectsData = async()=>{
         const data = await readData('interestList');
@@ -330,7 +308,7 @@ export default function Worksheets({ navigation }) {
                     </View>
                 </View>
             </Card> */}
-            <Header showModal={showModal} navigation={navigation}/>
+            <Header  navigation={navigation}/>
             {(loadings || refreshing) && <SkeletonLoader />}
             {(!isValidObject(courses) && !refreshing && !loadings) && <TestAd />}
 
@@ -474,7 +452,7 @@ export default function Worksheets({ navigation }) {
                         </View>
                     </Modal>
                 </>}
-            <ExamModeModal visible={visible} setVisible={setVisible} showModal={showModal} hideModal={hideModal} navigation={navigation} />
+            {/* <ExamModeModal visible={visible} setVisible={setVisible} showModal={showModal} hideModal={hideModal} navigation={navigation} /> */}
 
         </SafeAreaView>
     );
