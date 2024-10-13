@@ -286,7 +286,7 @@ export default function Header({ navigation }) {
             >
                 <View style={styles.bottomSheetContent}>
                     <Text style={styles.bottomSheetText}>Start an Exam Mode</Text>
-                    <View style={{ height: verticalScale(30), margin:verticalScale(10) }}>
+                    <View style={{ height: verticalScale(50), margin:verticalScale(10) }}>
                     <Text style={{ color: '#222',  alignSelf: 'center', alignContent: 'center', fontSize: moderateScale(13) }}>
                         Get a random set of questions and test your understanding. start by <Text style={{color:'#5E5CE6'}}>Selecting courses</Text>
                     </Text>
@@ -297,9 +297,7 @@ export default function Header({ navigation }) {
                         </View>
                     </ScrollView>
                     <View style={{ height: verticalScale(30), margin:verticalScale(10) }}>
-                    {/* <Text style={{ color: '#222',  alignSelf: 'center', alignContent: 'center', fontSize: moderateScale(13) }}>
-                        Invite your friends to join this challenge <Text style={{color:'#5E5CE6'}}>Type usernames</Text>
-                    </Text> */}
+                 
                     </View>
                     {textInputs.map((input, index) => (
                         <View key={input.id} style={styles.inputContainer}>
@@ -318,8 +316,12 @@ export default function Header({ navigation }) {
                         </View>
                     ))}
                     <View>
-                        {!exam_loaddr && <Pressable style={styles.addButton} onPress={addTextInput}>
-                            <Text style={styles.addButtonText}>Add more user</Text>
+                      
+                    </View>
+                    
+                </View>
+                {!exam_loaddr && <Pressable style={styles.addButton} onPress={addTextInput}>
+                            <Text style={styles.addButtonText}>Invite more friend</Text>
                         </Pressable>}
                         {!exam_loaddr && <Pressable style={styles.generateButton} onPress={generateExamMode}>
                             <Text style={styles.generateButtonText}>Generate Exam</Text>
@@ -329,8 +331,6 @@ export default function Header({ navigation }) {
                                 <Text style={styles.buttonText}>Please wait, Exam is bieng generated</Text>
                             </TouchableOpacity>
                         }
-                    </View>
-                </View>
             </RBSheet>
         </>
     );
@@ -402,6 +402,7 @@ const styles = StyleSheet.create({
     bottomSheetText: {
         fontSize: 18,
         marginBottom: 20,
+        fontWeight:'bold'
     },
     inputContainer: {
         flexDirection: 'row',
@@ -421,21 +422,32 @@ const styles = StyleSheet.create({
     },
     addButton: {
         backgroundColor: '#5E5CE6',
-        padding: 10,
-        borderRadius: 5,
-        marginTop: 10,
+        // padding: 10,
+        // borderRadius: 5,
+        // marginTop: 10,
+        
+        height: verticalScale(50),
+        justifyContent: 'center',
+        borderRadius: moderateScale(7),
     },
     addButtonText: {
         color: '#fff',
+        alignSelf:'center'
     },
     generateButton: {
         backgroundColor: '#FF6347',
-        padding: 10,
-        borderRadius: 5,
-        marginTop: 10,
+        // padding: 10,
+        // borderRadius: 5,
+        // marginTop: 10,
+
+        height: verticalScale(50),
+        justifyContent: 'center',
+        borderRadius: moderateScale(7),
+        marginTop:verticalScale(10)
     },
     generateButtonText: {
         color: '#fff',
+        alignSelf:'center'
     },
 
 
@@ -458,11 +470,11 @@ const styles = StyleSheet.create({
     },
     courseCard: {
         backgroundColor: '#f0f0f0',
-        width: horizontalScale(100), // Adjusted for horizontal scrolling
-        height: verticalScale(40),
+        width: horizontalScale(150), 
+        height: verticalScale(50),
         borderRadius: 8,
-        marginHorizontal: 8, // Space between cards
-        justifyContent: 'center',  // Center content vertically
-        alignItems: 'center',      // Center content horizontally
+        marginHorizontal: 8, 
+        justifyContent: 'center', 
+        alignItems: 'center',  
     },
 });
