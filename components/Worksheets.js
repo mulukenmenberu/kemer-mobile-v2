@@ -312,7 +312,7 @@ export default function Worksheets({ navigation }) {
             {(loadings || refreshing) && <SkeletonLoader />}
             {(!isValidObject(courses) && !refreshing && !loadings) && <TestAd />}
 
-            {(!isValidObject(courses) && !refreshing && !loadings) && <ReadTextMessage messageText={"No worksheet materials for your selected levels"} onRefresh={onRefresh} refreshing={refreshing} />}
+            {(!isValidObject(courses) && !refreshing && !loadings) && <ReadTextMessage messageText={"No worksheet materials for your selected levels. We're working hard to add more resources. Stay tuned"} onRefresh={onRefresh} refreshing={refreshing} />}
             {( isValidObject(courses) && Object.keys(courses).length > 0) && <>
 
                     <View>

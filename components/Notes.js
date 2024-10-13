@@ -292,7 +292,7 @@ export default function Notes({ navigation }) {
             <Header  navigation={navigation} />
             {(loadings || refreshing) && <SkeletonLoader />}
             {(!isValidObject(courses) && !refreshing && !loadings) && <TestAd />}
-            {(!isValidObject(courses) && !refreshing && !loadings) && <ReadTextMessage messageText={"No reading materials for your selected levels"} onRefresh={onRefresh} refreshing={refreshing} />}
+            {(!isValidObject(courses) && !refreshing && !loadings) && <ReadTextMessage messageText={"No reading materials for your selected levels. We're working hard to add more data. Stay tuned"} onRefresh={onRefresh} refreshing={refreshing} />}
            {( isValidObject(courses) && Object.keys(courses).length > 0) && 
            <>
                 <View>
