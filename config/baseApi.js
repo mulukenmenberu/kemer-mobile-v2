@@ -10,5 +10,5 @@ export const baseURL = axios.create({
 })
 
 // export const rootURL = "https://mule.xn--0xd7ay2b6f.com/exam_api/"
-export const rootURL = "http://188.245.177.26/examapp_api/"
+export const rootURL = "https://188.245.177.26/examapp_api/"
 // http://188.245.177.26/examapp_api/question_packages/packages.php?course_id=2
