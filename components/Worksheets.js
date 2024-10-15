@@ -94,33 +94,6 @@ export default function Worksheets({ navigation }) {
     }, []); // Run only once on mount
 
     
-   /* useEffect(() => {
-
-        readData('interestList').then((data) => {
-
-            const interestsArray = Object.keys(data)
-                .filter((key) => data[key] === "selected")
-
-
-            // Process the array
-            const levels = interestsArray.map(str =>
-                str.toLowerCase()            // Convert to lowercase
-                    .replace(/,/g, '')        // Remove commas
-                    .replace(/&/g, 'and')     // Replace & with 'and'
-                    .replace(/\s+/g, '')      // Remove all spaces
-            ).join(',');
-
-
-            dispatch(fetchSubjects(levels)).then((response) => {
-                setCourses(response.payload)
-                setRefreshing(false)
-                // console.log(response)
-             
-            })
-        });
-    }, [refreshing]);
-
-*/
     const reorderCoursesInPlace = (selectedCourse) => {
         // Reorder and update the state directly
         const selectedTopics = courses[selectedCourse];

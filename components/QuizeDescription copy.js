@@ -38,14 +38,7 @@ let descriptionManagers = []
     try {
       const storedData = JSON.parse(await AsyncStorage.getItem(`${package_id}_${package_name}`));
       setProgressObj(storedData)
-      /* if (storedData) {
-         console.log(storedData, 'sss')
-         const updatedSelections = Array(questions.length).fill(null);
-         for (let [questionIndex, optionIndex] of Object.entries(storedData)) {
-           updatedSelections[questionIndex] = [parseInt(optionIndex)];
-         }
-         setSelectedOptions(updatedSelections);
-       }*/
+
     } catch (error) {
       console.error("Error loading stored quiz progress", error);
     }
@@ -143,7 +136,7 @@ let descriptionManagers = []
   if (error) return <NoInternetScreen />;
 
   const currentQuestion = questions[currentQuestionIndex];
-// console.log(package_id)
+
   return (
     <SafeAreaView style={styles.container}>
       <TouchableOpacity style={styles.backIconContainer} onPress={() => navigation.navigate('Tabs')}>

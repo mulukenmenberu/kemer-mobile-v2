@@ -66,7 +66,7 @@ export default function Header({ navigation }) {
                 setFullName(parsedData.fullName);
                 setUsername(parsedData.username);
             } catch (error) {
-                console.error('Failed to fetch user data', error);
+               
             }
         };
 
@@ -113,7 +113,7 @@ export default function Header({ navigation }) {
                 tags: "",
             });
         } catch (err) {
-            console.error('Failed to join challenge', err);
+            
         }
     };
 
@@ -158,7 +158,7 @@ export default function Header({ navigation }) {
                 },
                 body: JSON.stringify(textInputs)
             });
-            console.log(response.data, "ppp")
+           
             if (!response.ok) {
                 setExamLoader(false)
                 throw new Error('Network response was not ok');
@@ -177,7 +177,6 @@ export default function Header({ navigation }) {
                 readData('interestList').then((data) => {
                     const interestsArray = Object.keys(data).filter((key) => data[key] === "selected");
                     const userNames = textInputs.map(item => item.value);
-                    // console.log(selectedCourses, userNames)
 
                     dispatch(fetchExamMode({ interestsArray, userNames, selectedCourses })).then((response) => {
                         navigation.navigate('ExamMode', {
@@ -209,7 +208,6 @@ export default function Header({ navigation }) {
         </TouchableOpacity>
     );
 
-    // console.log(courses)
     return (
         <>
             <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>

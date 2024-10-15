@@ -26,7 +26,6 @@ const Splash = ({ navigation }) => {
           setDeviceId(storedDeviceId);
         }
       } catch (error) {
-        console.error('Error fetching device ID:', error);
       }
     };
 
@@ -43,9 +42,7 @@ const Splash = ({ navigation }) => {
         body: JSON.stringify({ device_id: deviceId, full_name: '', email: '' }),
       });
       const result = await response.json();
-      console.log('Device ID saved to server:', result);
     } catch (error) {
-      console.error('Error saving device ID to server:', error);
     }
   };
 
@@ -63,7 +60,6 @@ const Splash = ({ navigation }) => {
         }
       })
       .catch((err) => {
-        console.error(err);
         setPage(page + 1);
       });
   };
@@ -79,7 +75,6 @@ const Splash = ({ navigation }) => {
           style={{ width: horizontalScale(200), height: verticalScale(200) }}
           onLoadEnd={() => setLoadingImage(false)} // Update loading state
           onError={(error) => {
-            console.error('Image loading error:', error);
             setLoadingImage(false); // Set loading to false even if error occurs
           }}
         />

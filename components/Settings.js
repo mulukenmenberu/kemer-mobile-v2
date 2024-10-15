@@ -131,7 +131,7 @@ export default function Settings({ navigation }) {
         body: JSON.stringify({ device_id: deviceId, username: username, full_name: fullName, email: emailorPhone }),
       });
       const result = await response.json();
-      console.log('Device ID saved to server:', result);
+
       setSavingUser(false)
       Alert.alert(
         "Registration Success", // Title
@@ -139,7 +139,7 @@ export default function Settings({ navigation }) {
         [
           {
             text: "OK", // Button text
-            onPress: () => console.log("OK Pressed"), // Optional onPress handler
+            onPress: () => console.log(""), // Optional onPress handler
           },
         ],
         { cancelable: false } // Optional options
@@ -191,7 +191,7 @@ export default function Settings({ navigation }) {
         [
           {
             text: "OK", // Button text
-            onPress: () => console.log("OK Pressed"), // Optional onPress handler
+            onPress: () => console.log(""), // Optional onPress handler
           },
         ],
         { cancelable: false } // Optional options

@@ -14,7 +14,6 @@ export const fetchExamMode = createAsyncThunk(
 
         }); 
       const response = await fetch(`${rootURL}/courses/exam_mode.php?${params.toString()}`);
-      // console.log(`${rootURL}/courses/exam_mode.php?${params.toString()}`)
       const data = await response.json();
 
       if (data.status === 'success') {

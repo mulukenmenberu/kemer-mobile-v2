@@ -105,15 +105,9 @@ export default function Dashboard({ navigation }) {
             setIsLoading(true);
             const packages = getPackagesByCourseId(active);
             setPackageData(packages)
-            // console.log(packages)
+          
             setIsLoading(false);
-            /*dispatch(fetchQuestionPackages(active)).then((response) => {
-                // console.log(packages) 
-                setIsLoading(false);
-            }).catch(() => {
-                setIsLoading(false);
-            });
-            */
+
         }
     }, [active]);
 
@@ -121,7 +115,6 @@ export default function Dashboard({ navigation }) {
     useEffect(() => {
         readData('interestList').then((data) => {
             const interestsArray = Object.keys(data).filter((key) => data[key] === 'selected');
-            //   console.log(interestsArray)
             setSelectedInterests(interestsArray);
             setRefresh(false);
         });
@@ -165,10 +158,7 @@ export default function Dashboard({ navigation }) {
     if (error) {
         return <NoInternetScreen isLoading={isLoading} setIsLoading={setIsLoading} />
     }
-    // console.log(courses)
-    // const updatedCourses = active > 0 
-    // ? [courses.find(course => course.course_id === active), ...courses.filter(course => course.course_id !== active)] 
-    // : courses;
+
 
     const extractedPackages = courses.reduce((acc, course) => {
         return acc.concat(course.packages); // Concatenate packages from each course

@@ -8,7 +8,7 @@ import SkeletonLoader from '../utils/SkeletonLoader';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TestAd } from '../TestAd';
-import { moderateScale } from '../utils/Device';
+import { horizontalScale, moderateScale } from '../utils/Device';
 
 const QuizeDescription = ({ route, navigation }) => {
   const dispatch = useDispatch();
@@ -29,13 +29,23 @@ const QuizeDescription = ({ route, navigation }) => {
 
   let descriptionManagers = [];
 
-  const storeAnsweredToAsyncStorage = async (question_id, optionIndex) => {
-    try {
-      const storedData = JSON.parse(await AsyncStorage.getItem(`${package_id}_${package_name}`)) || {};
-      storedData[question_id] = optionIndex;
-      await AsyncStorage.setItem(`${package_id}_${package_name}`, JSON.stringify(storedData));
-    } catch (error) {
-      console.error("Error storing the quiz progress", error);
+  const storeAnsweredToAsyncStorage = async (question_id, optionIndex, deleteData = false) => {
+    if (deleteData) {
+      try {
+        // const storedData = JSON.parse(await AsyncStorage.getItem(`${package_id}_${package_name}`)) || {};
+        // storedData[question_id] = optionIndex;
+        await AsyncStorage.removeItem(`${package_id}_${package_name}`);
+      } catch (error) {
+        console.error("Error storing the quiz progress", error);
+      }
+    } else {
+      try {
+        const storedData = JSON.parse(await AsyncStorage.getItem(`${package_id}_${package_name}`)) || {};
+        storedData[question_id] = optionIndex;
+        await AsyncStorage.setItem(`${package_id}_${package_name}`, JSON.stringify(storedData));
+      } catch (error) {
+        console.error("Error storing the quiz progress", error);
+      }
     }
   };
 
@@ -107,7 +117,7 @@ const QuizeDescription = ({ route, navigation }) => {
     }
 
     setSelectedOptions(updatedSelections);
-    storeAnsweredToAsyncStorage(question_id, optionIndex);
+    storeAnsweredToAsyncStorage(question_id, optionIndex, false);
   };
 
 
@@ -144,20 +154,60 @@ const QuizeDescription = ({ route, navigation }) => {
       setRefresh(refresh - 1);
     }
   };
-
+  const resetProgress = () => {
+    Alert.alert(
+      "Confirm Reset",  // Title of the alert
+      "Are you sure you want to reset your progress?",  // Message of the alert
+      [
+        {
+          text: "No", // Option for No
+          onPress: () => console.log(" "), // Action when No is clicked
+          style: "cancel",  // Style of the No button
+        },
+        {
+          text: "Yes", // Option for Yes
+          onPress: () => {
+            storeAnsweredToAsyncStorage(0, 0, true);
+            setSelectedOptions([])
+            if (currentQuestionIndex > 0) {
+              setCurrentQuestionIndex(0);
+              setRefresh(refresh - 1);
+            }
+          }, // Proceed when Yes is clicked
+        },
+      ],
+      { cancelable: false } // Makes the alert not dismissible by clicking outside
+    );
+  };
   return (
     <SafeAreaView style={styles.container}>
-      {uniqueChapters.length <= 1 && <TouchableOpacity style={styles.backIconContainer} onPress={() => navigation.navigate('Tabs')}>
-        <MaterialCommunityIcons name="arrow-left" color={"#333"} size={30} />
-      </TouchableOpacity>}
+      {uniqueChapters.length <= 1 &&
+
+        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingLeft: 10, paddingRight: 10 }}>
+          <TouchableOpacity onPress={() => navigation.navigate('Tabs')}>
+            <MaterialCommunityIcons name="arrow-left" color={"#333"} size={30} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => resetProgress()}>
+            <MaterialCommunityIcons name="lock-reset" color={"#333"} size={30} />
+          </TouchableOpacity>
+        </View>
+      }
+      {/* currentQuestionIndex === 0 */}
+
       {uniqueChapters.length > 1 && <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingLeft: 10, paddingRight: 10 }}>
         <TouchableOpacity onPress={() => navigation.navigate('Tabs')}>
           <MaterialCommunityIcons name="arrow-left" color={"#333"} size={30} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => setModalVisible(true)}>
-          <MaterialCommunityIcons name="filter-variant-minus" color={"#333"} size={30} />
-        </TouchableOpacity>
+        <View style={{ display: 'flex', flexDirection: 'row' }}>
+          <TouchableOpacity onPress={() => resetProgress()} style={{ marginRight: horizontalScale(10) }}>
+            <MaterialCommunityIcons name="lock-reset" color={"#333"} size={30} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setModalVisible(true)}>
+            <MaterialCommunityIcons name="filter-variant-minus" color={"#333"} size={30} />
+          </TouchableOpacity>
+        </View>
       </View>}
+
 
       <View style={styles.fixedHeader}>
         <View>
@@ -262,7 +312,7 @@ const QuizeDescription = ({ route, navigation }) => {
                 style={[styles.chapterButton, selectedChapters.includes(chapter) && styles.selectedChapterButton, , index % 2 === 0 ? styles.evenCard : styles.oddCard]}
                 onPress={() => toggleChapterSelection(chapter)}
               >
-                <Text style={[styles.chapterButtonText, selectedChapters.includes(chapter) && styles.selectedText]}>{index+1}. {chapter}</Text>
+                <Text style={[styles.chapterButtonText, selectedChapters.includes(chapter) && styles.selectedText]}>{index + 1}. {chapter}</Text>
               </TouchableOpacity>
             ))}
             <TouchableOpacity
@@ -274,6 +324,7 @@ const QuizeDescription = ({ route, navigation }) => {
           </View>
         </View>
       </Modal>
+
 
       <StatusBar backgroundColor="#f2f2f2" barStyle="dark-content" />
     </SafeAreaView>
@@ -435,7 +486,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   selectedText: {
-    color: '#fff'
+    color: '#5E5CE6'
   },
   closeButton: {
     marginTop: 15,
