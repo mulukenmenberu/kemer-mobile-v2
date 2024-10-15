@@ -340,10 +340,10 @@ export default function Settings({ navigation }) {
           {/* <TestAd/> */}
 
 
-          <Text style={styles.loyaltyTitle}>Kelem Points</Text>
+          <Text style={styles.loyaltyTitle}>Kemer Points</Text>
           <Text style={styles.loyaltyPoints}>Comming Soon</Text>
           <Text style={styles.loyaltyDescription}>
-            Loyalty points are activity points that you can earn by interacting with the app, taking quizzes, and later can be redeemed for various benefits
+            Kemer points are activity points that you can earn by interacting with the app, taking quizzes, and later can be redeemed for various benefits
           </Text>
           <TouchableOpacity style={styles.continueButton} disabled>
             <Text style={styles.buttonText}>Claim Daily Point</Text>

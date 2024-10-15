@@ -86,7 +86,7 @@ const Splash = ({ navigation }) => {
       </View>
 
       {/* Welcome Text */}
-      <Text style={styles.titleText}>ቀለም ሞባይል</Text>
+      <Text style={styles.titleText}>ቀመር ሞባይል</Text>
       <Text style={styles.subtitleText}>
         Learn by completing numerous questions, all presented in a clear and engaging format.
       </Text>
