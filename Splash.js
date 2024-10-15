@@ -1,67 +1,81 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, StatusBar } from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Welcome from './components/Welcome';
 import { readData } from './data/DB';
 import { horizontalScale, moderateScale, verticalScale } from './utils/Device';
-import DeviceInfo from 'react-native-device-info';
 import { rootURL } from './config/baseApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Splash = ({ navigation }) => {
   const [page, setPage] = useState(0);
-  const [deviceId, setDeviceId] = useState('');
-  const [loadingImage, setLoadingImage] = useState(true); // Track image loading state
+  const [userIdentifier, setDeviceId] = useState('');
+  const [loadingImage, setLoadingImage] = useState(true); // Track image loading state for logo
+  const [loadingCharacterImage, setLoadingCharacterImage] = useState(true); // Track loading state for WebP image
+
+  const generateRandomID = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let randomDeviceId = '';
+    for (let i = 0; i < 32; i++) {
+      randomDeviceId += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return randomDeviceId;
+  };
 
   useEffect(() => {
-    const fetchDeviceId = async () => {
+    const fetchUniqueIdentifier = async () => {
       try {
-        const storedDeviceId = await AsyncStorage.getItem('deviceID');
+        const storedDeviceId = await AsyncStorage.getItem('UserIdentifier');
         if (!storedDeviceId) {
-          const newDeviceId = await DeviceInfo.getUniqueId();
+          const newDeviceId =  generateRandomID()
           setDeviceId(newDeviceId);
-          await AsyncStorage.setItem('deviceID', newDeviceId);
-          await saveDeviceIdToServer(newDeviceId);
+          await AsyncStorage.setItem('UserIdentifier', newDeviceId);
+          await saveIdentifier(newDeviceId);
         } else {
           setDeviceId(storedDeviceId);
         }
       } catch (error) {
+        console.error(error);
       }
     };
 
-    fetchDeviceId();
+    fetchUniqueIdentifier();
   }, []);
 
-  const saveDeviceIdToServer = async (deviceId) => {
+  const saveIdentifier = async (userIdentifier) => {
     try {
       const response = await fetch(`${rootURL}users/register_device.php`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ device_id: deviceId, full_name: '', email: '' }),
+        body: JSON.stringify({ userIdentifier: userIdentifier, full_name: '', email: '' }),
       });
       const result = await response.json();
     } catch (error) {
+      console.error(error);
     }
   };
 
   const nextPage = () => {
-    readData('interestList')
-      .then((data) => {
-        let interestsArray = [];
-        if (data != null) {
-          interestsArray = Object.keys(data).filter((key) => data[key] === "selected");
-        }
-        if (interestsArray.length > 0) {
-          navigation.navigate('Tabs');
-        } else {
+    try {
+      readData('interestList')
+        .then((data) => {
+          let interestsArray = [];
+          if (data != null) {
+            interestsArray = Object.keys(data).filter((key) => data[key] === "selected");
+          }
+          if (interestsArray.length > 0) {
+            navigation.navigate('Tabs');
+          } else {
+            setPage(page + 1);
+          }
+        })
+        .catch((err) => {
           setPage(page + 1);
-        }
-      })
-      .catch((err) => {
-        setPage(page + 1);
-      });
+        });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   if (page === 1) return <Welcome navigation={navigation} setPage={setPage} page={page} />;
@@ -73,9 +87,11 @@ const Splash = ({ navigation }) => {
         <Image 
           source={require('./assets/logo.png')} 
           style={{ width: horizontalScale(200), height: verticalScale(200) }}
-          onLoadEnd={() => setLoadingImage(false)} // Update loading state
+          onLoadStart={() => setLoadingImage(true)} // Start loading
+          onLoadEnd={() => setLoadingImage(false)} // Finish loading
           onError={(error) => {
-            setLoadingImage(false); // Set loading to false even if error occurs
+            setLoadingImage(false); // Handle error
+            console.error(error);
           }}
         />
       </View>
@@ -86,9 +102,21 @@ const Splash = ({ navigation }) => {
         Learn by completing numerous questions, all presented in a clear and engaging format.
       </Text>
 
-      {/* Running Characters */}
+      {/* Running Characters (WebP Image) */}
       <View style={styles.imageContainer}>
-        <Image source={require('./assets/img.webp')} style={styles.characterImage} />
+        {loadingCharacterImage ? (
+          <Text>Loading image...</Text>  // Display a loading indicator while image loads
+        ) : null}
+        <Image 
+          source={require('./assets/img.webp')} 
+          style={styles.characterImage}
+          onLoadStart={() => setLoadingCharacterImage(true)} // Start loading the WebP image
+          onLoadEnd={() => setLoadingCharacterImage(false)}  // Finish loading the WebP image
+          onError={(error) => {
+            setLoadingCharacterImage(false);  // Set loading to false if error occurs
+            console.error('Error loading WebP image', error);
+          }}
+        />
       </View>
 
       {/* Buttons */}

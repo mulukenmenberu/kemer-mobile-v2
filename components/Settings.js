@@ -24,13 +24,8 @@ import { readData, storeData } from '../data/DB';
 import SkeletonLoader from '../utils/SkeletonLoader';
 import { TestAd } from '../TestAd';
 import { horizontalScale, moderateScale, verticalScale } from '../utils/Device';
-import Welcome from './Welcome';
-import DeviceInfo from 'react-native-device-info';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { rootURL } from '../config/baseApi';
-import ExamModeModal from '../utils/ExamModeModal';
 import Header from '../utils/Header';
 
 
@@ -44,19 +39,11 @@ export default function Settings({ navigation }) {
   const [fullName, setFullName] = useState('');
   const [emailorPhone, setEmailorPhone] = useState('');
   const [username, setUsername] = useState('');
-  const [deviceId, setDeviceId] = useState('');
+  const [userIdentifier, setDeviceId] = useState('');
   const [usernameerror, setUsernameError] = useState('');
   const [savingUser, setSavingUser] = useState(false);
-  const [exam_loaddr, setExamLoader] = useState(false);
 
 
-  // const [visible, setVisible] = useState(false);
-  // const showModal = () => setVisible(true);
-  // const hideModal = () => {
-  //     if (!exam_loaddr) {
-  //         setVisible(false);
-  //     }
-  // }
 
   const toggleInterest = (interest) => {
     // Step 1: Update the selected interests state
@@ -120,7 +107,7 @@ export default function Settings({ navigation }) {
   };
 
 
-  const saveDeviceIdToServer = async () => {
+  const saveIdentifier = async () => {
     setSavingUser(true)
     try {
       const response = await fetch(`${rootURL}users/register_device.php`, {
@@ -128,7 +115,7 @@ export default function Settings({ navigation }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ device_id: deviceId, username: username, full_name: fullName, email: emailorPhone }),
+        body: JSON.stringify({ device_id: userIdentifier, username: username, full_name: fullName, email: emailorPhone }),
       });
       const result = await response.json();
 
@@ -146,7 +133,6 @@ export default function Settings({ navigation }) {
       );
 
     } catch (error) {
-      console.error('Error saving device ID to server:', error);
       setSavingUser(false)
 
     }
@@ -168,14 +154,14 @@ export default function Settings({ navigation }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username: username, deviceId: deviceId }),
+        body: JSON.stringify({ username: username, userIdentifier: userIdentifier }),
       });
       const result = await response.json();
 
       if (result?.status == 'success') {
-        const userData = { fullName, emailorPhone, deviceId, username };
+        const userData = { fullName, emailorPhone, userIdentifier, username };
         await AsyncStorage.setItem('userInformation', JSON.stringify(userData));
-        saveDeviceIdToServer()
+        saveIdentifier()
         setSavingUser(false)
 
       } else {
@@ -196,7 +182,6 @@ export default function Settings({ navigation }) {
         ],
         { cancelable: false } // Optional options
       );
-      console.error('Error saving device ID to server:', error);
 
     }
 
@@ -212,7 +197,7 @@ export default function Settings({ navigation }) {
         setFullName(userData2.fullName);
         setEmailorPhone(userData2.emailorPhone);
         setUsername(userData2.username);
-        setDeviceId(userData2.deviceId);
+        setDeviceId(userData2.userIdentifier);
       } catch (error) {
         console.error('Failed to fetch favorite status', error);
       }
@@ -220,9 +205,19 @@ export default function Settings({ navigation }) {
 
     getUserData();
   }, []);
+  const generateRandomID = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let randomDeviceId = '';
+    for (let i = 0; i < 32; i++) {
+      randomDeviceId += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return randomDeviceId;
+  };
+
+
   useEffect(() => {
     const fetchDeviceId = async () => {
-      const id = await DeviceInfo.getUniqueId();
+      const id =  generateRandomID()
       setDeviceId(id);
     };
 
