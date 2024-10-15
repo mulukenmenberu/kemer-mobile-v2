@@ -10,9 +10,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { TestAd } from '../TestAd';
 import { readData } from '../data/DB';
 import { horizontalScale, moderateScale, verticalScale } from '../utils/Device';
-import Entypo from 'react-native-vector-icons/Entypo';
-import ReadTextMessage from './reader/ReadTextMessage';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+
 import SkeletonLoader from '../utils/SkeletonLoader';
 import ExamModeModal from '../utils/ExamModeModal';
 import Header from '../utils/Header';
@@ -30,13 +28,7 @@ export default function Saved({ navigation }) {
 
     const dispatch = useDispatch();
     const { packagesSaved, loading: packagesLoading, error: packagesError } = useSelector((state) => state.question_packages);
-    // const [visible, setVisible] = useState(false);
-    // const showModal = () => setVisible(true);
-    // const hideModal = () => {
-    //     if (!exam_loaddr) {
-    //         setVisible(false);
-    //     }
-    // }
+ 
 
     const checkFavoriteStatus = (package_id) => {
         return isFavorite.includes(package_id)
@@ -87,44 +79,11 @@ export default function Saved({ navigation }) {
 
     const onRefresh = () => {
         setRefreshing(true);
-        // fetchData().then(() => setRefreshing(false)); // Refresh data on pull
     };
-    // useEffect(() => {
-    //     const getUserData = async () => {
-    //         try {
-    //             const userData = await AsyncStorage.getItem('userInformation') || {};
-    //             const userData2 = JSON.parse(userData);
-    //             setFullName(userData2.fullName);
-    //             setEmailorPhone(userData2.emailorPhone);
-    //         } catch (error) {
-    //             console.error('Failed to fetch favorite status', error);
-    //         }
-    //     };
-
-    //     getUserData();
-    // }, []);
-    // if (isLoading) return <Text>Loading....</Text>
+   
     return (
         <SafeAreaView style={styles.container}>
-            {/* <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
-                <MaterialCommunityIcons name="menu-open" size={24} color="#222" onPress={showModal}/>
-                <Ionicons name="notifications-outline" size={moderateScale(24)} color="#222" />
-
-            </View>
-            <Card style={{ marginTop: verticalScale(8), marginBottom: verticalScale(20), alignSelf: 'center', height: verticalScale(80), width: width - 20, backgroundColor: '#5E5CE6', justifyContent: 'center' }} onPress={() => navigation.navigate('Quiz')}>
-                <View style={{ marginLeft: horizontalScale(10), marginRight: verticalScale(10), flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-                    <View>
-                        <Image source={require('../assets/avatar.png')} style={{ width: horizontalScale(50), height: verticalScale(50), borderRadius: moderateScale(50 / 2) }} />
-                    </View>
-                    <View style={{ marginLeft: horizontalScale(20) }}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: moderateScale(19) }}>Welcome {fullName}</Text>
-                            <AntDesign name="edit" size={moderateScale(24)} color="white" />
-                        </View>
-                        <Text style={{ color: '#fff', paddingRight: horizontalScale(10) }}>{selectedInterests.join(' - ')}</Text>
-                    </View>
-                </View>
-            </Card> */}    
+             
              <Header  navigation={navigation}/>
 
             <TestAd />

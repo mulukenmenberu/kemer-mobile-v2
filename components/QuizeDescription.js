@@ -36,7 +36,7 @@ const QuizeDescription = ({ route, navigation }) => {
         // storedData[question_id] = optionIndex;
         await AsyncStorage.removeItem(`${package_id}_${package_name}`);
       } catch (error) {
-        console.error("Error storing the quiz progress", error);
+        
       }
     } else {
       try {
@@ -44,7 +44,7 @@ const QuizeDescription = ({ route, navigation }) => {
         storedData[question_id] = optionIndex;
         await AsyncStorage.setItem(`${package_id}_${package_name}`, JSON.stringify(storedData));
       } catch (error) {
-        console.error("Error storing the quiz progress", error);
+        
       }
     }
   };

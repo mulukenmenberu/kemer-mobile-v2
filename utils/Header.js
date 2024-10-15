@@ -92,7 +92,7 @@ export default function Header({ navigation }) {
                 setNotifications(response.data.data);
                 setUnreadCount(response.data.data.filter(n => !n.read).length);
             } catch (err) {
-                setError('Failed to fetch notifications');
+                setError('No notification found!');
             } finally {
                 setLoading(false);
             }

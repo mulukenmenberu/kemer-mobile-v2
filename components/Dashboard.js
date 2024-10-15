@@ -1,26 +1,20 @@
 // import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { Image, StatusBar, TextInput, StyleSheet, Text, View, Platform, StatusBar as stbar, Dimensions, SafeAreaView, ImageBackground, TouchableOpacity, ScrollView, RefreshControl, Alert, Pressable } from 'react-native';
-import { Card } from 'react-native-paper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { fetchCourses } from '../redux/reducers/coursesSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchQuestionPackages } from '../redux/reducers/questionPackagesSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SkeletonLoader from '../utils/SkeletonLoader';
 import NoInternetScreen from '../utils/NoInternetScreen';
 import { readData } from '../data/DB';
 import { TestAd } from '../TestAd';
 import { horizontalScale, moderateScale, verticalScale } from '../utils/Device';
-import { Modal, Portal, Button, Provider } from 'react-native-paper';
-import { fetchExamMode } from '../redux/reducers/examModeSlice';
-import { rootURL } from '../config/baseApi';
-import ExamModeModal from '../utils/ExamModeModal';
+
 import Header from '../utils/Header';
 import DashBoardCardsModal from '../utils/DashBoardCardsModal';
 export default function Dashboard({ navigation }) {
@@ -36,13 +30,6 @@ export default function Dashboard({ navigation }) {
     const [showPackages, setShowPackages] = useState(false);
 
 
-    // const [visible, setVisible] = useState(false);
-    // const showModal = () => setVisible(true);
-    // const hideModal = () => {
-    //     if (!exam_loaddr) {
-    //         setVisible(false);
-    //     }
-    // }
 
     const [visibleCourses, setVisibleCourses] = useState(false);
     const showCoursesModal = () => setVisibleCourses(true);
@@ -56,17 +43,7 @@ export default function Dashboard({ navigation }) {
     const dispatch = useDispatch();
     const { courses, loading, error } = useSelector((state) => state.courses);
 
-    /* useEffect(() => {
-         readData('interestList').then((data) => {
-             const interestsArray = Object.keys(data)
-                 .filter((key) => data[key] === "selected")
-             dispatch(fetchCourses(interestsArray)).then((response) => {
-                 setActive(response.payload[0].course_id)
-                 setPackageData(response.payload[0].packages)
-                 setRefreshing(false)
-             })
-         });
-     }, [refreshing]);*/
+
     const fetchCoursesData = async () => {
         // setRefreshing(true); // Set refreshing true to indicate loading state
         const data = await readData('interestList');
@@ -89,10 +66,7 @@ export default function Dashboard({ navigation }) {
         fetchCoursesData();
     }, []); // Run only once on mount
 
-    // const onRefresh = () => {
-    //     // This function can now be used to trigger a manual refresh if necessary.
-    //     fetchCoursesData(); // Fetch again on manual refresh
-    // };
+
 
 
     const getPackagesByCourseId = (courseId) => {
@@ -127,7 +101,7 @@ export default function Dashboard({ navigation }) {
                 const savedPackages = JSON.parse(await AsyncStorage.getItem('savedPackages')) || [];
                 setIsFavorite(savedPackages);
             } catch (error) {
-                console.error('Failed to fetch favorite status', error);
+              
             }
         };
 
@@ -287,7 +261,7 @@ export default function Dashboard({ navigation }) {
 
                     <View style={{ height: verticalScale(100), padding: moderateScale(10) }} >
                         {currentDate <= targetDate && (
-                            <Text style={{ color: 'black', alignSelf: 'center' }}>We're working hard to add more question packages and subjects. stay tuned!</Text>
+                            <Text style={{ color: 'black', alignSelf: 'center', color:'#d0d3d6' }}>We're working hard to add more questions. stay tuned!</Text>
                         )}
                     </View>
                     <View style={{ height: verticalScale(100), marginBottom: verticalScale(10), padding: moderateScale(10) }} />
