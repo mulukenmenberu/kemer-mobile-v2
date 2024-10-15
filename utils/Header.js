@@ -131,7 +131,8 @@ export default function Header({ navigation }) {
 
         const hasEmptyInput = updatedInputs.some(input => input.hasError);
         if (!hasEmptyInput) {
-            setTextInputs([...textInputs, { id: textInputs.length + 1, value: '', hasError: false }]);
+            setTextInputs(updatedInputs);
+            // setTextInputs([...textInputs, { id: textInputs.length + 1, value: '', hasError: false }]);
         } else {
             setTextInputs(updatedInputs);
         }
