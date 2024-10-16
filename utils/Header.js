@@ -131,10 +131,11 @@ export default function Header({ navigation }) {
 
         const hasEmptyInput = updatedInputs.some(input => input.hasError);
         if (!hasEmptyInput) {
-            setTextInputs(updatedInputs);
-            // setTextInputs([...textInputs, { id: textInputs.length + 1, value: '', hasError: false }]);
+            // setTextInputs(updatedInputs);
+            setTextInputs([...textInputs, { id: textInputs.length + 1, value: '', hasError: false }]);
         } else {
-            setTextInputs(updatedInputs);
+            // setTextInputs(updatedInputs);
+            setTextInputs([...textInputs, { id: textInputs.length + 1, value: '', hasError: false }]);
         }
     };
 
@@ -167,9 +168,9 @@ export default function Header({ navigation }) {
 
             const result = await response.json();
             setTextInputs(result)
-
+console.log(result)
             result.forEach(item => {
-                if (item.hasError) {
+                if (item.hasError && item.value) {
                     responseMessage++
                 }
             });

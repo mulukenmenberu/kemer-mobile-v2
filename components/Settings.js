@@ -115,7 +115,7 @@ export default function Settings({ navigation }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ device_id: userIdentifier, username: username, full_name: fullName, email: emailorPhone }),
+        body: JSON.stringify({ userIdentifier: userIdentifier, username: username, full_name: fullName, email: emailorPhone }),
       });
       const result = await response.json();
 
@@ -160,6 +160,7 @@ export default function Settings({ navigation }) {
 
       if (result?.status == 'success') {
         const userData = { fullName, emailorPhone, userIdentifier, username };
+        AsyncStorage.setItem('UserIdentifier', userIdentifier);
         await AsyncStorage.setItem('userInformation', JSON.stringify(userData));
         saveIdentifier()
         setSavingUser(false)
@@ -221,7 +222,7 @@ export default function Settings({ navigation }) {
       setDeviceId(id);
     };
 
-    fetchDeviceId();
+    // fetchDeviceId();
   }, []);
   if (refresh) {
     return <SkeletonLoader />;
