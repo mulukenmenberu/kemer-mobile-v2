@@ -273,7 +273,7 @@ export default function Header({ navigation }) {
 
             <RBSheet
                 ref={refRBSheet}
-                height={500}
+                height={verticalScale(500)}
                 openDuration={250}
                 customStyles={{
                     container: {

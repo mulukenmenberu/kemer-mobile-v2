@@ -173,6 +173,7 @@ const styles = StyleSheet.create({
     paddingVertical: verticalScale(15),
     paddingHorizontal: horizontalScale(100),
     borderRadius: moderateScale(20),
+    marginTop:verticalScale(30)
   },
   buttonText: {
     color: '#fff',
