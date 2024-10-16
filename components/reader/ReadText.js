@@ -13,7 +13,6 @@ const ReadText = ({ selectedTopic, selectedCourse }) => {
   const { notes, loadings2, errors2 } = useSelector((state) => state.subjects);
 
   useEffect(() => {
-    console.log(selectedTopic, selectedCourse, "hh")
     dispatch(fetchNotes({ selectedCourse, selectedTopic })).then((response) => {
       setData(response.payload)
       // setRefreshing(false) 

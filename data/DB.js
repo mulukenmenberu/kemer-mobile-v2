@@ -11,7 +11,6 @@ export const storeData = async (key, value) => {
     const jsonValue = JSON.stringify(value);
     await AsyncStorage.setItem(key, jsonValue);
   } catch (error) {
-    console.error('Error storing data:', error);
   }
 };
 
@@ -25,20 +24,7 @@ export const readData = async (key) => {
     const jsonValue = await AsyncStorage.getItem(key);
     return jsonValue != null ? JSON.parse(jsonValue) : null;
   } catch (error) {
-    console.error('Error reading data:', error);
     return null;
   }
 };
-
-/**
- * Example usage:
- * 
- * import { storeData, readData } from './path-to-this-file';
- * 
- * // Storing data
- * storeData('userProfile', { name: 'John Doe', age: 30 });
- * 
- * // Reading data
- * readData('userProfile').then(data => console.log(data));
- */
 

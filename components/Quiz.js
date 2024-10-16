@@ -35,7 +35,7 @@ const Quiz = ({ route, navigation }) => {
         const savedPackages = JSON.parse(await AsyncStorage.getItem('savedPackages')) || [];
         setIsFavorite(savedPackages.includes(package_id));
       } catch (error) {
-        console.error('Failed to fetch favorite status', error);
+        
       }
     };
 
@@ -57,7 +57,7 @@ const Quiz = ({ route, navigation }) => {
         setIsFavorite(true);
       }
     } catch (error) {
-      console.error('Failed to toggle favorite status', error);
+      
     }
   };
 

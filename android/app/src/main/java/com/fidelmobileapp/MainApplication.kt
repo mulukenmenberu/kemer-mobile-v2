@@ -1,4 +1,4 @@
-package com.KelemMobile
+package com.KemerMobile
 
 import android.app.Application
 import com.facebook.react.PackageList

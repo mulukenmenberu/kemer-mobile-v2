@@ -68,9 +68,7 @@ const ExamModeModal = ({visible, setVisible, showModal, hideModal, navigation })
             result.forEach(item => {
                 if (item.hasError) {
                     responseMessage++
-                    //   console.log(`User ${item.value} not found, set error state for this field.`);
                 } else {
-                    //   console.log(`User ${item.value} is valid.`);
                 }
             });
 
@@ -83,7 +81,6 @@ const ExamModeModal = ({visible, setVisible, showModal, hideModal, navigation })
                     // .join(' - '); 
                     const userNames = textInputs.map(item => item.value);
 
-                    // console.log(userNames, interestsArray)
                     dispatch(fetchExamMode({ interestsArray, userNames })).then((response) => {
                         navigation.navigate('ExamMode', {
                             package_id: 1,
@@ -102,7 +99,6 @@ const ExamModeModal = ({visible, setVisible, showModal, hideModal, navigation })
             }
         } catch (error) {
             setExamLoader(false)
-            //   console.error('There was a problem with the fetch operation:', error);
         }
         return responseMessage
     };

@@ -38,7 +38,7 @@ const Welcome = ({ navigation, setPage, page }) => {
 
     storeData('interestList', interestsObject);
     navigation.navigate('Tabs');
-    console.log(interestsObject);
+
   };
 
   const handleScroll = (event) => {

@@ -1,26 +1,20 @@
 // import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { Image, StatusBar, TextInput, StyleSheet, Text, View, Platform, StatusBar as stbar, Dimensions, SafeAreaView, ImageBackground, TouchableOpacity, ScrollView, RefreshControl, Alert, Pressable } from 'react-native';
-import { Card } from 'react-native-paper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { fetchCourses } from '../redux/reducers/coursesSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchQuestionPackages } from '../redux/reducers/questionPackagesSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SkeletonLoader from '../utils/SkeletonLoader';
 import NoInternetScreen from '../utils/NoInternetScreen';
 import { readData } from '../data/DB';
 import { TestAd } from '../TestAd';
 import { horizontalScale, moderateScale, verticalScale } from '../utils/Device';
-import { Modal, Portal, Button, Provider } from 'react-native-paper';
-import { fetchExamMode } from '../redux/reducers/examModeSlice';
-import { rootURL } from '../config/baseApi';
-import ExamModeModal from '../utils/ExamModeModal';
+
 import Header from '../utils/Header';
 import DashBoardCardsModal from '../utils/DashBoardCardsModal';
 export default function Dashboard({ navigation }) {
@@ -35,45 +29,45 @@ export default function Dashboard({ navigation }) {
     const [exam_loaddr, setExamLoader] = useState(false);
     const [showPackages, setShowPackages] = useState(false);
 
- 
-    const [visible, setVisible] = useState(false);
-    const showModal = () => setVisible(true);
-    const hideModal = () => {
-        if (!exam_loaddr) {
-            setVisible(false);
-        }
-    }
+
 
     const [visibleCourses, setVisibleCourses] = useState(false);
     const showCoursesModal = () => setVisibleCourses(true);
     const hideCoursesModal = () => {
         // if (!exam_loaddr) {
-            setVisibleCourses(false);
-            setShowPackages(false);
+        setVisibleCourses(false);
+        setShowPackages(false);
         // }
     }
 
     const dispatch = useDispatch();
     const { courses, loading, error } = useSelector((state) => state.courses);
-    const { packages, loading: packagesLoading, error: packagesError } = useSelector((state) => state.question_packages);
 
-    useEffect(() => {
-        readData('interestList').then((data) => {
 
-            const interestsArray = Object.keys(data)
-                .filter((key) => data[key] === "selected")
-            // .join(' - '); 
+    const fetchCoursesData = async () => {
+        // setRefreshing(true); // Set refreshing true to indicate loading state
+        const data = await readData('interestList');
+        const interestsArray = Object.keys(data).filter((key) => data[key] === "selected");
 
-            dispatch(fetchCourses(interestsArray)).then((response) => {
-                setActive(response.payload[0].course_id)
-                setPackageData(response.payload[0].packages)
-             
-                
-
-                setRefreshing(false)
+        // Call the API only if interestsArray has values
+        if (interestsArray.length > 0) {
+            const response = dispatch(fetchCourses(interestsArray)).then((res) => {
+                if (res && res.payload.length > 0) {
+                    setActive(res.payload[0].course_id);
+                    setPackageData(res.payload[0].packages);
+                }
             })
-        });
-    }, [refreshing]);
+
+
+        }
+        setRefreshing(false); // Set refreshing false once data is fetched
+    };
+    useEffect(() => {
+        fetchCoursesData();
+    }, []); // Run only once on mount
+
+
+
 
     const getPackagesByCourseId = (courseId) => {
         const course = courses.find(course => course.course_id === courseId);
@@ -85,15 +79,9 @@ export default function Dashboard({ navigation }) {
             setIsLoading(true);
             const packages = getPackagesByCourseId(active);
             setPackageData(packages)
-            // console.log(packages)
+          
             setIsLoading(false);
-            /*dispatch(fetchQuestionPackages(active)).then((response) => {
-                // console.log(packages) 
-                setIsLoading(false);
-            }).catch(() => {
-                setIsLoading(false);
-            });
-            */
+
         }
     }, [active]);
 
@@ -101,7 +89,6 @@ export default function Dashboard({ navigation }) {
     useEffect(() => {
         readData('interestList').then((data) => {
             const interestsArray = Object.keys(data).filter((key) => data[key] === 'selected');
-            //   console.log(interestsArray)
             setSelectedInterests(interestsArray);
             setRefresh(false);
         });
@@ -114,12 +101,12 @@ export default function Dashboard({ navigation }) {
                 const savedPackages = JSON.parse(await AsyncStorage.getItem('savedPackages')) || [];
                 setIsFavorite(savedPackages);
             } catch (error) {
-                console.error('Failed to fetch favorite status', error);
+              
             }
         };
 
         checkFavoriteStatus();
-    }, []);
+    }, [refresh]);
 
     const checkFavoriteStatus = (package_id) => {
         return isFavorite.includes(package_id)
@@ -127,13 +114,16 @@ export default function Dashboard({ navigation }) {
     };
     const onRefresh = () => {
         setRefreshing(true);
+        fetchCoursesData()
 
     };
 
-const renderPackagesonModal = ()=>{
-    showCoursesModal()
-    setShowPackages(true)
-}
+    const renderPackagesonModal = () => {
+        showCoursesModal()
+        setShowPackages(true)
+    }
+    const currentDate = new Date();
+    const targetDate = new Date('2024-12-15');
 
     if (loading || isLoading) {
         return <SkeletonLoader />
@@ -142,10 +132,7 @@ const renderPackagesonModal = ()=>{
     if (error) {
         return <NoInternetScreen isLoading={isLoading} setIsLoading={setIsLoading} />
     }
-    // console.log(courses)
-    const updatedCourses = active > 0 
-    ? [courses.find(course => course.course_id === active), ...courses.filter(course => course.course_id !== active)] 
-    : courses;
+
 
     const extractedPackages = courses.reduce((acc, course) => {
         return acc.concat(course.packages); // Concatenate packages from each course
@@ -155,8 +142,9 @@ const renderPackagesonModal = ()=>{
 
         <SafeAreaView style={styles.container}>
 
-          
-            <Header showModal={showModal} navigation={navigation} />
+
+            {/* <Header showModal={showModal} navigation={navigation} courses={courses}/> */}
+            <Header navigation={navigation} />
 
             <TestAd />
             <ScrollView
@@ -172,9 +160,9 @@ const renderPackagesonModal = ()=>{
                             <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>Subjects (course groups) </Text>
                             <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>in your level</Text>
                         </Pressable>
-                        <Pressable style={{ padding: 10, borderRadius: moderateScale(16), backgroundColor: '#07beb8', height: verticalScale(130), width: horizontalScale(180) }} onPress={()=>renderPackagesonModal()}>
+                        <Pressable style={{ padding: 10, borderRadius: moderateScale(16), backgroundColor: '#07beb8', height: verticalScale(130), width: horizontalScale(180) }} onPress={() => renderPackagesonModal()}>
                             <Ionicons name="alarm" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
-                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: 35 }}>{extractedPackages.length}+</Text>
+                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: 35 }}>{extractedPackages.length}⁺</Text>
                             <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}> Packages in your level</Text>
                             {/* <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>in your selected levs</Text> */}
                         </Pressable>
@@ -188,9 +176,9 @@ const renderPackagesonModal = ()=>{
                         <Pressable style={{
                             padding: moderateScale(10), borderRadius: moderateScale(16), backgroundColor: '#50e3c2', height: verticalScale(130),
                             width: horizontalScale(180)
-                        }} onPress={() => Alert.alert('Select a course (subject) & a package under the subject to get questions list')}>
+                        }} onPress={() => renderPackagesonModal()}>
                             <FontAwesome name="sticky-note" size={moderateScale(24)} style={{ alignSelf: 'flex-end' }} color="#fff" />
-                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: moderateScale(35) }}>{extractedPackages.length *100}+</Text>
+                            <Text style={{ alignSelf: 'center', color: '#fff', fontWeight: 'bold', fontSize: moderateScale(35) }}>{extractedPackages.length * 100}⁺</Text>
                             <Text style={{ alignSelf: 'center', color: '#fff', fontSize: moderateScale(13) }}>Total Questions in you level</Text>
                         </Pressable>
                     </View>
@@ -201,7 +189,7 @@ const renderPackagesonModal = ()=>{
                     <ScrollView
                         horizontal
                         showsHorizontalScrollIndicator={false}>
-                        {updatedCourses.map((course) => (
+                        {courses.map((course) => (
                             <Text key={course.course_id} onPress={() => setActive(course.course_id)} style={{ margin: moderateScale(20), fontWeight: active == course.course_id ? 'bold' : '', color: active == course.course_id ? '#5E5CE6' : '#CBD1DF' }}>{course.course_name}</Text>
                         ))}
                     </ScrollView>
@@ -270,12 +258,19 @@ const renderPackagesonModal = ()=>{
                             </TouchableOpacity>
                         ))
                     )}
-                    <View style={{ height: verticalScale(100), marginBottom: verticalScale(20) }} />
+
+                    <View style={{ height: verticalScale(100), padding: moderateScale(10) }} >
+                        {currentDate <= targetDate && (
+                            <Text style={{ color: 'black', alignSelf: 'center', color:'#d0d3d6' }}>We're working hard to add more questions. stay tuned!</Text>
+                        )}
+                    </View>
+                    <View style={{ height: verticalScale(100), marginBottom: verticalScale(10), padding: moderateScale(10) }} />
+
                 </View>
-                <View style={{ height: verticalScale(100), marginBottom: verticalScale(20) }} />
+                <View style={{ height: verticalScale(30), marginBottom: verticalScale(20) }} />
             </ScrollView>
-            <ExamModeModal visible={visible} setVisible={setVisible} showModal={showModal} hideModal={hideModal} navigation={navigation} />
-            <DashBoardCardsModal visible={visibleCourses}  showModal={showCoursesModal} hideModal={hideCoursesModal} navigation={navigation} courses={courses} setActive={setActive}  showPackages={showPackages}/>
+            {/* <ExamModeModal visible={visible} setVisible={setVisible} showModal={showModal} hideModal={hideModal} navigation={navigation} /> */}
+            <DashBoardCardsModal visible={visibleCourses} showModal={showCoursesModal} hideModal={hideCoursesModal} navigation={navigation} courses={courses} setActive={setActive} showPackages={showPackages} />
 
 
             <StatusBar backgroundColor="#F2F2F2" barStyle="dark-content" />
