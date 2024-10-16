@@ -13,24 +13,16 @@ import {
     TouchableOpacity,
     FlatList
 } from 'react-native';
-import { Card } from 'react-native-paper';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import { TestAd } from '../TestAd';
 import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { readData } from '../data/DB';
 import { horizontalScale, moderateScale, verticalScale } from '../utils/Device';
-import SkeletonLoaderReader from '../utils/SkeletonLoaderReader';
-import NoInternetScreen from '../utils/NoInternetScreen';
 import ReadTextMessage from './reader/ReadTextMessage';
 import { fetchSubjects } from '../redux/reducers/worksheetSlice';
 import SkeletonLoader from '../utils/SkeletonLoader';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import ReadWorksheet from './reader/ReadWorksheet';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import ExamModeModal from '../utils/ExamModeModal';
 import Header from '../utils/Header';
 
 export default function Worksheets({ navigation }) {
@@ -54,21 +46,11 @@ export default function Worksheets({ navigation }) {
     const courseScrollViewRef = useRef(null);
     const topicScrollViewRef = useRef(null);
 
-    const [fullName, setFullName] = useState('');
-    const [emailorPhone, setEmailorPhone] = useState('');
-    const [exam_loaddr, setExamLoader] = useState(false);
-
     const dispatch = useDispatch();
 
     const { subjects, loadings, errors } = useSelector((state) => state.worksheets);
 
-    // const [visible, setVisible] = useState(false);
-    // const showModal = () => setVisible(true);
-    // const hideModal = () => {
-    //     if (!exam_loaddr) {
-    //         setVisible(false);
-    //     }
-    // }
+
 
     const fetchSubjectsData = async () => {
         const data = await readData('interestList');
@@ -168,7 +150,7 @@ export default function Worksheets({ navigation }) {
             if (scrollViewRef.current) {
                 scrollViewRef.current.scrollTo({ y: verticalScale(225), animated: true });
             }
-        }, 5000);
+        }, 50);
         setModalVisible(false);
     };
     const handleSubjectSelectFromModal = (course) => {
@@ -241,46 +223,13 @@ export default function Worksheets({ navigation }) {
         fetchSubjectsData()
     };
 
-    // useEffect(() => {
-    //     const getUserData = async () => {
-    //         try {
-    //             const userData = await AsyncStorage.getItem('userInformation') || {};
-    //             const userData2 = JSON.parse(userData);
-    //             setFullName(userData2.fullName);
-    //             setEmailorPhone(userData2.emailorPhone);
-    //         } catch (error) {
-    //             console.error('Failed to fetch favorite status', error);
-    //         }
-    //     };
-
-    //     getUserData();
-    // }, []);
-
 
     const isValidObject = (obj) => {
         return obj !== null && typeof obj === 'object' && !Array.isArray(obj);
     };
     return (
         <SafeAreaView style={styles.container}>
-            {/* <View style={{ marginLeft: 10, marginTop: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
-                <MaterialCommunityIcons name="menu-open" size={24} color="#222"  onPress={showModal}/>
-                <Ionicons name="notifications-outline" size={moderateScale(24)} color="#222" />
-
-            </View>
-            <Card style={{ marginTop: verticalScale(8), marginBottom: verticalScale(20), alignSelf: 'center', height: verticalScale(80), width: width - 20, backgroundColor: '#5E5CE6', justifyContent: 'center' }} onPress={() => navigation.navigate('Quiz')}>
-                <View style={{ marginLeft: horizontalScale(10), marginRight: verticalScale(10), flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-                    <View>
-                        <Image source={require('../assets/avatar.png')} style={{ width: horizontalScale(50), height: verticalScale(50), borderRadius: moderateScale(50 / 2) }} />
-                    </View>
-                    <View style={{ marginLeft: horizontalScale(20) }}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: moderateScale(19) }}>Welcome {fullName}</Text>
-                            <AntDesign name="edit" size={moderateScale(24)} color="white" />
-                        </View>
-                        <Text style={{ color: '#fff', paddingRight: horizontalScale(10) }}>{selectedInterests.join(' - ')}</Text>
-                    </View>
-                </View>
-            </Card> */}
+         
             <Header navigation={navigation} />
             {(loadings || refreshing) && <SkeletonLoader />}
             {(!isValidObject(courses) && !refreshing && !loadings) && <TestAd />}
@@ -399,7 +348,7 @@ export default function Worksheets({ navigation }) {
                                     // data={courses[selectedCourse]}
                                     data={
                                         courses && selectedCourse in courses && Array.isArray(courses[selectedCourse])
-                                            ? courses[selectedCourse]
+                                            ? [... new Set(courses[selectedCourse])]
                                             : [] // Use an empty array if any check fails
                                     }
                                     renderItem={renderTopicItem}
@@ -429,7 +378,8 @@ export default function Worksheets({ navigation }) {
                                 <FlatList
                                     // data={courses[selectedCourse]}
                                     // data={Object.keys(courses)}
-                                    data={courses ? Object.keys(courses) : []}
+                                    // data={courses ? Object.keys(courses) : []}
+                                    data={courses ? [...new Set(Object.keys(courses))] : []}
                                     renderItem={renderSubjectItem}
                                     keyExtractor={(item) => item}
                                     numColumns={2} // Adjust the number of columns as needed

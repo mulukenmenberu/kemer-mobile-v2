@@ -11,7 +11,8 @@ import {
     ScrollView,
     RefreshControl,
     TouchableOpacity,
-    FlatList
+    FlatList,
+    Alert
 } from 'react-native';
 import { Card } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -79,15 +80,6 @@ export default function Notes({ navigation }) {
 
     const dispatch = useDispatch();
 
-
-    // const [visible, setVisible] = useState(false);
-    // const showModal = () => setVisible(true);
-    // const hideModal = () => {
-    //     if (!exam_loaddr) {
-    //         setVisible(false);
-    //     }
-    // }
-
     const { subjects, loadings, errors } = useSelector((state) => state.subjects);
 
     const fetchSubjectsData = async () => {
@@ -113,30 +105,6 @@ export default function Notes({ navigation }) {
         fetchSubjectsData();
     }, []); // Run only once on mount
 
-    /*  useEffect(() => {
-  
-          readData('interestList').then((data) => {
-  
-              const interestsArray = Object.keys(data)
-                  .filter((key) => data[key] === "selected")
-  
-  
-              // Process the array
-              const levels = interestsArray.map(str =>
-                  str.toLowerCase()            // Convert to lowercase
-                      .replace(/,/g, '')        // Remove commas
-                      .replace(/&/g, 'and')     // Replace & with 'and'
-                      .replace(/\s+/g, '')      // Remove all spaces
-              ).join(',');
-  
-  
-              dispatch(fetchSubjects(levels)).then((response) => {
-                  setCourses(response.payload)
-                  setRefreshing(false)
-  
-              })
-          });
-      }, [refreshing]);*/
 
 
     const reorderCoursesInPlace = (selectedCourse) => {
@@ -180,6 +148,7 @@ export default function Notes({ navigation }) {
     };
 
     const handleTopicSelect = (topic) => {
+       
         setSelectedTopic(topic);
         setIsLoadingG(true);
 
@@ -197,10 +166,11 @@ export default function Notes({ navigation }) {
     };
 
     const handleTopicSelectFromModal = (topic) => {
-
+        
         setSelectedTopic(topic);
-        reorderTopicsInPlace(topic);
         setIsLoadingG(true);
+        reorderTopicsInPlace(topic);
+       
         if (topicScrollViewRef.current) {
             topicScrollViewRef.current.scrollTo({ x: 0, animated: true });
         }
@@ -211,7 +181,7 @@ export default function Notes({ navigation }) {
             if (scrollViewRef.current) {
                 scrollViewRef.current.scrollTo({ y: verticalScale(225), animated: true });
             }
-        }, 5000);
+        }, 50);
         setModalVisible(false);
     };
     const handleSubjectSelectFromModal = (course) => {
@@ -406,7 +376,7 @@ export default function Notes({ navigation }) {
                                         // data={courses[selectedCourse]}
                                         data={
                                             courses && selectedCourse in courses && Array.isArray(courses[selectedCourse])
-                                                ? courses[selectedCourse]
+                                                ? [...new Set(courses[selectedCourse])]
                                                 : [] // Use an empty array if any check fails
                                         }
                                         renderItem={renderTopicItem}
@@ -436,7 +406,8 @@ export default function Notes({ navigation }) {
                                     <FlatList
                                         // data={courses[selectedCourse]}
                                         // data={Object.keys(courses)}
-                                        data={courses ? Object.keys(courses) : []}
+                                        // data={courses ? Object.keys(courses) : []}
+                                        data={courses ? [...new Set(Object.keys(courses))] : []}
                                         renderItem={renderSubjectItem}
                                         keyExtractor={(item) => item}
                                         numColumns={2} // Adjust the number of columns as needed
