@@ -168,7 +168,7 @@ export default function Header({ navigation }) {
 
             const result = await response.json();
             setTextInputs(result)
-console.log(result)
+
             result.forEach(item => {
                 if (item.hasError && item.value) {
                     responseMessage++
