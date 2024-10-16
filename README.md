@@ -1,3 +1,7 @@
+keytool -genkey -v -keystore kemer-release-key.keystore -keyalg RSA -keysize 2048 -validity 10000 -alias kemer-key-alias
+
+
+
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
 # Getting Started
