@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, StatusBar } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { TestAd } from '../TestAd';
+import { AdComponent } from '../AdComponent';
 import { moderateScale, verticalScale } from '../utils/Device';
 
 const ExamMode = ({ route, navigation }) => {
@@ -89,7 +89,7 @@ const ExamMode = ({ route, navigation }) => {
         </View>
       </View>
 
-      <TestAd />
+      <AdComponent />
       {!showResult && (
         <ScrollView contentContainerStyle={styles.scrollContent}>
           {currentQuestion && (
