@@ -14,7 +14,7 @@ import {
     FlatList
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { TestAd } from '../TestAd';
+import { AdComponent } from '../AdComponent';
 import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { readData } from '../data/DB';
@@ -232,7 +232,7 @@ export default function Worksheets({ navigation }) {
          
             <Header navigation={navigation} />
             {(loadings || refreshing) && <SkeletonLoader />}
-            {(!isValidObject(courses) && !refreshing && !loadings) && <TestAd />}
+            {(!isValidObject(courses) && !refreshing && !loadings) && <AdComponent />}
 
             {(!isValidObject(courses) && !refreshing && !loadings) && <ReadTextMessage messageText={"No worksheet materials for your selected levels. We're working hard to add more resources. Stay tuned"} onRefresh={onRefresh} refreshing={refreshing} />}
             {(isValidObject(courses) && Object.keys(courses).length > 0) && <>
@@ -242,7 +242,7 @@ export default function Worksheets({ navigation }) {
                         ref={scrollViewRef} refreshControl={
                             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                         }>
-                        <TestAd />
+                        <AdComponent />
                         <ScrollView contentContainerStyle={{ padding: 20 }}>
                             {/* <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>Select a Subject</Text> */}
 

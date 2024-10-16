@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import SkeletonLoader from '../utils/SkeletonLoader';
 import NoInternetScreen from '../utils/NoInternetScreen';
 import { readData } from '../data/DB';
-import { TestAd } from '../TestAd';
+import { AdComponent } from '../AdComponent';
 import { horizontalScale, moderateScale, verticalScale } from '../utils/Device';
 
 import Header from '../utils/Header';
@@ -146,7 +146,7 @@ export default function Dashboard({ navigation }) {
             {/* <Header showModal={showModal} navigation={navigation} courses={courses}/> */}
             <Header navigation={navigation} />
 
-            <TestAd />
+            <AdComponent />
             <ScrollView
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

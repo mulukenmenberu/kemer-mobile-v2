@@ -7,7 +7,7 @@ import NoInternetScreen from '../utils/NoInternetScreen';
 import SkeletonLoader from '../utils/SkeletonLoader';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { TestAd } from '../TestAd';
+import { AdComponent } from '../AdComponent';
 import { horizontalScale, moderateScale } from '../utils/Device';
 
 const QuizeDescription = ({ route, navigation }) => {
@@ -226,7 +226,7 @@ const QuizeDescription = ({ route, navigation }) => {
         </View>
       </View>
 
-      <TestAd />
+      <AdComponent />
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {currentQuestion && (
           <View key={currentQuestion.question_id} style={styles.questionContainer}>
