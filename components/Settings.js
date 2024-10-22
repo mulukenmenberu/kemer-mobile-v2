@@ -42,7 +42,6 @@ export default function Settings({ navigation }) {
   const [userIdentifier, setDeviceId] = useState('');
   const [usernameerror, setUsernameError] = useState('');
   const [savingUser, setSavingUser] = useState(false);
-  const [refreshPage, setRefreshPage] = useState(0);
 
 
 
@@ -67,7 +66,6 @@ export default function Settings({ navigation }) {
 
       return updatedSelectedInterests; // Return the updated interests to be set
     });
-    setRefreshPage(refreshPage+1)
   };
 
 
@@ -233,7 +231,7 @@ export default function Settings({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-     <Header  navigation={navigation} refreshPage={refreshPage}/>
+     <Header  navigation={navigation}/>
       {/* </ImageBackground> */}
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>

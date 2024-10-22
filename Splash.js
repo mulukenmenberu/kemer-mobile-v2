@@ -124,7 +124,7 @@ const Splash = ({ navigation }) => {
 
       {/* Buttons */}
       <TouchableOpacity style={styles.getStartedButton} onPress={() => nextPage()}>
-        <Text style={styles.buttonText}>Get Started</Text>
+        <Text style={styles.buttonText}>Continue</Text>
       </TouchableOpacity>
 
       <Text style={styles.signInText}></Text>

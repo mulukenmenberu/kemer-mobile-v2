@@ -27,7 +27,7 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 import { fetchExamMode } from '../redux/reducers/examModeSlice';
 import { Modal } from 'react-native-paper';
 
-export default function Header({ navigation, refreshPage=0 }) {
+export default function Header({ navigation }) {
     const { width } = Dimensions.get('screen');
     const [selectedInterests, setSelectedInterests] = useState([]);
     const [fullName, setFullName] = useState('');
@@ -82,7 +82,7 @@ export default function Header({ navigation, refreshPage=0 }) {
             const interestsArray = Object.keys(data).filter((key) => data[key] === 'selected');
             setSelectedInterests(interestsArray);
         });
-    }, [refreshPage]);
+    }, []);
 
     useEffect(() => {
         const fetchNotifications = async () => {
@@ -265,8 +265,7 @@ export default function Header({ navigation, refreshPage=0 }) {
                             <AntDesign name="edit" size={moderateScale(24)} color="white" />
                         </View>
                         <View style={{ width: "97%" }}>
-                        {selectedInterests.length>0 &&<Text numberOfLines={4} style={{ color: '#fff', paddingRight: horizontalScale(10) }}>{selectedInterests.join(' - ')}</Text>}
-                            {selectedInterests.length<=0 &&<Text numberOfLines={4} style={{ color: 'tomato', paddingRight: horizontalScale(10) }}>Please select your level (department) from settings tab and refresh the app</Text>}
+                            <Text numberOfLines={4} style={{ color: '#fff', paddingRight: horizontalScale(10) }}>{selectedInterests.join(' - ')}</Text>
                         </View>
                     </View>
                 </View>
