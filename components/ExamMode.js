@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, StatusBar } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { AdComponent } from '../AdComponent';
 import { moderateScale, verticalScale } from '../utils/Device';
+import { InterestialAd } from '../InterestialAd';
 
 const ExamMode = ({ route, navigation }) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -11,6 +12,7 @@ const ExamMode = ({ route, navigation }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [reviewMode, setReviewMode] = useState(false); // Added for review mode
+  const [showInterestialAd, setShowInterestialAd] = useState(false);
 
   const { package_id, package_name, tags, question_data } = route.params;
   const questions = question_data;
@@ -52,6 +54,12 @@ const ExamMode = ({ route, navigation }) => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     }
+    if((currentQuestionIndex+1) %33 ==0){
+      setShowInterestialAd(true)
+    }else if((currentQuestionIndex+1) %33 !=0){
+      setShowInterestialAd(false)
+
+    }
   };
 
   const goToPreviousQuestion = () => {
@@ -69,7 +77,17 @@ const ExamMode = ({ route, navigation }) => {
     setReviewMode(true);   // Enter review mode
     setCurrentQuestionIndex(0); // Go to the first question
   };
+  const handleAdClose = () => {
+    setShowInterestialAd(false);
+  };
+  
+  useEffect(()=>{
 
+    if(currentQuestionIndex<=0){
+      setShowInterestialAd(true)
+
+    }
+  },[])
   const currentQuestion = questions[currentQuestionIndex];
 
   return (
@@ -89,7 +107,11 @@ const ExamMode = ({ route, navigation }) => {
         </View>
       </View>
 
-      <AdComponent />
+      {/* <AdComponent /> */}
+
+      <InterestialAd condition={showInterestialAd} onAdClose={handleAdClose}/>
+
+
       {!showResult && (
         <ScrollView contentContainerStyle={styles.scrollContent}>
           {currentQuestion && (

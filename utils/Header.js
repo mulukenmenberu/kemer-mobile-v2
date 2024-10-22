@@ -179,7 +179,7 @@ export default function Header({ navigation }) {
                 readData('interestList').then((data) => {
                     const interestsArray = Object.keys(data).filter((key) => data[key] === "selected");
                     const userNames = textInputs.map(item => item.value);
-
+                    refRBSheet.current.close()
                     dispatch(fetchExamMode({ interestsArray, userNames, selectedCourses })).then((response) => {
                         navigation.navigate('ExamMode', {
                             package_id: 1,
