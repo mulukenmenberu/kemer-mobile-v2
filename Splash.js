@@ -29,7 +29,7 @@ const Splash = ({ navigation }) => {
           const newDeviceId =  generateRandomID()
           setDeviceId(newDeviceId);
           await AsyncStorage.setItem('UserIdentifier', newDeviceId);
-          const userData = { fullName:'', emailorPhone:'', userIdentifier:newDeviceId, username:'' };
+          const userData = { userIdentifier:newDeviceId, username:'' };
           await AsyncStorage.setItem('userInformation', JSON.stringify(userData));
 
           await saveIdentifier(newDeviceId);

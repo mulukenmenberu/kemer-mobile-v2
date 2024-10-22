@@ -36,8 +36,8 @@ export default function Settings({ navigation }) {
   const [refresh, setRefresh] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
 
-  const [fullName, setFullName] = useState('');
-  const [emailorPhone, setEmailorPhone] = useState('');
+  // const [fullName, setFullName] = useState('');
+  // const [emailorPhone, setEmailorPhone] = useState('');
   const [username, setUsername] = useState('');
   const [userIdentifier, setDeviceId] = useState('');
   const [usernameerror, setUsernameError] = useState('');
@@ -115,7 +115,7 @@ export default function Settings({ navigation }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userIdentifier: userIdentifier, username: username, full_name: fullName, email: emailorPhone }),
+        body: JSON.stringify({ userIdentifier: userIdentifier, username: username }),
       });
       const result = await response.json();
 
@@ -159,7 +159,7 @@ export default function Settings({ navigation }) {
       const result = await response.json();
 
       if (result?.status == 'success') {
-        const userData = { fullName, emailorPhone, userIdentifier, username };
+        const userData = { userIdentifier, username };
         AsyncStorage.setItem('UserIdentifier', userIdentifier);
         await AsyncStorage.setItem('userInformation', JSON.stringify(userData));
         saveIdentifier()
@@ -195,8 +195,8 @@ export default function Settings({ navigation }) {
       try {
         const userData = await AsyncStorage.getItem('userInformation') || {};
         const userData2 = JSON.parse(userData);
-        setFullName(userData2.fullName);
-        setEmailorPhone(userData2.emailorPhone);
+        // setFullName(userData2.fullName);
+        // setEmailorPhone(userData2.emailorPhone);
         setUsername(userData2.username);
         setDeviceId(userData2.userIdentifier);
       } catch (error) {
@@ -290,10 +290,10 @@ export default function Settings({ navigation }) {
             />
           ))}
         </View>
-        <Text style={styles.loyaltyTitle}>Bind Name and Email(phone)</Text>
+        <Text style={styles.loyaltyTitle}>Bind a Username</Text>
 
         <View style={{ padding: 20 }}>
-          <View style={styles.inputContainer}>
+          {/* <View style={styles.inputContainer}>
             <TextInput
               style={styles.textInput}
               placeholder="Full name"
@@ -301,9 +301,9 @@ export default function Settings({ navigation }) {
               onChangeText={setFullName}
             />
             {fullName ? <Text style={styles.checkmark}>✔️</Text> : null}
-          </View>
+          </View> */}
 
-          <View style={styles.inputContainer}>
+          {/* <View style={styles.inputContainer}>
             <TextInput
               style={styles.textInput}
               placeholder="Email or phone"
@@ -311,7 +311,7 @@ export default function Settings({ navigation }) {
               onChangeText={setEmailorPhone}
             />
             {emailorPhone ? <Text style={styles.checkmark}>✔️</Text> : null}
-          </View>
+          </View> */}
 
           <View style={styles.inputContainer}>
             <TextInput
