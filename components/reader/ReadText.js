@@ -32,7 +32,7 @@ if(loadings2){return <SkeletonLoaderReader/>}
         </View>
       ))}
       
-      {Array.isArray(data) && data.length > 0 ? (<AdComponent />):''}
+      {/* {Array.isArray(data) && data.length > 0 ? (<AdComponent />):''} */}
       <View style={{ marginTop: verticalScale(140), marginBottom:verticalScale(110) }}>
       
       </View>
