@@ -15,7 +15,7 @@ const NoInternetScreen = ({navigation, isLoading, setIsLoading}) => {
       <Text style={styles.message}>
         Something went wrong. Try refreshing the page or checking your internet connection. We’ll see you in a moment!
       </Text>
-      <TouchableOpacity style={styles.button} onPress={()=>setIsLoading(!isLoading)}>
+      <TouchableOpacity style={styles.button} onPress={()=>setIsLoading()}>
         <Text style={styles.buttonText}>Try again</Text>
       </TouchableOpacity>
       <StatusBar backgroundColor="#F2F2F2" barStyle="dark-content" />

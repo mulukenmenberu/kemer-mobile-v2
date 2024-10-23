@@ -68,13 +68,17 @@ const Welcome = ({ navigation, setPage, page }) => {
   };
   const departmentChunks = chunkArray(departments, 6);
 
+  const manageNoInternet = ()=>{
+    dispatch(fetchDepartments());
+
+}
 
   if (loading) {
     return <SkeletonLoader />
   }
 
   if (error) {
-    return <NoInternetScreen  isLoading={isLoading} setIsLoading={setIsLoading}/>
+    return <NoInternetScreen  isLoading={isLoading} setIsLoading={manageNoInternet}/>
   }
 
   return (

@@ -129,6 +129,10 @@ export default function Dashboard({ navigation }) {
         showCoursesModal()
         setShowPackages(true)
     }
+    const manageNoInternet = ()=>{
+        // setIsLoading(!isLoading)
+        onRefresh()
+    }
     const currentDate = new Date();
     const targetDate = new Date('2024-12-15');
 
@@ -137,7 +141,7 @@ export default function Dashboard({ navigation }) {
     }
 
     if (error) {
-        return <NoInternetScreen isLoading={isLoading} setIsLoading={setIsLoading} />
+        return <NoInternetScreen isLoading={isLoading} setIsLoading={manageNoInternet} />
     }
 
 
