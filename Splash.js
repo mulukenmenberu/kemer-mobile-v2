@@ -29,7 +29,7 @@ const Splash = ({ navigation }) => {
           const newDeviceId =  generateRandomID()
           setDeviceId(newDeviceId);
           await AsyncStorage.setItem('UserIdentifier', newDeviceId);
-          const userData = { fullName:'', emailorPhone:'', userIdentifier:newDeviceId, username:'' };
+          const userData = { userIdentifier:newDeviceId, username:'' };
           await AsyncStorage.setItem('userInformation', JSON.stringify(userData));
 
           await saveIdentifier(newDeviceId);
@@ -124,7 +124,7 @@ const Splash = ({ navigation }) => {
 
       {/* Buttons */}
       <TouchableOpacity style={styles.getStartedButton} onPress={() => nextPage()}>
-        <Text style={styles.buttonText}>Get Started</Text>
+        <Text style={styles.buttonText}>Continue</Text>
       </TouchableOpacity>
 
       <Text style={styles.signInText}></Text>

@@ -266,11 +266,12 @@ export default function Notes({ navigation }) {
             {(isValidObject(courses) && Object.keys(courses).length > 0) &&
                 <>
                     <View>
+                    <AdComponent />
                         <ScrollView
                             ref={scrollViewRef} refreshControl={
                                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                             }>
-                            <AdComponent />
+                           
                             <ScrollView contentContainerStyle={{ padding: 20 }}>
                                 {/* <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>Select a Subject</Text> */}
 

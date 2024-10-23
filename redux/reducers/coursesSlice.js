@@ -7,9 +7,11 @@ export const fetchCourses = createAsyncThunk(
   async (departmentNames) => {
     try {
 
-        const params = new URLSearchParams({
-          department_names: JSON.stringify(departmentNames),
-        }); 
+      const params = departmentNames[0] != "no_department_names" ? new URLSearchParams({
+        department_names: JSON.stringify(departmentNames),
+      }) : new URLSearchParams({
+        no_department_names: JSON.stringify(departmentNames),
+      });
       const response = await fetch(`${rootURL}/courses/courses.php?${params.toString()}`);
       const data = await response.json();
 

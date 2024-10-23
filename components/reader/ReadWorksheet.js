@@ -4,6 +4,7 @@ import { horizontalScale, moderateScale, verticalScale } from '../../utils/Devic
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchNotes } from '../../redux/reducers/worksheetSlice';
 import SkeletonLoaderReader from '../../utils/SkeletonLoaderReader';
+import { AdComponent } from '../../AdComponent';
 const dataInit = [];
 
 const ReadWorksheet = ({ selectedTopic, selectedCourse }) => {
@@ -35,7 +36,14 @@ const ReadWorksheet = ({ selectedTopic, selectedCourse }) => {
         // Optional: Render a fallback UI if data is not available
         <Text>No data available</Text>
       )}
-      <View style={{ marginTop: verticalScale(140) }}></View>
+       
+      {/* <View style={{ marginTop: verticalScale(140) }}></View> */}
+
+      {/* {Array.isArray(data) && data.length > 0 ? (<AdComponent />):''} */}
+      <View style={{ marginTop: verticalScale(140), marginBottom:verticalScale(110) }}>
+      
+      </View>
+
     </ScrollView>
   );
 };

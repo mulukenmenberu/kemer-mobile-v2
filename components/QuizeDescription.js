@@ -9,6 +9,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AdComponent } from '../AdComponent';
 import { horizontalScale, moderateScale } from '../utils/Device';
+import { InterestialAd } from '../InterestialAd';
 
 const QuizeDescription = ({ route, navigation }) => {
   const dispatch = useDispatch();
@@ -17,6 +18,7 @@ const QuizeDescription = ({ route, navigation }) => {
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [wrongAnswers, setWrongAnswers] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [showInterestialAd, setShowInterestialAd] = useState(false);
   const [refresh, setRefresh] = useState(0);
   const [progressObj, setProgressObj] = useState({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -146,6 +148,12 @@ const QuizeDescription = ({ route, navigation }) => {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setRefresh(refresh + 1);
     }
+    if((currentQuestionIndex+1) %45 ==0){
+      setShowInterestialAd(true)
+    }else if((currentQuestionIndex+1) %45 !=0){
+      setShowInterestialAd(false)
+
+    }
   };
 
   const goToPreviousQuestion = () => {
@@ -179,6 +187,11 @@ const QuizeDescription = ({ route, navigation }) => {
       { cancelable: false } // Makes the alert not dismissible by clicking outside
     );
   };
+    // Handle resetting after the ad closes
+    const handleAdClose = () => {
+      setShowInterestialAd(false);
+    };
+  
   return (
     <SafeAreaView style={styles.container}>
       {uniqueChapters.length <= 1 &&
@@ -226,7 +239,8 @@ const QuizeDescription = ({ route, navigation }) => {
         </View>
       </View>
 
-      <AdComponent />
+      {/* <AdComponent /> */}
+      <InterestialAd condition={showInterestialAd} onAdClose={handleAdClose}/>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {currentQuestion && (
           <View key={currentQuestion.question_id} style={styles.questionContainer}>

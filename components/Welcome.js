@@ -15,7 +15,9 @@ const Welcome = ({ navigation, setPage, page }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const { width } = Dimensions.get('screen');
   const [isLoading, setIsLoading] = useState(false);
-
+  const [hasError, setHasError] = useState(false);
+  const [levelmessage, setLevelMessage] = useState("Please customize your level (s)");
+  
   useEffect(() => {
     dispatch(fetchDepartments());
   }, [dispatch]);
@@ -26,6 +28,8 @@ const Welcome = ({ navigation, setPage, page }) => {
         ? prevSelectedInterests.filter((item) => item !== interest)
         : [...prevSelectedInterests, interest]
     );
+    setLevelMessage('Please customize your level (s)')
+    setHasError(false)
   };
 
   const saveAndContinue = () => {
@@ -36,8 +40,16 @@ const Welcome = ({ navigation, setPage, page }) => {
       return acc;
     }, {});
 
-    storeData('interestList', interestsObject);
-    navigation.navigate('Tabs');
+
+    const countSelected = Object.values(interestsObject).filter(value => value === "selected").length;
+    if(countSelected>0){
+      storeData('interestList', interestsObject);
+      navigation.navigate('Tabs');
+    }else{
+      setLevelMessage('Please Choose your level of study')
+      setHasError(true)
+    }
+
 
   };
 
@@ -56,13 +68,17 @@ const Welcome = ({ navigation, setPage, page }) => {
   };
   const departmentChunks = chunkArray(departments, 6);
 
+  const manageNoInternet = ()=>{
+    dispatch(fetchDepartments());
+
+}
 
   if (loading) {
     return <SkeletonLoader />
   }
 
   if (error) {
-    return <NoInternetScreen  isLoading={isLoading} setIsLoading={setIsLoading}/>
+    return <NoInternetScreen  isLoading={isLoading} setIsLoading={manageNoInternet}/>
   }
 
   return (
@@ -79,7 +95,10 @@ const Welcome = ({ navigation, setPage, page }) => {
 
       <ScrollView
       >
-        <Text style={styles.title}>Time to customize your level</Text>
+        {/* <Text style={[styles.title,hasError?color:'red':'#333']}>{levelmessage}</Text> */}
+        <Text style={[styles.title, { color: hasError ? 'red' : '#333' }]}>{levelmessage}</Text>
+        <Text style={{fontSize:moderateScale(13), alignSelf:'center'}}>{"You can choose more than one"}</Text>
+
         {/* <View style={styles.interestsContainer}> */}
         {/* Custom Swiper for Interests */}
         <ScrollView
@@ -160,7 +179,7 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(20),
     color: '#333',
     textAlign: 'center',
-    marginVertical: verticalScale(20),
+    marginVertical: verticalScale(10),
     fontWeight: '600',
   },
   continueButton: {

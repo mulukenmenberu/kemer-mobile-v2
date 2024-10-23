@@ -179,7 +179,7 @@ export default function Header({ navigation }) {
                 readData('interestList').then((data) => {
                     const interestsArray = Object.keys(data).filter((key) => data[key] === "selected");
                     const userNames = textInputs.map(item => item.value);
-
+                    refRBSheet.current.close()
                     dispatch(fetchExamMode({ interestsArray, userNames, selectedCourses })).then((response) => {
                         navigation.navigate('ExamMode', {
                             package_id: 1,
@@ -296,9 +296,9 @@ export default function Header({ navigation }) {
                             {courses.map((item) => renderCourseItem(item))}
                         </View>
                     </ScrollView>
-                    <View style={{ height: verticalScale(30), margin:verticalScale(10) }}>
+                    {/* <View style={{ height: verticalScale(30) }}>
                  
-                    </View>
+                    </View> */}
                     {textInputs.map((input, index) => (
                         <View key={input.id} style={styles.inputContainer}>
                             <TextInput
@@ -402,12 +402,14 @@ const styles = StyleSheet.create({
     bottomSheetText: {
         fontSize: 18,
         marginBottom: 20,
-        fontWeight:'bold'
+        fontWeight:'bold',
+        color:'#222'
     },
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 10,
+        marginBottom: verticalScale(10),
+        marginTop:verticalScale(30)
     },
     input: {
         borderWidth: 1,
@@ -471,7 +473,7 @@ const styles = StyleSheet.create({
     courseCard: {
         backgroundColor: '#f0f0f0',
         width: horizontalScale(150), 
-        height: verticalScale(50),
+        height: verticalScale(60),
         borderRadius: 8,
         marginHorizontal: 8, 
         justifyContent: 'center', 

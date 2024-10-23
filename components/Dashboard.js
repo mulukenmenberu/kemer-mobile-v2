@@ -48,7 +48,7 @@ export default function Dashboard({ navigation }) {
         // setRefreshing(true); // Set refreshing true to indicate loading state
         const data = await readData('interestList');
         const interestsArray = Object.keys(data).filter((key) => data[key] === "selected");
-
+ 
         // Call the API only if interestsArray has values
         if (interestsArray.length > 0) {
             const response = dispatch(fetchCourses(interestsArray)).then((res) => {
@@ -57,8 +57,15 @@ export default function Dashboard({ navigation }) {
                     setPackageData(res.payload[0].packages);
                 }
             })
-
-
+        }else{
+           const noDepartmentData = ['no_department_names']
+                const response = dispatch(fetchCourses(noDepartmentData)).then((res) => {
+                    if (res && res.payload.length > 0) {
+                        setActive(res.payload[0].course_id);
+                        setPackageData(res.payload[0].packages);
+                    }
+                })
+            
         }
         setRefreshing(false); // Set refreshing false once data is fetched
     };
@@ -122,6 +129,10 @@ export default function Dashboard({ navigation }) {
         showCoursesModal()
         setShowPackages(true)
     }
+    const manageNoInternet = ()=>{
+        // setIsLoading(!isLoading)
+        onRefresh()
+    }
     const currentDate = new Date();
     const targetDate = new Date('2024-12-15');
 
@@ -130,7 +141,7 @@ export default function Dashboard({ navigation }) {
     }
 
     if (error) {
-        return <NoInternetScreen isLoading={isLoading} setIsLoading={setIsLoading} />
+        return <NoInternetScreen isLoading={isLoading} setIsLoading={manageNoInternet} />
     }
 
 
