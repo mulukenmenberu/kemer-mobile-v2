@@ -11,7 +11,8 @@ import {
   TouchableOpacity,
   ScrollView,
   StatusBar, Button,
-  Alert
+  Alert,
+  Linking
 } from 'react-native';
 import { Card } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -293,26 +294,7 @@ export default function Settings({ navigation }) {
         <Text style={styles.loyaltyTitle}>Bind a Username</Text>
 
         <View style={{ padding: 20 }}>
-          {/* <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.textInput}
-              placeholder="Full name"
-              value={fullName}
-              onChangeText={setFullName}
-            />
-            {fullName ? <Text style={styles.checkmark}>✔️</Text> : null}
-          </View> */}
-
-          {/* <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.textInput}
-              placeholder="Email or phone"
-              value={emailorPhone}
-              onChangeText={setEmailorPhone}
-            />
-            {emailorPhone ? <Text style={styles.checkmark}>✔️</Text> : null}
-          </View> */}
-
+         
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.textInput}
@@ -331,6 +313,11 @@ export default function Settings({ navigation }) {
               <Text style={styles.buttonText}>Binding Info. Please wait....</Text>
             </TouchableOpacity>}
         </View>
+        <TouchableOpacity style={styles.privacyLink} onPress={() => Linking.openURL('https://kemermobile.com/privacy.html')}>
+  <MaterialCommunityIcons name="link" size={20} color="#FFFFFF" />
+  <Text style={styles.privacyLinkText}>Privacy Policy</Text>
+</TouchableOpacity>
+
 
         <View style={styles.inputsContainer}>
           {/* <AdComponent/> */}
@@ -381,6 +368,29 @@ const styles = StyleSheet.create({
     backgroundColor: '#5E5CE6',
     justifyContent: 'center',
   },
+  // Inside your styles
+privacyLink: {
+  backgroundColor: '#6A5ACD', // Distinct green color for attention
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+  paddingVertical: 12,
+  paddingHorizontal: 16,
+  borderRadius: 8,
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.3,
+  shadowRadius: 4,
+  elevation: 5, // Shadow for Android
+  marginHorizontal: 20,
+  marginTop: 20,
+},
+privacyLinkText: {
+  color: '#FFFFFF',
+  fontWeight: 'bold',
+  fontSize: 18,
+  marginLeft: 8, // Space between text and icon
+},
   cardContent: {
     marginLeft: horizontalScale(10),
     marginRight: horizontalScale(10),
