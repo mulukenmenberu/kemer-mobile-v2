@@ -148,7 +148,6 @@ export default function Notes({ navigation }) {
     };
 
     const handleTopicSelect = (topic) => {
-       
         setSelectedTopic(topic);
         setIsLoadingG(true);
 
@@ -158,11 +157,21 @@ export default function Notes({ navigation }) {
             topicScrollViewRef.current.scrollTo({ x: 0, animated: true });
         }
 
-        setIsLoadingG(false);
-        setChangePage(changePage + 1);
-        if (scrollViewRef.current) {
-            scrollViewRef.current.scrollTo({ y: verticalScale(235), animated: true });
-        }
+        // setIsLoadingG(false);
+        // setChangePage(changePage + 1);
+        // if (scrollViewRef.current) {
+        //     scrollViewRef.current.scrollTo({ y: verticalScale(235), animated: true });
+        // }
+
+        setTimeout(() => {
+            setIsLoadingG(false);
+            setChangePage(changePage + 1);
+            if (scrollViewRef.current) {
+                scrollViewRef.current.scrollTo({ y: verticalScale(225), animated: true });
+            }
+        }, 50);
+        setModalVisible(false);
+
     };
 
     const handleTopicSelectFromModal = (topic) => {
