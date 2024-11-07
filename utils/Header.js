@@ -10,7 +10,8 @@ import {
     ActivityIndicator,
     Pressable,
     TextInput,
-    ScrollView
+    ScrollView,
+    Appearance
 } from 'react-native';
 import { Card } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -45,6 +46,7 @@ export default function Header({ navigation }) {
     const [textInputs, setTextInputs] = useState([{ id: 1, value: '', hasError: false }]);
     const [exam_loaddr, setExamLoader] = useState(false);
     const { courses } = useSelector((state) => state.courses);
+    const [theme, setTheme] = useState(Appearance.getColorScheme());
 
 
     const [selectedCourses, setSelectedCourses] = useState([]);
@@ -305,6 +307,7 @@ export default function Header({ navigation }) {
                                 style={[styles.input, input.hasError ? styles.errorInput : null]}
                                 value={input.value}
                                 placeholder={`Username ${input.id}`}
+                                placeholderTextColor="#888" 
                                 onChangeText={(newValue) => handleTextChange(input.id, newValue)}
                             />
                             <Pressable onPress={(textInputs.length <= 1 && index <= 0) ? null : () => removeTextInput(input.id)}>

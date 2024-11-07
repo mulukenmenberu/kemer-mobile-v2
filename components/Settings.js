@@ -300,6 +300,7 @@ export default function Settings({ navigation }) {
               style={styles.textInput}
               placeholder="User name"
               value={username}
+              placeholderTextColor="#888" 
               onChangeText={setUsername}
             />
             {username ? <Text style={styles.checkmark}>✔️</Text> : null}
