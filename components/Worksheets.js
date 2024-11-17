@@ -126,13 +126,13 @@ export default function Worksheets({ navigation }) {
             topicScrollViewRef.current.scrollTo({ x: 0, animated: true });
         }
 
-        // setTimeout(() => {
+        setTimeout(() => {
         setIsLoadingG(false);
         setChangePage(changePage + 1);
         if (scrollViewRef.current) {
             scrollViewRef.current.scrollTo({ y: verticalScale(235), animated: true });
         }
-        // }, 5000);
+        }, 50);
     };
 
     const handleTopicSelectFromModal = (topic) => {

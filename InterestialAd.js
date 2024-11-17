@@ -7,8 +7,9 @@ const bannerAdUnitId = __DEV__ ? TestIds.ADAPTIVE_BANNER : 'ca-app-pub-712843996
 
 const interstitialAd = InterstitialAd.createForAdRequest(interstitialAdUnitId);
 
-export function InterestialAd({ condition = true,onAdClose }) {
+export function InterestialAd({ condition = true, onAdClose }) {
   const [loaded, setLoaded] = useState(false);
+  const [showBanner, setShowBanner] = useState(true); // Controls banner ad visibility
 
   useEffect(() => {
     // Load the interstitial ad
@@ -25,6 +26,11 @@ export function InterestialAd({ condition = true,onAdClose }) {
       // Reload the ad once it's closed
       onAdClose();
       interstitialAd.load();
+      
+      // Re-display the banner ad after 2 minutes
+      setTimeout(() => {
+        setShowBanner(true);
+      }, 120000); // 120000 milliseconds = 2 minutes
     });
 
     // Load the ad initially
@@ -40,6 +46,7 @@ export function InterestialAd({ condition = true,onAdClose }) {
   // Function to show the interstitial ad based on a condition
   const showInterstitialAd = () => {
     if (loaded) {
+      setShowBanner(false); // Hide banner ad
       interstitialAd.show();
       setLoaded(false); // Reset the loaded state after showing the ad
     } else {
@@ -56,15 +63,17 @@ export function InterestialAd({ condition = true,onAdClose }) {
 
   return (
     <>
-      <BannerAd
-        unitId={bannerAdUnitId}
-        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-        requestOptions={{
-          networkExtras: {
-            collapsible: 'bottom',
-          },
-        }}
-      />
+      {showBanner && (
+        <BannerAd
+          unitId={bannerAdUnitId}
+          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+          requestOptions={{
+            networkExtras: {
+              collapsible: 'bottom',
+            },
+          }}
+        />
+      )}
     </>
   );
 }

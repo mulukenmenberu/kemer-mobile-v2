@@ -53,7 +53,7 @@ const DashBoardCardsModal = ({ visible, hideModal, navigation, courses, setActiv
                                 onPress={() => openQuizPage(course.package_id, course.package_name, course.tags)}
                                 style={[styles.card, index % 2 === 0 ? styles.evenCard : styles.oddCard]} // Striped effect
                             >
-                                <Text style={styles.cardTitle}>{index + 1}. {course.package_name}</Text>
+                                <Text style={styles.cardTitle}>{index + 1}. {course.package_name} - ({course.tags})</Text>
                             </TouchableOpacity>
                         ))}
                     </View>
