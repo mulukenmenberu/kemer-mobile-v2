@@ -1,5 +1,3 @@
-# Add any custom ProGuard rules here
-
 # Keep classes needed by React Native
 -keep class com.facebook.react.** { *; }
 -keep class com.facebook.hermes.** { *; }
@@ -23,3 +21,29 @@
 -keepclassmembers class * {
     @android.webkit.JavascriptInterface <methods>;
 }
+
+# Remove all logging calls in the release build
+-assumenosideeffects class android.util.Log {
+    public static *** v(...);
+    public static *** d(...);
+    public static *** i(...);
+    public static *** w(...);
+    public static *** e(...);
+}
+
+# Optimize code
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
+
+# Protect native libraries
+-keep class * {
+    native <methods>;
+}
+
+# Obfuscate everything else
+-keepattributes *Annotation*
+-keepclassmembers enum * { *; }
+-keep public class * extends android.app.Activity
+-keepclasseswithmembers class * {
+    native <methods>;
+}
+-dontwarn javax.annotation.**
