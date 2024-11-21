@@ -1,7 +1,7 @@
 import React from 'react';
 import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 
-const adUnitId = __DEV__ ? TestIds.ADAPTIVE_BANNER : 'ca-app-pub-7128439967849555/1178032170';
+const adUnitId = __DEV__ ? TestIds.ADAPTIVE_BANNER : 'ca-app-pub-7128439967849555/3532058697';
 
 export function AdComponent() {
   return (

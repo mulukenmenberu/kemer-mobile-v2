@@ -95,7 +95,7 @@ android {
          release {
             keyAlias 'kemer-key-alias' 
             keyPassword 'Blank@123' 
-            storeFile file('../../kemer-release-key.keystore') 
+            storeFile file('../../ethiofetena-release-key.keystore') 
             storePassword 'Blank@123' 
         }
     }

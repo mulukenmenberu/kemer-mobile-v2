@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { BannerAd, BannerAdSize, TestIds, InterstitialAd, AdEventType } from 'react-native-google-mobile-ads';
 
 // Test ID for interstitial ad
-const interstitialAdUnitId = __DEV__ ? TestIds.INTERSTITIAL : 'ca-app-pub-7128439967849555/7263508463'; // Replace with your actual interstitial ad unit ID
-const bannerAdUnitId = __DEV__ ? TestIds.ADAPTIVE_BANNER : 'ca-app-pub-7128439967849555/1178032170';
+const interstitialAdUnitId = __DEV__ ? TestIds.INTERSTITIAL : 'ca-app-pub-7128439967849555/4585285917'; // Replace with your actual interstitial ad unit ID
+const bannerAdUnitId = __DEV__ ? TestIds.ADAPTIVE_BANNER : 'ca-app-pub-7128439967849555/3532058697';
 
 const interstitialAd = InterstitialAd.createForAdRequest(interstitialAdUnitId);
 
