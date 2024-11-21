@@ -314,7 +314,7 @@ export default function Settings({ navigation }) {
               <Text style={styles.buttonText}>Binding Info. Please wait....</Text>
             </TouchableOpacity>}
         </View>
-        <TouchableOpacity style={styles.privacyLink} onPress={() => Linking.openURL('https://kemermobile.com/privacy.html')}>
+        <TouchableOpacity style={styles.privacyLink} onPress={() => Linking.openURL('https://EthioFetena.com/privacy.html')}>
   <MaterialCommunityIcons name="link" size={20} color="#FFFFFF" />
   <Text style={styles.privacyLinkText}>Privacy Policy</Text>
 </TouchableOpacity>
