@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchQuestionPackagesSaved } from '../redux/reducers/questionPackagesSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { AdComponent } from '../AdComponent';
 import { readData } from '../data/DB';
 import { horizontalScale, moderateScale, verticalScale } from '../utils/Device';
 
@@ -86,7 +85,6 @@ export default function Saved({ navigation }) {
              
              <Header  navigation={navigation}/>
 
-            <AdComponent />
             {/* <SkeletonLoader/> */}
            {isLoading? <SkeletonLoader/>: <ScrollView
                 refreshControl={

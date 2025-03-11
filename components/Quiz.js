@@ -7,7 +7,6 @@ import NoInternetScreen from '../utils/NoInternetScreen';
 import SkeletonLoader from '../utils/SkeletonLoader';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AdComponent } from '../AdComponent';
 
 const Quiz = ({ route, navigation }) => {
   const dispatch = useDispatch();
@@ -110,7 +109,6 @@ const Quiz = ({ route, navigation }) => {
           <Text style={styles.statsTextTotal}>Total Q: {questions.length}</Text>
         </View>
       </View>
-<AdComponent/>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {questions?.map((question, questionIndex) => (
           <View key={question.question_id} style={styles.questionContainer}>

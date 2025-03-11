@@ -4,7 +4,6 @@ import { horizontalScale, moderateScale, verticalScale } from '../../utils/Devic
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchNotes } from '../../redux/reducers/notesSlice';
 import SkeletonLoaderReader from '../../utils/SkeletonLoaderReader';
-import { AdComponent } from '../../AdComponent';
 const dataInit = [];
 
 const ReadText = ({ selectedTopic, selectedCourse }) => {
@@ -32,7 +31,6 @@ if(loadings2){return <SkeletonLoaderReader/>}
         </View>
       ))}
       
-      {/* {Array.isArray(data) && data.length > 0 ? (<AdComponent />):''} */}
       <View style={{ marginTop: verticalScale(140), marginBottom:verticalScale(110) }}>
       
       </View>

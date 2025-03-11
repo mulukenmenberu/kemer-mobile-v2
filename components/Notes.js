@@ -18,7 +18,6 @@ import { Card } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import { AdComponent } from '../AdComponent';
 import { useDispatch, useSelector } from 'react-redux';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { readData } from '../data/DB';
@@ -270,12 +269,10 @@ export default function Notes({ navigation }) {
 
             <Header navigation={navigation} />
             {(loadings || refreshing) && <SkeletonLoader />}
-            {(!isValidObject(courses) && !refreshing && !loadings) && <AdComponent />}
             {(!isValidObject(courses) && !refreshing && !loadings) && <ReadTextMessage messageText={"No reading materials for your selected levels. We're working hard to add more data. Stay tuned"} onRefresh={onRefresh} refreshing={refreshing} />}
             {(isValidObject(courses) && Object.keys(courses).length > 0) &&
                 <>
                     <View>
-                    <AdComponent />
                         <ScrollView
                             ref={scrollViewRef} refreshControl={
                                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

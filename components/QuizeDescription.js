@@ -7,9 +7,8 @@ import NoInternetScreen from '../utils/NoInternetScreen';
 import SkeletonLoader from '../utils/SkeletonLoader';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AdComponent } from '../AdComponent';
 import { horizontalScale, moderateScale } from '../utils/Device';
-import { InterestialAd } from '../InterestialAd';
+// import { InterestialAd } from '../InterestialAd';
 
 const QuizeDescription = ({ route, navigation }) => {
   const dispatch = useDispatch();
@@ -239,8 +238,7 @@ const QuizeDescription = ({ route, navigation }) => {
         </View>
       </View>
 
-      {/* <AdComponent /> */}
-      <InterestialAd condition={showInterestialAd} onAdClose={handleAdClose}/>
+      {/* <InterestialAd condition={showInterestialAd} onAdClose={handleAdClose}/> */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {currentQuestion && (
           <View key={currentQuestion.question_id} style={styles.questionContainer}>

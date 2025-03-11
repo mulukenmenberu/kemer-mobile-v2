@@ -23,7 +23,6 @@ import { fetchDepartments } from '../redux/reducers/departmentsSlice';
 
 import { readData, storeData } from '../data/DB';
 import SkeletonLoader from '../utils/SkeletonLoader';
-import { AdComponent } from '../AdComponent';
 import { horizontalScale, moderateScale, verticalScale } from '../utils/Device';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { rootURL } from '../config/baseApi';
@@ -236,7 +235,6 @@ export default function Settings({ navigation }) {
       {/* </ImageBackground> */}
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <AdComponent />
         <Text style={styles.mainTitle}>Time to customize your level</Text>
 
 
@@ -321,7 +319,6 @@ export default function Settings({ navigation }) {
 
 
         <View style={styles.inputsContainer}>
-          {/* <AdComponent/> */}
 
 
           <Text style={styles.loyaltyTitle}>Kemer Points</Text>
